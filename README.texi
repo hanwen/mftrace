@@ -185,8 +185,6 @@ packages. (Note: Yours Truly did not look further into MetaType)
 @section Bugs and todo
 
 @itemize
-@item
-  generate more unique UniqueIDs -- check the Type1 spec 
 @item Submit @file{tfm.py} to www.python.org. @file{tfm.py}  is a python
   module to parse Tex Font Metric file.
 @end itemize 

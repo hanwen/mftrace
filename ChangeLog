@@ -6,6 +6,7 @@
 	free range of the T1 UniqueID space.
 	(to_type1): actually, don't generate UniqueID at all, since it is
 	optional.
+	(cm_guess_font_info): put design size in FullName too.
 
 2003-03-19  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
 

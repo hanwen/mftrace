@@ -829,6 +829,11 @@ This should be tailored for each metafont font set.
 	fontinfo ={"FontName" :  filename}
 	# urg.
 	filename = re.sub ("cm(.*)tt", r"cmtt\1", filename)
+	m = re.search ("([0-9]+)$", filename)
+	design_size = ''
+	if m:
+		design_size = m.group (1)
+	
 	
 	prefixes = [("cmtt", "Computer Modern Typewriter Text"),
 		    ("cmvtt", "Computer Modern Variable Width Typewriter Text"),
@@ -874,7 +879,7 @@ This should be tailored for each metafont font set.
 		
 	fontinfo['Weight'] = weight
 	fontinfo["FamilyName"] = family
-	fontinfo['FullName'] = '%s %s %s' % (family, shape, weight) 
+	fontinfo['FullName'] = '%s %s %s designed at %spt' % (family, shape, weight, design_size) 
 
 	return fontinfo
 	
