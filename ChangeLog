@@ -1,3 +1,12 @@
+2005-03-08  Han-Wen Nienhuys  <hanwen@xs4all.nl>
+
+	* configure.in: detect missing potrace/autotrace.
+	(PYTHON): release 1.1.6
+
+2005-03-06  Han-Wen Nienhuys  <hanwen@xs4all.nl>
+
+	* mftrace.py (get_fontforge_command): another fix.
+
 2005-03-05  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
 	* mftrace.py (check_pfaedit_scripting): whoops, only call
