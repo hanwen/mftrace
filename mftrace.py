@@ -381,11 +381,12 @@ Please submit a bugreport to autotrace development.""" % (error_file,
 
 	
 def make_pbm (filename, outname, char_number):
-	""" Extract bitmap from the PK file using `gf2pbm'
+	""" Extract bitmap from the PK file FILENAME (absolute) using `gf2pbm'.
 	Return FALSE if the glyph is not valid. 
 	"""
-
-	status = system ("gf2pbm -n %d -o %s %s" %(char_number, outname, filename), ignore_error = 1)
+	
+	command = "gf2pbm -n %d -o %s %s" %(char_number, outname, filename)
+	status = system (command, ignore_error = 1)
 	
 	return  (status == 0)
 
@@ -500,12 +501,7 @@ def read_gf_dims (name, c):
 		       
 
 	
-def autotrace_font (fontname, metric, glyphs, encoding, magnification):
-	global gf_fontname
-        if not gf_fontname:
-		base =  gen_pixel_font (fontname, metric, magnification)
-		gf_fontname = base + 'gf'
-
+def autotrace_font (fontname, gf_file, metric, glyphs, encoding, magnification):
 	t1os = []
 	font_bbox =  (10000,10000,-10000,-10000)
 
@@ -520,18 +516,18 @@ def autotrace_font (fontname, metric, glyphs, encoding, magnification):
 		if not valid:
 			continue
 
-		valid = make_pbm (gf_fontname, 'char.pbm', a)
+		valid = make_pbm (gf_file, 'char.pbm', a)
 		if not valid:
 			continue
 
-		(w,h, xo, yo) = read_gf_dims (gf_fontname, a)
+		(w,h, xo, yo) = read_gf_dims (gf_file, a)
 			
 		if not verbose_p:
 			sys.stderr.write('[%d' % a)
 			sys.stderr.flush()
 
-		
-		success = do_autotrace_one ("char.pbm", '%s-%d' % (fontname, a))
+		# this wants the id, not the filename.
+		success = do_autotrace_one ("char.pbm", '%s-%d' % (gf_fontname, a))
 		if not success :
 			sys.stderr.write ("(skipping character)]")
 			sys.stderr.flush ()			
@@ -540,9 +536,8 @@ def autotrace_font (fontname, metric, glyphs, encoding, magnification):
 		if not verbose_p:
 			sys.stderr.write(']')
 			sys.stderr.flush()
-
-		tw = int (round (metric.get_char (a).width / metric.design_size * 1000))
-		
+		metric_width = metric.get_char (a).width
+		tw = int (round (metric_width / metric.design_size * 1000))
 		(bbox, t1o)  = autotrace_path_to_type1_ops ("char.eps",
 						    (h, w, xo, yo),
 						    tw)
@@ -557,13 +552,12 @@ def autotrace_font (fontname, metric, glyphs, encoding, magnification):
 	progress ('\n')
 	
 	if pfa_p or ttf_p:
-		to_type1 (t1os, font_bbox, fontname, encoding, magnification,
-			  1)
+		to_type1 (t1os, font_bbox, fontname, encoding, magnification, 1)
 	if ttf_p:
 		shutil.copy2 (fontname + '.pfa', fontname + '.pfx')
 	if pfb_p:
-		to_type1 (t1os, font_bbox, fontname, encoding, magnification,
-			  0)
+		to_type1 (t1os, font_bbox, fontname, encoding,
+			  magnification, 0)
 
 
 def ps_encode_encoding (encoding):
@@ -976,7 +970,14 @@ for filename in files:
 		progress ('Temporary directory is `%s\' ' % temp_dir)
 	os.chdir (temp_dir)
 
-	autotrace_font (basename, metric, glyph_range, encoding, magnification)
+        if not gf_fontname:
+        	# run mf
+		base = gen_pixel_font (basename, metric, magnification)
+		gf_fontname = base + 'gf'
+		
+	# the heart of the program:
+	autotrace_font (basename, gf_fontname, metric, glyph_range, encoding, magnification)
+
 	if pfa_p:
 		if simplify_p:
 			cleanup_font (basename + '.pfa')

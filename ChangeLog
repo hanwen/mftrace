@@ -1,3 +1,8 @@
+2003-03-13  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* mftrace.py (glyph_range): apply --gffile patch from Karl Berry
+	with minor mods.
+
 2003-02-27  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
 
 	* mftrace.py (autotrace_font): gf_fontname support (thanks to Karl

@@ -112,7 +112,7 @@ Command line options:
   Only process glyphs in @var{list}, which is a  comma-delimited  list of
   decimal numbers.
 @item --gffile=@var{name}
-  Take glyphs from file @var{name}.
+  Take glyphs from file @var{name}. 
 @item -h,--help 
  help on options.
 @item -k,--keep 
