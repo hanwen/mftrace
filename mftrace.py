@@ -795,9 +795,8 @@ def get_fontforge_command ():
 		stat = system ("%s -usage > pfv 2>&1 " % fontforge_cmd,
 			       ignore_error = 1)
 
-	if stat != 0:
-		warning ("Command `%s -usage' failed.  Cannot simplify or convert to TTF.\n" % fontforge_cmd)
-		return ''
+		if stat != 0:
+			warning ("Command `%s -usage' failed.  Cannot simplify or convert to TTF.\n" % fontforge_cmd)
 
 	if fontforge_cmd == 'pfaedit' \
 	   and re.search ("-script", open ('pfv').read ()) == None:
