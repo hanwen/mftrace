@@ -58,7 +58,8 @@ install: mftrace gf2pbm $(PYC_MODULES)
 	mkdir -p $(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man1
 	cp mftrace $(DESTDIR)$(bindir)
 	cp gf2pbm $(DESTDIR)$(bindir)
-	chmod 755 $(DESTDIR)$(bindir)/{gf2pbm,mftrace}
+	chmod 755 $(DESTDIR)$(bindir)/gf2pbm
+	chmod 755 $(DESTDIR)$(bindir)/mftrace
 	mkdir -p $(DESTDIR)$(datadir)
 	cp mftrace.1 $(DESTDIR)$(mandir)/man1/
 	cp $(PY_MODULES) $(PYC_MODULES)  $(DESTDIR)$(datadir) 

@@ -261,7 +261,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @end quotation
 
 Thanks to @uref{http://www.maths.qmul.ac.uk/~jdg/,Julian Gilbey} and
-G\"unther Spahlinger for finding many bugs.
+G@"unther Spahlinger for finding many bugs.
 
 
 @section See also
