@@ -974,7 +974,9 @@ for filename in files:
         	# run mf
 		base = gen_pixel_font (basename, metric, magnification)
 		gf_fontname = base + 'gf'
-		
+	else:
+		gf_fontname = find_file (gf_fontname)
+
 	# the heart of the program:
 	autotrace_font (basename, gf_fontname, metric, glyph_range, encoding, magnification)
 
