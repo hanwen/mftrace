@@ -4,6 +4,7 @@
 	separately.
 	(guess_fontinfo): default weight Regular. 
 	(ec_guess_font_info): lose "designed at" string.
+	(cm_guess_font_info): change Family to E?CModern.
 
 	* configure.in (PYTHON): release 1.1.2
 

@@ -945,10 +945,10 @@ def cm_guess_font_info (filename, fontinfo):
 		design_size = string.atoi (m.group (1))
 		fontinfo['DesignSize'] = design_size
 
-	prefixes = [("cmtt", "CMTypewriter"),
-		    ("cmvtt", "CMVariableWidthTypewriter"),
-		    ("cmss", "CMSans"),
-		    ("cm", "CM")]
+	prefixes = [("cmtt", "CModernTypewriter"),
+		    ("cmvtt", "CModernVariableWidthTypewriter"),
+		    ("cmss", "CModernSans"),
+		    ("cm", "CModern")]
 
 	family = ''
  	for (k, v) in prefixes:
@@ -1016,9 +1016,9 @@ def ec_guess_font_info (filename, fontinfo):
 		design_size = string.atoi (m.group (1))
 		fontinfo['DesignSize'] = design_size
 
-	prefixes = [("ecss", "EuropeanCMSans"),
-		    ("ectt", "EuropeanCMTypewriter"),
-		    ("ec", "EuropeanCM")]
+	prefixes = [("ecss", "ECModernSans"),
+		    ("ectt", "ECModernTypewriter"),
+		    ("ec", "ECModern")]
 
 	family = ''
  	for (k, v) in prefixes:
