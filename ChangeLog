@@ -1,4 +1,6 @@
-Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+2002-11-16  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* mftrace.py (coding_dict): add parmesan encoding.
 
 	* mftrace.py (gen_pixel_font): show error log if MetaFont failed.
 
