@@ -2,6 +2,7 @@
 
 	* mftrace.py (coding_dict): default to feta-braces10.enc for
 	feta-braces.
+	(coding_dict): revert.
 
 2003-04-20  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
 
