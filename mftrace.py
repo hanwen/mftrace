@@ -41,6 +41,7 @@ autotrace_bin = 'autotrace'
 magnification = 1000.0
 program_name = 'mftrace'
 temp_dir = os.path.join (os.getcwd (), program_name + '.dir' )
+gf_fontname = ''
 
 keep_temp_dir_p = 0
 program_version='@VERSION@'
@@ -265,6 +266,7 @@ option_definitions = [
 	('','', 'afm',  _("Generate AFM file (implies --simplify)")),
 	('', 'b', 'pfb', _ ("Generate PFB file")),
 	('', '', 'simplify', _("Simplify using pfaedit")),
+	('FILE', '', 'gffile', _("Use gf FILE instead of running Metafont")),
 	('DIR', 'I', 'include', _("Add to path for searching files")),	
 	('LIST','', 'glyphs', _('Process only these glyphs. LIST is comma separated')),
 	('FILE', '', 'tfmfile' , _("Use FILE for the TFM file")),
@@ -499,9 +501,11 @@ def read_gf_dims (name, c):
 
 	
 def autotrace_font (fontname, metric, glyphs, encoding, magnification):
-	base =  gen_pixel_font (fontname, metric, magnification)
-	
-	gf_fontname = base + 'gf'
+	global gf_fontname
+        if not gf_fontname:
+		base =  gen_pixel_font (fontname, metric, magnification)
+		gf_fontname = base + 'gf'
+
 	t1os = []
 	font_bbox =  (10000,10000,-10000,-10000)
 
@@ -798,7 +802,7 @@ def gen_pixel_font (filename, metric, magnification):
 			if re.search ('Arithmetic overflow', log):
 				sys.stderr.write ("""
 
-Apparenty, some numbers overflowed. Try using --magnification with a
+Apparently, some numbers overflowed. Try using --magnification with a
 lower number.  (Current magnification: %d)
 """ % magnification)
 
@@ -823,6 +827,7 @@ fontinfo = {}
 afmfile = ''
 tfmfile = ''
 outname = ''
+gf_fontname = ''
 encoding_file_override = '' 
 glyph_range=[]
 for (o,a) in options:
@@ -845,6 +850,8 @@ for (o,a) in options:
 		sys.exit (0)
 	elif o == '--encoding' or o == '-e':
 		encoding_file_override = a
+	elif o == '--gffile':
+		gf_fontname = a
 	elif o == '--glyphs':
 		glyph_range = map (string.atoi, string.split(a, ','))
 	elif o == '--output-base' or o == '-o':

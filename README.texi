@@ -103,14 +103,16 @@ Command line options:
 @item --afm
  Generate an AFM file from the TFM file. Implies @code{--simplify}.
 @item -a,--pfa    
- Generate PFA file (Default)
+ Generate PFA file (Default).
 @item -b, --pfb
- Generate a PFB file
-@item -e,--encoding=ENC   
- Use encoding file ENC
-@item --glyphs=LIST
-  Only process glyphs in LIST, which is a  comma-delimited  list of
+ Generate a PFB file.
+@item -e,--encoding=@var{enc}   
+ Use encoding file @var{enc}.
+@item --glyphs=@var{list}
+  Only process glyphs in @var{list}, which is a  comma-delimited  list of
   decimal numbers.
+@item --gffile=@var{name}
+  Take glyphs from file @var{name}.
 @item -h,--help 
  help on options.
 @item -k,--keep 

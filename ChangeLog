@@ -1,3 +1,8 @@
+2003-02-27  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* mftrace.py (autotrace_font): gf_fontname support (thanks to Karl
+	Berry)
+	
 2002-11-26  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
 
 	* GNUmakefile.in: suse patch: use DESTDIR as a prefix. 
