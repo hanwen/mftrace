@@ -53,18 +53,18 @@ GNUmakefile: GNUmakefile.in
 	$(PYTHON) -c 'import py_compile; py_compile.compile ("$<")'
 
 install: mftrace gf2pbm $(PYC_MODULES)
-	mkdir -p $(bindir) $(mandir)/man1
-	install -m 755 mftrace $(bindir)
-	install -m 755 gf2pbm $(bindir)
-	mkdir -p $(datadir)
-	install -m 644 mftrace.1 $(mandir)/man1/
-	install -m 644 $(PY_MODULES) $(PYC_MODULES) $(datadir)
+	mkdir -p $(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man1
+	install -m 755 mftrace $(DESTDIR)$(bindir)
+	install -m 755 gf2pbm $(DESTDIR)$(bindir)
+	mkdir -p $(DESTDIR)$(datadir)
+	install -m 644 mftrace.1 $(DESTDIR)$(mandir)/man1/
+	install -m 644 $(PY_MODULES) $(PYC_MODULES) $(DESTDIR)$(datadir)
 
 uninstall:
-	rm $(bindir)/mftrace $(bindir)/gf2pbm
-	cd $(datadir) && rm $(PY_MODULES)
-	-rmdir $(bindir) $(datadir)
-	-rmdir $(prefix) $(exec_prefix)
+	rm $(DESTDIR)$(bindir)/mftrace $(DESTDIR)$(bindir)/gf2pbm
+	cd $(DESTDIR)$(datadir) && rm $(DESTDIR)$(PY_MODULES)
+	-rmdir $(DESTDIR)$(bindir) $(DESTDIR)$(datadir)
+	-rmdir $(DESTDIR)$(prefix) $(DESTDIR)$(exec_prefix)
 
 clean:
 	rm -f config.cache config.h config.log config.status GNUmakefile

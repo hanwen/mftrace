@@ -1,3 +1,7 @@
+2002-11-26  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* GNUmakefile.in: suse patch: use DESTDIR as a prefix. 
+
 2002-11-24  Jan Nieuwenhuizen  <janneke@gnu.org>
 
 	* .cvsignore: Add.
