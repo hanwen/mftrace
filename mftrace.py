@@ -818,17 +818,16 @@ def make_outputs (fontname, formats):
 	simplify_cmd = ''
 	if simplify_p:
 		simplify_cmd ='''SelectAll ();
+SelectAll ();
 AddExtrema();
-SelectAll ();
 Simplify ();
-SelectAll ();
 AutoHint ();'''
 
 	open ('to-ttf.pe', 'w').write ('''#!/usr/bin/env %(fontforge_bin)s
 Open ($1);
 MergeKern($2);
-%(simplify_cmd)s
 %(round_cmd)s
+%(simplify_cmd)s
 %(generate_cmds)s
 Quit (0);
 ''' % vars())
