@@ -1,3 +1,11 @@
+2004-12-19  Han-Wen Nienhuys  <hanwen@xs4all.nl>
+
+	* configure.in (PYTHON): bump version to 1.1.0
+
+	* mftrace.py (to_type1): always create .pfa.raw
+	(make_outputs): generate all outputs in one script. Add SVG output.
+	(glyph_range): use --formats, remove other options. 
+
 2004-12-02  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
 	* mftrace.py (make_ttf): call AddExtrema() too.
