@@ -1,3 +1,7 @@
+2005-03-30  Andrey V. Panov  <panov@canopus.iacp.dvo.ru>
+
+	* mftrace.py: add possibility to pass glyph ranges with --glyph option.
+
 2005-03-27  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
 	* mftrace.py: prepend exec_prefix to gf2pbm call.  Patch by Jeff

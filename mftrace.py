@@ -1126,6 +1126,8 @@ output_name = ''
 gf_fontname = ''
 encoding_file_override = ''
 glyph_range = []
+glyph_ranges = []
+glyph_subrange = []
 for (o, a) in options:
 	if 0:
 		pass
@@ -1149,7 +1151,13 @@ for (o, a) in options:
 	elif o == '--gffile':
 		gf_fontname = a
 	elif o == '--glyphs':
-		glyph_range = map (string.atoi, string.split (a, ','))
+		glyph_ranges = string.split (a, ',')
+		for r in glyph_ranges:
+			glyph_subrange = map (string.atoi, string.split (r, '-'))
+			if len (glyph_subrange) == 2 and glyph_subrange[0] < glyph_subrange[1] + 1:
+				glyph_range.extend (range (glyph_subrange[0], glyph_subrange[1] + 1))
+			else:
+				glyph_range.append (glyph_subrange[0])
 	elif o == '--tfmfile':
 		tfmfile = a
 	elif o == '--truetype' or o == '-t':

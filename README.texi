@@ -110,11 +110,15 @@ Command line options:
  the encoding specified in the TFM file.
 @item --glyphs=@var{list}
   Only process glyphs in @var{list}, which is a  comma-delimited  list of
-  decimal numbers.
+  decimal numbers or ranges.
+@example
+  --glyphs 1-10,50,55,90-100
+@end example
 @item --gffile=@var{name}
 =  Take glyphs from file @var{name}. 
 @item --grid @var{gridsize}
-Set reciprocal grid size in em units. For example @code{--grid 10} will round
+Set reciprocal grid size in em units multiplied by ratio magnification/1000. 
+For example @code{--grid 10 --magnification 1000) will round
 coordinates of control points to 1/10 of em unit. Useful simultaneously
 with @code{--noround}  option. Default @var{gridsize} value is 1, i. e. round to integer.
 @item -h,--help 
