@@ -34,6 +34,7 @@ keep_trying_p = 0
 backend_options = ''
 formats = []
 fontforge_cmd = 'fontforge'
+read_afm_p = 1
 
 # You can take this higher, but then rounding errors will have
 # nasty side effects.
@@ -286,6 +287,7 @@ option_definitions = [
 	('', '', 'dos-kpath', _ ("try to use Miktex kpsewhich")),
 	('', '', 'potrace', _ ("Use potrace")),
 	('', '', 'autotrace', _ ("Use autotrace")),
+	('', '', 'no-afm', _("Don't read AFM file")),
 	('', '', 'noround', _ ("Do not round coordinates of control points \n                             to integer values (use with --grid)")),
 	('GRID', '', 'grid', _ ("Set reciprocal grid size in em units"))
 	]
@@ -1008,14 +1010,15 @@ def guess_fontinfo (filename):
 		fi.update (cm_guess_font_info (filename))
 		return fi
 
-	global afmfile
-	if not afmfile:
-		afmfile = find_file (filename + '.afm')
+	if read_afm_p:
+		global afmfile
+		if not afmfile:
+			afmfile = find_file (filename + '.afm')
 
-	if afmfile:
-		afmfile = os.path.abspath (afmfile)
-		afm_struct = afm.read_afm_file (afmfile)
-		fi.update (afm_struct.__dict__)
+		if afmfile:
+			afmfile = os.path.abspath (afmfile)
+			afm_struct = afm.read_afm_file (afmfile)
+			fi.update (afm_struct.__dict__)
 
 	return fi
 
@@ -1068,6 +1071,8 @@ for (o, a) in options:
 		trace_binary = 'autotrace'
 	elif o == '--noround':
 		round_to_int = 0
+	elif o == '--no-afm':
+		read_afm_p = 0
 	elif o == '--grid':
 		potrace_scale = round (string.atof (a))
 	else:
