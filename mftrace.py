@@ -602,7 +602,8 @@ def read_gf_dims (name, c):
 
 	return tuple (map (string.atoi, m.groups ()))
 
-def trace_font (fontname, gf_file, metric, glyphs, encoding, magnification):
+def trace_font (fontname, gf_file, metric, glyphs, encoding,
+		magnification, fontinfo):
 	t1os = []
 	font_bbox = (10000, 10000, -10000, -10000)
 
@@ -650,7 +651,7 @@ def trace_font (fontname, gf_file, metric, glyphs, encoding, magnification):
 		t1os.append ('/%s %s ' % (encoding[a], t1o))
 
 	progress ('\n')
-	to_type1 (t1os, font_bbox, fontname, encoding, magnification)
+	to_type1 (t1os, font_bbox, fontname, encoding, magnification, fontinfo )
 
 def ps_encode_encoding (encoding):
 	str = ' %d array\n0 1 %d {1 index exch /.notdef put} for\n' \
@@ -666,7 +667,7 @@ def gen_unique_id (dict):
 	nm = 'FullName'
 	return 4000000 + (hash (nm) % 1000000)
 
-def to_type1 (outlines, bbox, fontname, encoding, magnification):
+def to_type1 (outlines, bbox, fontname, encoding, magnification, fontinfo):
 	"""
 	Fill in the header template for the font, append charstrings,
 	and shove result through t1asm
@@ -721,16 +722,13 @@ cleartomark
 """
 ## apparently, some fonts end the file with cleartomark.  Don't know why.
 
+	copied_fields = ['FontName', 'FamilyName', 'FullName', 'DesignSize',
+			 'ItalicAngle', 'isFixedPitch', 'Weight']
+
 	vars = {
-		'FontName': '%s' % fontinfo['FontName'],
 		'VVV': '001',
 		'WWW': '001',
 		'Notice': 'Generated from MetaFont bitmap by mftrace %s, http://www.cs.uu.nl/~hanwen/mftrace/ ' % program_version,
-		'FullName': fontinfo['FullName'],
-		'FamilyName': fontinfo['FamilyName'],
-		'Weight': fontinfo['Weight'],
-		'ItalicAngle': fontinfo['ItalicAngle'],
-		'isFixedPitch': 'false',
 		'UnderlinePosition': '-100',
 		'UnderlineThickness': '50',
 		'xrevscale': 1.0/1000.0,
@@ -746,6 +744,9 @@ cleartomark
 		'CharStrings': string.join (outlines),
 		'CharBBox': '0 0 0 0',
 	}
+
+	for k in copied_fields:
+		vars[k] = fontinfo[k]
 
 	open ('mftrace.t1asm', 'w').write (template % vars)
 
@@ -927,32 +928,34 @@ except getopt.error, s:
 	help ()
 	sys.exit (2)
 
-fontinfo = {}
-
-def cm_guess_font_info (filename):
-	"""this function fills in sensible values for fontinfo.
-This should be tailored for each metafont font set.
-	"""
-
-
-	fontinfo = {"FontName": filename}
+def derive_font_name (family, fullname):
+	fullname = re.sub (family, '', fullname)
+	fullname = re.sub ('Oldstyle Figures', 'OsF', fullname)
+	fullname = re.sub ('Small Caps', 'SC', fullname)
+	fullname = re.sub ('[Mm]edium', '', fullname)
+	fullname = re.sub ('[^A-Za-z0-9]', '', fullname)
+	return '%s-%s' % (family, fullname)
+	
+def cm_guess_font_info (filename, fontinfo):
 	# urg.
 	filename = re.sub ("cm(.*)tt", r"cmtt\1", filename)
 	m = re.search ("([0-9]+)$", filename)
 	design_size = ''
 	if m:
-		design_size = m.group (1)
+		design_size = string.atoi (m.group (1))
+		fontinfo['DesignSize'] = design_size
 
-
-	prefixes = [("cmtt", "Computer Modern Typewriter Text"),
-		    ("cmvtt", "Computer Modern Variable Width Typewriter Text"),
-		    ("cmss", "Computer Modern Sans Serif"),
-		    ("cm", "Computer Modern")]
+	prefixes = [("cmtt", "CMTypewriter"),
+		    ("cmvtt", "CMVariableWidthTypewriter"),
+		    ("cmss", "CMSans"),
+		    ("cm", "CM")]
 
 	family = ''
  	for (k, v) in prefixes:
 		if re.search (k, filename):
 			family = v
+			if k == 'cmtt':
+				fontinfo['isFixedPitch'] = 'true'
 			filename = re.sub (k, '', filename)
 			break
 
@@ -961,7 +964,7 @@ This should be tailored for each metafont font set.
 		    ("mi", "Math italic"),
 		    ("u", "Unslanted italic"),
 		    ("sl", "Oblique"),
-		    ("csc", "Small caps"),
+		    ("csc", "Small Caps"),
 		    ("ex", "Math extension"),
 		    ("ti", "Text italic"),
 		    ("i", "Italic")]
@@ -970,16 +973,23 @@ This should be tailored for each metafont font set.
 		if re.search (k, filename):
 			shape = v
 			filename = re.sub (k, '', filename)
-	prefixes = [("bx", "Bold Extended"),
-		    ("b", "Bold"),
-		    ("dc", "Demi Bold Condensed"),
+			
+	prefixes = [("b", "Bold"),
 		    ("d", "Demi bold")]
-	weight = 'medium'
+	weight = 'Regular'
 	for (k, v) in prefixes:
 		if re.search (k, filename):
 			weight = v
 			filename = re.sub (k, '', filename)
 
+	prefixes = [("c", "Condensed"),
+		    ("x", "Extended")]
+	stretch = ''
+	for (k, v) in prefixes:
+		if re.search (k, filename):
+			stretch = v
+			filename = re.sub (k, '', filename)
+	
 	fontinfo['ItalicAngle'] = 0
 	if re.search ('[Ii]talic', shape) or re.search ('[Oo]blique', shape):
 		a = -14
@@ -990,27 +1000,103 @@ This should be tailored for each metafont font set.
 
 	fontinfo['Weight'] = weight
 	fontinfo['FamilyName'] = family
-	fontinfo['FullName'] = '%s %s %s designed at %spt' \
-			       % (family, shape, weight, design_size)
+	full  = '%s %s %s %s %dpt' \
+			       % (family, shape, weight, stretch, design_size)
+	full = re.sub (" +", ' ', full)
+	
+	fontinfo['FullName'] = full
+	fontinfo['FontName'] = derive_font_name (family, full)
+
+	return fontinfo
+
+def ec_guess_font_info (filename, fontinfo):
+	design_size = 12
+	m = re.search ("([0-9]+)$", filename)
+	if m:
+		design_size = string.atoi (m.group (1))
+		fontinfo['DesignSize'] = design_size
+
+	prefixes = [("ecss", "EuropeanCMSans"),
+		    ("ectt", "EuropeanCMTypewriter"),
+		    ("ec", "EuropeanCM")]
+
+	family = ''
+ 	for (k, v) in prefixes:
+		if re.search (k, filename):
+			if k == 'ectt':
+				fontinfo['isFixedPitch'] = 'true'
+			family = v
+			filename = re.sub (k, '', filename)
+			break
+
+	# shapes
+	prefixes = [("r", "Roman"),
+		    ("mi", "Math italic"),
+		    ("u", "Unslanted italic"),
+		    ("sl", "Oblique"),
+		    ("cc", "Small caps"),
+		    ("ex", "Math extension"),
+		    ("ti", "Italic"),
+		    ("i", "Italic")]
+	
+	shape = ''
+ 	for (k, v) in prefixes:
+		if re.search (k, filename):
+			shape = v
+			filename = re.sub (k, '', filename)
+
+	prefixes = [("b", "Bold"),
+		    ("d", "Demi bold")]
+	weight = 'Regular'
+	for (k, v) in prefixes:
+		if re.search (k, filename):
+			weight = v
+			filename = re.sub (k, '', filename)
+
+	prefixes = [("c", "Condensed"),
+		    ("x", "Extended")]
+	stretch = ''
+	for (k, v) in prefixes:
+		if re.search (k, filename):
+			stretch = v
+			filename = re.sub (k, '', filename)
+	
+	fontinfo['ItalicAngle'] = 0
+	if re.search ('[Ii]talic', shape) or re.search ('[Oo]blique', shape):
+		a = -14
+		if re.search ("Sans", family):
+			a = -12
+
+		fontinfo ["ItalicAngle"] = a
+
+	fontinfo['Weight'] = weight
+	fontinfo['FamilyName'] = family
+	full  = '%s %s %s %s %dpt' \
+			       % (family, shape, weight, stretch, design_size)
+	full = re.sub (" +", ' ', full)
+	
+	fontinfo['FontName'] = derive_font_name (family, full)
+	fontinfo['FullName'] = full
 
 	return fontinfo
 
 afmfile = ''
 def guess_fontinfo (filename):
-
 	fi = {
 		'FontName': filename,
 		'FamilyName': filename,
-		'Weight': 'regular',
+		'Weight': 'Regular',
 		'ItalicAngle': 0,
+		'DesignSize' : 12,
+		'isFixedPitch' : 'false',
 		'FullName': filename,
 	       }
 
 	if re.search ('^cm', filename):
-		fi.update (cm_guess_font_info (filename))
-		return fi
-
-	if read_afm_p:
+		fi.update (cm_guess_font_info (filename, fi))
+	elif re.search ("^ec", filename):
+		fi.update (ec_guess_font_info (filename, fi))
+	elif read_afm_p:
 		global afmfile
 		if not afmfile:
 			afmfile = find_file (filename + '.afm')
@@ -1019,6 +1105,10 @@ def guess_fontinfo (filename):
 			afmfile = os.path.abspath (afmfile)
 			afm_struct = afm.read_afm_file (afmfile)
 			fi.update (afm_struct.__dict__)
+		return fi
+	else:
+		sys.stderr.write ("Warning: no extra font information for this font.\n"
+				  + "Consider writing a XX_guess_font_info() routine.\n")
 
 	return fi
 
@@ -1170,7 +1260,7 @@ for filename in files:
 
 	# the heart of the program:
 	trace_font (basename, gf_fontname, metric, glyph_range, encoding,
-		    magnification)
+		    magnification, fontinfo)
 		
 	make_outputs (basename, formats)
 	for format in formats:

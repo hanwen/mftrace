@@ -1,3 +1,17 @@
+2005-01-02  Han-Wen Nienhuys  <hanwen@xs4all.nl>
+
+	* mftrace.py (ec_guess_font_info): handle stretch and weight
+	separately.
+	(guess_fontinfo): default weight Regular. 
+	(ec_guess_font_info): lose "designed at" string.
+
+	* configure.in (PYTHON): release 1.1.2
+
+	* mftrace.py (ec_guess_font_info): new function
+	(cm_guess_font_info): handle isFixedPitch.
+	(derive_font_name): make fontname similar to Adobe fonts, i.e.
+	Family-QualifierQualifierAbbrv
+
 2004-12-21  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
 	* configure.in (PYTHON): release 1.1.1
