@@ -482,7 +482,7 @@ def autotrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 	inv_scale = 1000.0/magnification
 	
-	(size_y, size_x, off_x,off_y)= map(lambda m, s=inv_scale : m * s, bitmap_metrics)
+	(size_y, size_x, off_x, off_y)= map(lambda m, s=inv_scale : m * s, bitmap_metrics)
 	ls = open (at_file).readlines ()
 	bbox =  (10000,10000,-10000,-10000)
 
@@ -510,8 +510,6 @@ def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 		args = zip_to_pairs (args)
 		commands.append ((cmd,args))
 
-	cx = 0
-	cy = size_y - off_y -1
 
 
 	# t1asm seems to fuck up when using sbw. Oh well. 
@@ -521,65 +519,43 @@ def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 	# Type1 fonts have relative coordinates (doubly relative for
 	# rrcurveto), so must convert moveto and rcurveto.
 
-	def get_discrete_dz (dz, z):
-		
-		current_discrete_x = int (round (z[0]))
-		current_discrete_y = int (round (z[1]))
-		
-		z = (z[0] + dz[0], z[1]+ dz[1])
-
-		new_discrete_x = int (round (z[0]))
-		new_discrete_y = int (round (z[1]))
-
-		dz=  (new_discrete_x - current_discrete_x,
-		      new_discrete_y - current_discrete_y)
-
-		return (dz, z)
-
-	z = (0.0, 0.0)
+	z = (0,  size_y - off_y -1)
+	nc = []
 	for (c, args) in commands:
 		args = map (lambda x: (x[0] * (1.0  / potrace_scale), x[1] * (1.0/potrace_scale)), args)
 		
-		if c == 'rlineto':
-			dz =  tuple (args[0]) 
-			(dz, z) = get_discrete_dz (dz, z)
+		if c == 'moveto':
+			args = [(args[0][0]-z[0], args[0][1] - z[1])]
 			
-		elif c == 'rcurveto':
-			na = []
+		zs = []
+		for a in args:
+			lz= (z[0] + a[0], z[1] + a[1])
+			bbox = update_bbox_with_point (bbox, lz)
+			zs.append (lz)
 
-			local_z = z
-			last_dz = (0,0)
-			for a in args:
-				dz = a
-				
-				(dz, local_z) = get_discrete_dz (dz, z)
-				na.append ((dz[0] - last_dz[0],
-					    dz[1] - last_dz[1]))
-				
-				bbox = update_bbox_with_point (bbox, local_z)
-				last_dz = dz
+		last_discr_z = (int (round (z[0])), int (round (z[1])))
+		args = []
+		for a in zs:
+			a = (int (round (a[0])), int (round (a[1])))
+			args.append ( (a[0] - last_discr_z[0],
+				       a[1] - last_discr_z[1]))
 
-			# argh, there is still are rounding errors,  eg.
-			# @ in cmr10,  with potrace_scale = 10,
-			
-			z = local_z
-			args = na
-			c = 'rrcurveto'
-		elif c == 'moveto':
-			c = 'rmoveto'
-			t1_outline += " closepath "
-			nz = tuple (args[0])
-			
-			(dz, z) = get_discrete_dz ((nz[0] - z[0],
-						   nz[1] - z[1]), z)
-			args = [dz]
+			last_discr_z = a
 
-		bbox = update_bbox_with_point (bbox, z)
+		if zs:
+			z = zs[-1]
+		c = { 'rcurveto': 'rrcurveto',
+		      'moveto': 'rmoveto',
+		      'closepath': 'closepath',
+		      'rlineto' : 'rlineto'}[c]
+
+		if c == 'rmoveto':
+			t1_outline += ' closepath '
+	
 		args = map (lambda x: '%d' % int (round (x)),  unzip_pairs (args))
 
 		t1_outline = t1_outline + '  %s %s\n' % (string.join (args),c)
 
-		print z
 	t1_outline = t1_outline + ' endchar '
 	t1_outline = '{\n %s } |- \n' % t1_outline
 	
