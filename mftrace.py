@@ -894,7 +894,7 @@ def gen_pixel_font (filename, metric, magnification):
 		# FIXME: we should not change to another (tmp) dir?
 		# or else make all relavitive dirs in paths absolute.
 		def abs_dir (x, dir):
-			if os.path.abspath (x) != x:
+			if x and os.path.abspath (x) != x:
 				return os.path.join (dir, x)
 			return x
 
