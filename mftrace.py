@@ -53,8 +53,19 @@ program_version='@VERSION@'
 origdir= os.getcwd ()
 
 coding_dict = {
+
+	# from TeTeX
+	'TeX typewriter text' : '09fbbfac.enc', # cmtt10
+	'TeX math symbols':'10037936.enc ', # cmbsy
+	'ASCII caps and digits':'1b6d048e', # cminch
+	'TeX math italic': 'aae443f0.enc ',  # cmmi10
+	'TeX extended ASCII':'d9b29452.enc',
+	'TeX text': 'f7b6d320.enc',
+	'TeX text without f-ligatures' : '0ef0afca.enc',
+	
 	'Extended TeX Font Encoding - Latin' : 'tex256.enc',
-	'TeX text': 'tex256.enc',
+
+	# LilyPond.
 	'feta braces': 'feta-braces0.enc',
 	'feta number': 'feta-nummer10.enc',
 	'feta music': 'feta20.enc',
@@ -262,6 +273,7 @@ Example:
 option_definitions = [
 	('', 'h', 'help', _ ("This help")),
 	('', 'k', 'keep', _ ("Keep all output in directory %s.dir") % program_name),
+	('', '', 'keep-all', _ ("Really keep all output (implies --keep)")),
 	('MAG', '', 'magnification', _("Set magnification for MF to MAG (default: 1000).")),
 	('', 'V', 'verbose', _ ("Verbose")),
 	('', 'v', 'version', _ ("Print version number")),
@@ -340,6 +352,10 @@ def trace_one (pbmfile, id):
 	if status == 2:
 		sys.stderr.write ("\nUser interrupt. Exiting\n")
 		sys.exit(2)
+
+	if status == 0 and keep_temp_dir_p:
+		shutil.copy2 (pbmfile, '%s.pbm' % id)
+		shutil.copy2 ('char.eps', '%s.eps' % id)
 		
 	if status <> 0:
 		error_file = os.path.join (origdir, 'trace-bug-%s.pbm' % id)
@@ -380,7 +396,7 @@ def make_pbm (filename, outname, char_number):
 	status = system (command, ignore_error = 1)
 	
 	return  (status == 0)
-
+ 
 def read_encoding (file):
 	sys.stderr.write(_("Using encoding file: `%s'\n") % file)
 	
@@ -391,9 +407,9 @@ def read_encoding (file):
 	if not m:
 		raise 'Encoding file invalid.'
 	
-	name = m.group(1)	
-	cod =m.group( 2)
-	cod = re.sub('[ /]+', ' ',cod)
+	name = m.group (1)	
+	cod = m.group (2)
+	cod = re.sub ('[ /]+', ' ',cod)
 	cods = string.split (cod)
 
 	return (name, cods)
@@ -757,13 +773,16 @@ def update_bbox_with_bbox (bb, dims):
 		
 	return (llx,lly,urx,ury) 
 
+
 def check_pfaedit_scripting ():
-	stat = system ("fontforge -usage > pfv 2>&1", ignore_error = 1)
-	fontforge_cmd = 'fontforge'
+	global fontforge_cmd
+	stat = system ("fontforge -usage > pfv 2>&1 > /dev/null", ignore_error = 1)
 	if stat <> 0:
 		stat = system ("pfaedit -usage > pfv 2>&1", ignore_error = 1)
 		if stat == 0:
 			fontforge_cmd = 'pfaedit'
+	else:
+		fontforge_cmd = 'fontforge'
 
 	if stat <> 0:
 		warning ("Command `fontforge -usage' failed. Cannot simplify or convert to TTF.")

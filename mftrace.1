@@ -1,81 +1,174 @@
-.TH MFTRACE 1 "February 11, 2002"
+.TH MFTRACE 1 "March 8, 2004"
+.
+.
 .SH NAME
 mftrace \- convert METAFONT format fonts into Type1 outline fonts
+.
+.
 .SH SYNOPSIS
 .B mftrace
 .RI [ options ] " fontname"
+.
+.
 .SH DESCRIPTION
 .B mftrace
 is a program that can convert a METAFONT font into a Type1 font.  It
 is simply called with the name of the font (without a .mf suffix) and
 produces a Type1 font file called either
-.IR fontname .pfa
+.IR \%fontname .pfa
 or
-.IR fontname .pfb
+.IR \%fontname .pfb
 depending on the command line options.
+.P
+For tracing the bitmap,
+.B mftrace
+either uses
+.B potrace
+or
+.B autotrace
+(the former preferred) if available; this can be overridden with the
+.B \%\-\-autotrace
+and
+.B \%\-\-potrace
+command line options.
+.
+.
 .SH OPTIONS
-These programs follow the usual GNU command line syntax, with long
+This program follows the usual GNU command line syntax, with long
 options starting with two dashes (`-').
+.
 .TP
-.B \-k, \-\-keep
-Keep all output in directory `mftrace.dir'.
+.BR \-a ", " \-\-pfa
+Generate a PFA file (default).
+.
 .TP
-.BI \-\-glyphs LIST
+.B \-\-afm
+Generate AFM file.  Implies
+.BR \-\-simplify .
+.
+.TP
+.B \-\-autotrace
+Use
+.B autotrace
+for tracing bitmaps.
+.
+.TP
+.BR \-b ", " \-\-pfb
+Generate a PFB file.
+.
+.TP
+.B \-\-dos-kpath
+Try to use MikTeX's version of
+.B kpsewhich.
+.
+.TP
+.BR \-e " " \fIENC\fP ", " \-\-encoding=\fIENC\fP
+Use encoding file
+.IR ENC .
+(The default is to use `tex256.enc'.)
+.
+.TP
+.BI \-\-gffile= FILE
+Use gf
+.I FILE
+instead of running Metafont.
+.
+.TP
+.BI \-\-glyphs= LIST
 Process only these glyphs.
 .I LIST
-is a comma separated list of glyphs.
+is a comma separated list of glyph indices.
+.
 .TP
-.B \-a, \-\-pfa
-Generate a PFA file (default).
+.B \-h, \-\-help
+Show summary of options.
+.
 .TP
-.B \-b, \-\-pfb
-Generate a PFB file.
+.BR \-I " " \fIDIR\fP ", " \-\-include= \fIDIR\fP
+Add
+.I DIR
+to the current path for searching files.
+.
+.TP
+.BR \-k , \-\-keep
+Keep all output in directory `mftrace.dir'.
+.
+.TP
+.B \-\-keep-all
+Preserve PBM and EPS files for all glyphs.  Implies
+.BR \-\-keep .
+.
+.TP
+.B \-\-keep-trying
+Try to continue if autotrace fails: first try it with a less smoothed
+curve, and if that fails, skip the character.  By default
+.B mftrace
+leaves a file `trace-bug-\fIfont\fP-\fIchar\fP.pbm' and stops the process
+with a request to file a bugreport.
+.
+.TP
+.BI \-\-magnification= MAG
+Set magnification value for Metafont to
+.I MAG
+(default value is 1000).
+.
+.TP
+.BR \-o " " \fIFILE\fP ", " \-\-output-base= \fIFILE\fP
+Output to
+.IR FILE .pfa
+or
+.IR FILE .pfb.
+.
+.TP
+.B \-\-potrace
+Use
+.B potrace
+for tracing bitmaps.
+.
+.TP
+.B \-\-simplify
+This will pass the created Type1 font through
+.B \%fontforge
+(formerly called
+.BR \%pfaedit )
+to simplify and autohint it.
+.
 .TP
 .BI \-\-tfmfile= FILE
 Use
 .I FILE
 for the TFM file.  (The default is to use
-.IR fontname .tfm).
+.IR \%fontname .tfm).
+.
 .TP
-.BI "\-o, \-\-output-base=" FILE
-Output to
-.IR FILE .pfa
-or
-.IR FILE .pfb.
-.TP
-.BI "\-e, \-\-encoding=" ENC
-Use encoding file
-.IR ENC .
-(The default is to use tex256.enc.)
-.TP
-.B \-\-keep-trying
-Try to continue if autotrace fails: first try it with a less smoothed
-curve, and if that fails, skip the character.  By default mftrace
-leaves a file `autotrace-bug-font-char.pbm' and stops the process with
-a request to file a bugreport.
+.BR \-t ", " \-\-truetype
+Generate TrueType file.  This requires
+.BR \%fontforge .
+.
 .TP
 .B \-V, \-\-verbose
 Be verbose.
-.TP
-.B \-h, \-\-help
-Show summary of options.
-.TP
-.B \-\-simplify
-This will pass the created Type1 font through \fBpfaedit\fR to
-simplify and autohint it.
+.
 .TP
 .B \-v, \-\-version
 Show version of program.
+.
 .TP
 .B \-w, \-\-warranty
 Show warranty and copyright.
+.
+.
 .SH "SEE ALSO"
 .BR mf (1),
-.BR autotrace (1).
+.BR autotrace (1),
+.BR potrace (1),
+.BR fontforge (1).
+.
+.
 .SH AUTHOR
 .B mftrace
 was written by Han-Wen Nienhuys <hanwen@cs.uu.nl>.
-This manual page was written by Julian Gilbey <jdg@debian.org>,
-for the Debian GNU/Linux system (but may be used by others).
-
-THIS MANUAL PAGE IS OUTDATED.
+This manual page was originally written by Julian Gilbey <jdg@debian.org>
+and has been revised by Werner Lemberg <wl@gnu.org>.
+.
+.\" EOF

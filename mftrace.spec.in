@@ -7,7 +7,7 @@ Source0: %{name}-%{version}.tar.gz
 License: GPL
 Group: Applications/Publishing
 BuildRoot: %{_tmppath}/%{name}-root
-Prereq: tetex python autotrace t1utils
+Prereq: tetex python potrace t1utils
 
 
 %description
