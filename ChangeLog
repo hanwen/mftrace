@@ -1,3 +1,15 @@
+2004-01-13  Han-Wen Nienhuys   <hanwen@xs4all.nl>
+
+	* mftrace.py (cm_guess_font_info): italic angle is -14 / -12 .
+
+2004-01-12  Han-Wen Nienhuys   <hanwen@xs4all.nl>
+
+	* mftrace.py (keep_trying_p): use potrace_scale = 1 to avoid
+	artefacts of rounding.  Thanks to Guenther Spahlinger for this bug
+	report.
+	(get_discrete_dz): new function. Don't accumulate rounding errors.
+	
+
 2003-12-29  Han-Wen Nienhuys   <hanwen@cs.uu.nl>
 
 	* GNUmakefile.in (uninstall): don't use install-sh; it moves,

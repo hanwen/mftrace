@@ -37,8 +37,9 @@ dos_kpath_p = 0
 ttf_p = 0
 keep_trying_p = 0
 
-# should be installed.
-potrace_scale = 10
+# You can take this higher, but then rounding errors will have
+# nasty side effects.
+potrace_scale = 1
 
 magnification = 1000.0
 program_name = 'mftrace'
@@ -273,7 +274,7 @@ option_definitions = [
 	('FILE', 'o', 'output-base', _("Set output file name")), 
 	('ENC', 'e', 'encoding', _("Use encoding file ENC")),
 	('', 't', 'truetype', _("Generate TrueType file (requires pfaedit).")),
-	('', '', 'keep-trying', _("Don't stop if autotrace fails")),
+	('', '', 'keep-trying', _("Don't stop if tracing fails")),
 	('', 'w', 'warranty', _ ("show warranty and copyright")),
 	('', '', 'dos-kpath', _ ("try to use Miktex kpsewhich")),
 	('', '', 'potrace', _ ("Use potrace")),
@@ -318,7 +319,7 @@ def autotrace_command (fn, opts):
 
 def potrace_command (fn, opts):
 	return trace_binary + opts \
-	      + ' -u %f ' % potrace_scale \
+	      + ' -u %d ' % potrace_scale \
 	      + "  -q -c --eps --output=char.eps %s " % (fn)
 
 trace_command = None
@@ -347,7 +348,7 @@ Failed command was:
 	%s
 	
 Please submit a bugreport to %s development.""" % (error_file, 
-						   autotrace_command (error_file, ''),
+						   trace_command (error_file, ''),
 						   trace_binary)
 
 		if keep_trying_p:
@@ -505,8 +506,8 @@ def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 		if len(toks) < 1:
 			continue
 		cmd= toks[-1]
-		args = map (lambda m, s=inv_scale : s * string.atof(m), toks[:-1])
-		args = zip_to_pairs (map (round, args))
+		args = map (lambda m, s=inv_scale : s * string.atof (m), toks[:-1])
+		args = zip_to_pairs (args)
 		commands.append ((cmd,args))
 
 	cx = 0
@@ -520,42 +521,65 @@ def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 	# Type1 fonts have relative coordinates (doubly relative for
 	# rrcurveto), so must convert moveto and rcurveto.
 
+	def get_discrete_dz (dz, z):
+		
+		current_discrete_x = int (round (z[0]))
+		current_discrete_y = int (round (z[1]))
+		
+		z = (z[0] + dz[0], z[1]+ dz[1])
+
+		new_discrete_x = int (round (z[0]))
+		new_discrete_y = int (round (z[1]))
+
+		dz=  (new_discrete_x - current_discrete_x,
+		      new_discrete_y - current_discrete_y)
+
+		return (dz, z)
+
+	z = (0.0, 0.0)
 	for (c, args) in commands:
-		args = map (lambda x: (x[0] * 1.0  / potrace_scale, x[1]*1.0/potrace_scale), args)
+		args = map (lambda x: (x[0] * (1.0  / potrace_scale), x[1] * (1.0/potrace_scale)), args)
 		
 		if c == 'rlineto':
-			(dx,dy)= args[0]
-			cx += dx
-			cy += dy
+			dz =  tuple (args[0]) 
+			(dz, z) = get_discrete_dz (dz, z)
+			
 		elif c == 'rcurveto':
 			na = []
-			(last_dx,last_dy) = (0,0)
+
+			local_z = z
+			last_dz = (0,0)
 			for a in args:
-				(dx,  dy) = a
-				na.append ((dx  - last_dx, dy - last_dy))
-				bbox = update_bbox_with_point (bbox,
-							       (cx + last_dx , cy + last_dy) )
-				last_dx = dx
-				last_dy = dy
+				dz = a
+				
+				(dz, local_z) = get_discrete_dz (dz, z)
+				na.append ((dz[0] - last_dz[0],
+					    dz[1] - last_dz[1]))
+				
+				bbox = update_bbox_with_point (bbox, local_z)
+				last_dz = dz
+
+			# argh, there is still are rounding errors,  eg.
+			# @ in cmr10,  with potrace_scale = 10,
 			
-			(cx, cy) = (last_dx + cx, last_dy  + cy)
+			z = local_z
 			args = na
 			c = 'rrcurveto'
 		elif c == 'moveto':
 			c = 'rmoveto'
 			t1_outline += " closepath "
-			x, y = args[0]
-			dx = x - cx
-			dy = y - cy
-			(cx, cy) = (x,y)
-			args = [(dx, dy)]
+			nz = tuple (args[0])
 			
-		bbox = update_bbox_with_point (bbox, (cx, cy))
+			(dz, z) = get_discrete_dz ((nz[0] - z[0],
+						   nz[1] - z[1]), z)
+			args = [dz]
 
+		bbox = update_bbox_with_point (bbox, z)
 		args = map (lambda x: '%d' % int (round (x)),  unzip_pairs (args))
 
 		t1_outline = t1_outline + '  %s %s\n' % (string.join (args),c)
 
+		print z
 	t1_outline = t1_outline + ' endchar '
 	t1_outline = '{\n %s } |- \n' % t1_outline
 	
@@ -940,9 +964,9 @@ This should be tailored for each metafont font set.
 
 	fontinfo['ItalicAngle'] = 0
 	if re.search ('[Ii]talic', shape) or re.search ('[Oo]blique', shape):
-		a = 14
+		a = -14
 		if re.search ("Sans", family):
-			a = 12
+			a = -12
 			
 		fontinfo ["ItalicAngle"] = a
 		
