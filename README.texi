@@ -22,7 +22,7 @@ Versions prior to 1.0.5 were called `pktrace'.
 @section Download
 
 @itemize @bullet
-@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/mftrace-1.0.12.tar.gz}
+@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/mftrace-1.0.14.tar.gz}
 @item Anonymous CVS at 
 @code{anoncvs@@subversions.gnu.org:/cvsroot/lilypond}, module
 @code{mftrace}.
@@ -55,12 +55,13 @@ autohint it.
 @section Red Hat
 
 A RPM may be built by issuing
-
 @example
 
         rpm -tb mftrace-@var{version}.tar.gz
 
 @end example
+
+
 
 @section Debian GNU/Linux
 
@@ -112,7 +113,7 @@ Command line options:
   Only process glyphs in @var{list}, which is a  comma-delimited  list of
   decimal numbers.
 @item --gffile=@var{name}
-  Take glyphs from file @var{name}. 
+=  Take glyphs from file @var{name}. 
 @item -h,--help 
  help on options.
 @item -k,--keep 
@@ -128,6 +129,21 @@ stops the process with a request to file a bugreport.
 The magnification to use for the PFA file. The default is 1000. The
 larger the more precise the PFA file will be. However, when
 magnification is too large METAFONT can crash with overflow errors.
+
+Sadly, many MF fonts contain resolution checks
+@example
+  if dots_per_inch * design_size > 1500:  
+    ...
+@end example
+This check is susceptible to overflow errors.  Such code should be
+reported as a bug, and changed to
+@example
+  if dots_per_inch > (1500 / design_size):
+    ...
+@end example
+
+
+
 @item -o,--output-base=FILE
  Output to FILE.pfa or FILE.pfb.
 @item --simplify
@@ -149,6 +165,11 @@ environment. If this doesn't work, specify @code{--tfmfile} and
 @item -w,--warranty  
 show warranty and copyright
 @end table
+
+Mftrace uses kpathsea for finding fonts, so any kpathsea variable can
+be used to fine-tune which files should be loaded.  For example, you
+can set @code{MFINPUTS} to specify which paths to search for
+@file{.mf} files.
 
 Mftrace tries to fill in sensible values for the FontFamily, FullName
 and Weight fields. It does so by guessing values for the CM font
@@ -185,12 +206,18 @@ packages. (Note: Yours Truly did not look further into MetaType)
 @section Bugs and todo
 
 @itemize
+<<<<<<< README.texi
+@item Discuss fonts & copyright.
+@item Invent a decent way to come up with UniqueIDs.
+@item Inverse name mapping:  convert cmr10 to Computer-Modern-Roman-10
+=======
+>>>>>>> 1.8
 @item Submit @file{tfm.py} to www.python.org. @file{tfm.py}  is a python
   module to parse Tex Font Metric file.
 @end itemize 
 
-Should you encounter bugs, then please send a bugreport to
-@email{hanwen@@cs.uu.nl,Han-Wen Nienhuys}.  
+Should you encounter any bug or problem, then please send a bugreport
+to @email{hanwen@@cs.uu.nl,Han-Wen Nienhuys}.
 
 @section Author
 

@@ -1045,6 +1045,7 @@ for filename in files:
 
 	if verbose_p:
 		progress ('Temporary directory is `%s\' ' % temp_dir)
+		
 	os.chdir (temp_dir)
 
         if not gf_fontname:

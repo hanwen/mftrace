@@ -8,6 +8,10 @@
 	optional.
 	(cm_guess_font_info): put design size in FullName too.
 
+2003-03-31  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* README.texi (Top): add note about MFINPUTS variable
+
 2003-03-19  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
 
 	* mftrace.py (Font_info.__getitem__): call find_file () for gf_file.
