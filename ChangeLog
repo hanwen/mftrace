@@ -7,6 +7,7 @@
 	(to_type1): actually, don't generate UniqueID at all, since it is
 	optional.
 	(cm_guess_font_info): put design size in FullName too.
+	(guess_fontinfo): rename afm to prevent name clashes. 
 
 2003-03-31  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
 

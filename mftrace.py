@@ -882,18 +882,20 @@ This should be tailored for each metafont font set.
 	fontinfo['FullName'] = '%s %s %s designed at %spt' % (family, shape, weight, design_size) 
 
 	return fontinfo
-	
+
+afmfile = ''
 def guess_fontinfo (filename):
 	if re.search ('^cm', filename):
 		return cm_guess_font_info (filename)
 
+	global afmfile
 	if not afmfile:
 		afmfile = find_file (filename + '.afm')
 
 	if afmfile:
 		afmfile = os.path.abspath (afmfile)
-		afm = afm.read_afm_file (afmfile)
-		return Font_info (afm.__dict__)
+		afm_struct = afm.read_afm_file (afmfile)
+		return Font_info (afm_struct.__dict__)
 
 	fi = { 'FontName' : filename,
 	       'FamilyName'  : filename,
@@ -902,7 +904,6 @@ def guess_fontinfo (filename):
 	
 	return fi
 
-afmfile = ''
 tfmfile = ''
 outname = ''
 gf_fontname = ''
