@@ -1,3 +1,7 @@
+2004-11-05  Han-Wen Nienhuys  <hanwen@xs4all.nl>
+
+	* mftrace.py (stat): redirect stderr.
+	
 2004-08-15  Han-Wen Nienhuys   <hanwen@xs4all.nl>
 
 	* configure.in (PYTHON): release .34
