@@ -269,7 +269,6 @@ Example:
 option_definitions = [
 	('', 'h', 'help', _ ("This help")),
 	('', 'k', 'keep', _ ("Keep all output in directory %s.dir") % program_name),
-	('', '', 'keep-all', _ ("Really keep all output (implies --keep)")),
 	('MAG', '', 'magnification', _ ("Set magnification for MF to MAG (default: 1000)")),
 	('', 'V', 'verbose', _ ("Verbose")),
 	('', 'v', 'version', _ ("Print version number")),
@@ -382,7 +381,7 @@ def make_pbm (filename, outname, char_number):
 	Return FALSE if the glyph is not valid.
 	"""
 
-	command = "gf2pbm -n %d -o %s %s" % (char_number, outname, filename)
+	command = "%s/gf2pbm -n %d -o %s %s" % (exec_prefix, char_number, outname, filename)
 	status = system (command, ignore_error = 1)
 
 	return (status == 0)
@@ -596,7 +595,7 @@ def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 	return (bbox, t1_outline)
 
 def read_gf_dims (name, c):
-	str = popen ('gf2pbm -n %d -s %s' % (c, name)).read ()
+	str = popen ('%s/gf2pbm -n %d -s %s' % (exec_prefix, c, name)).read ()
 	m = re.search ('size: ([0-9]+)+x([0-9]+), offset: \(([0-9-]+),([0-9-]+)\)', str)
 
 	return tuple (map (string.atoi, m.groups ()))
