@@ -29,14 +29,10 @@ if prefix != '@' + 'prefix@':
 exit_value = 0
 simplify_p = 0
 verbose_p = 0
-pfa_p = 0
-pfb_p = 0
-afm_p = 0
 dos_kpath_p = 0
-ttf_p = 0
 keep_trying_p = 0
 backend_options = ''
-
+formats = []
 fontforge_cmd = 'fontforge'
 
 # You can take this higher, but then rounding errors will have
@@ -277,9 +273,7 @@ option_definitions = [
 	('MAG', '', 'magnification', _ ("Set magnification for MF to MAG (default: 1000)")),
 	('', 'V', 'verbose', _ ("Verbose")),
 	('', 'v', 'version', _ ("Print version number")),
-	('', 'a', 'pfa', _ ("Generate PFA file (default)")),
-	('', '', 'afm', _ ("Generate AFM file (implies --simplify)")),
-	('', 'b', 'pfb', _ ("Generate PFB file")),
+	('FMT1,FMT2,etc', 'f', 'formats', _ ("Which formats to generate (choices: AFM, PFA, PFB, TTF, SVG)")),
 	('', '', 'simplify', _ ("Simplify using fontforge")),
 	('FILE', '', 'gffile', _ ("Use gf FILE instead of running Metafont")),
 	('DIR', 'I', 'include', _ ("Add to path for searching files")),
@@ -654,14 +648,7 @@ def trace_font (fontname, gf_file, metric, glyphs, encoding, magnification):
 		t1os.append ('/%s %s ' % (encoding[a], t1o))
 
 	progress ('\n')
-
-	if pfa_p or ttf_p:
-		to_type1 (t1os, font_bbox, fontname, encoding, magnification, 1)
-	if ttf_p:
-		shutil.copy2 (fontname + '.pfa', fontname + '.pfx')
-	if pfb_p:
-		to_type1 (t1os, font_bbox, fontname, encoding,
-			  magnification, 0)
+	to_type1 (t1os, font_bbox, fontname, encoding, magnification)
 
 def ps_encode_encoding (encoding):
 	str = ' %d array\n0 1 %d {1 index exch /.notdef put} for\n' \
@@ -677,7 +664,7 @@ def gen_unique_id (dict):
 	nm = 'FullName'
 	return 4000000 + (hash (nm) % 1000000)
 
-def to_type1 (outlines, bbox, fontname, encoding, magnification, pfa):
+def to_type1 (outlines, bbox, fontname, encoding, magnification):
 	"""
 	Fill in the header template for the font, append charstrings,
 	and shove result through t1asm
@@ -762,14 +749,10 @@ cleartomark
 
 	opt = ''
 
-	if pfa:
-		opt = '--pfa'
-		outname = fontname + '.pfa'
-	else:
-		outname = fontname + '.pfb'
+	outname = fontname + '.pfa'
 
-	progress (_ ("Assembling font to `%s'... ") % outname)
-	system ('t1asm %s mftrace.t1asm %s' % (opt, outname))
+	progress (_ ("Assembling raw font to `%s'... ") % outname)
+	system ('t1asm --pfa mftrace.t1asm %s' % outname + '.raw')
 	progress ('\n')
 
 def update_bbox_with_point (bbox, pt):
@@ -812,58 +795,41 @@ def check_pfaedit_scripting ():
 		return 0
 	return 1
 
-def cleanup_font (file):
+def make_outputs (fontname, formats):
 	"""
-	run pfaedit to simplify and auto-hint the PFX
+	run pfaedit to convert to other formats
 	"""
 
 	if not check_pfaedit_scripting ():
 		return 0
 
 	# not used?
-	shutil.copy2 (file, "before-pfaedit.pfx")
-
-	progress (_ ("Simplifying font... "))
-	round_cmd = ''
 	if round_to_int :
 		round_cmd = 'RoundToInt();\n'
-	open ('simplify.pe', 'w').write ('''#!/usr/bin/env %s
+
+	generate_cmds = ''
+	for f in formats:
+		generate_cmds += 'Generate("%s");' % (filename  + '.' + f)
+
+	fontforge_bin = fontforge_cmd
+	simplify_cmd = ''
+	if simplify_p:
+		simplify_cmd ='''SelectAll ();
+AddExtrema();
+Simplify ();
+AutoHint ();'''
+
+	open ('to-ttf.pe', 'w').write ('''#!/usr/bin/env %(fontforge_bin)s
 Open ($1);
 MergeKern($2);
-SelectAll ();
-Simplify ();
-AutoHint ();
-%s
-Generate ("%s");
+%(simplify_cmd)s
+%(round_cmd)s
+%(generate_cmds)s
 Quit (0);
-''' % (fontforge_cmd, round_cmd, file))
-	system ("%s -script simplify.pe %s %s" % (fontforge_cmd, file, tfmfile))
-	progress ('\n')
-
-def make_ttf (fontname):
-	"""
-	run pfaedit to convert to TTF.
-	"""
-
-	if not check_pfaedit_scripting ():
-		return 0
-
-	# not used?
-	shutil.copy2 (fontname + '.pfx', "before-pfaedit.pfx")
-
-	open ('to-ttf.pe', 'w').write ('''#!/usr/bin/env %s
-Open ($1);
-MergeKern($2);
-SelectAll ();
-Simplify ();
-AutoHint ();
-%s
-Generate ("%s");
-Quit (0);
-''' % (fontforge_cmd, round_to_int, filename + '.ttf'))
+''' % vars())
 
 	system ("%s -script to-ttf.pe %s %s" % (fontforge_cmd,
-						(filename + '.pfx'), tfmfile))
+						(filename + '.pfa.raw'), tfmfile))
 
 def getenv (var, default):
 	if os.environ.has_key (var):
@@ -1084,23 +1050,18 @@ for (o, a) in options:
 		glyph_range = map (string.atoi, string.split (a, ','))
 	elif o == '--tfmfile':
 		tfmfile = a
-	elif o == '--pfa' or o == '-a':
-		pfa_p = 1
 	elif o == '--truetype' or o == '-t':
 		ttf_p = 1
 	elif o == '--dos-kpath':
 		dos_kpath_p = 1
-	elif o == '--pfb' or o == '-b':
-		pfb_p = 1
+	elif o == '--formats' or o == '-f':
+		formats = string.split (string.lower (a), ',') 
 	elif o == '--include' or o == '-I':
 		include_dirs.append (a)
 	elif o == '--simplify':
 		simplify_p = 1
 	elif o == '--magnification':
 		magnification = string.atof (a)
-	elif o == '--afm':
-		afm_p = 1
-		simplify_p = 1
 	elif o == '--potrace':
 		trace_binary = 'potrace'
 	elif o == '--autotrace':
@@ -1130,10 +1091,11 @@ if trace_binary != 'potrace' and stat == 0:
 if not trace_binary:
 	error (_ ("No tracing program found. Exit."))
 
-identify (sys.stderr)
-if not pfa_p and not pfb_p and not ttf_p:
-	pfa_p = 1
 
+identify (sys.stderr)
+if formats == []:
+	formats = ['pfa']
+	
 if not files:
 	try:
 		error ("No input files specified.")
@@ -1204,24 +1166,10 @@ for filename in files:
 	# the heart of the program:
 	trace_font (basename, gf_fontname, metric, glyph_range, encoding,
 		    magnification)
-
-	if pfa_p:
-		if simplify_p:
-			cleanup_font (basename + '.pfa')
-		shutil.copy2 (basename + '.pfa', origdir)
-	if pfb_p:
-		if simplify_p:
-			cleanup_font (basename + '.pfb')
-		shutil.copy2 (basename + '.pfb', origdir)
-
-	if afm_p and simplify_p:
-		shutil.copy2 (basename + '.afm', origdir)
-
-	if ttf_p:
-		if simplify_p:
-			cleanup_font (basename + '.pfa')
-		make_ttf (basename)
-		shutil.copy2 (basename + '.ttf', origdir)
+		
+	make_outputs (basename, formats)
+	for format in formats:
+		shutil.copy2 (basename + '.' + format, origdir)
 
 	os.chdir (origdir)
 	cleanup_temp ()
