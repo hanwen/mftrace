@@ -36,12 +36,15 @@ afm_p = 0
 dos_kpath_p = 0
 ttf_p = 0
 keep_trying_p = 0
+backend_options = ''
 
 fontforge_cmd = 'fontforge'
 
 # You can take this higher, but then rounding errors will have
 # nasty side effects.
+# Used as reciprocal grid size
 potrace_scale = 1
+round_to_int = 1
 
 magnification = 1000.0
 program_name = 'mftrace'
@@ -66,10 +69,10 @@ coding_dict = {
 	'Extended TeX Font Encoding - Latin' : 'tex256.enc',
 
 	# LilyPond.
-	'feta braces': 'feta-braces0.enc',
-	'feta number': 'feta-nummer10.enc',
-	'feta music': 'feta20.enc',
-	'parmesan music' : 'parmesan20.enc',
+	'fetaBraces': 'feta-braces0.enc',
+	'fetaNumber': 'feta-nummer10.enc',
+	'fetaMusic': 'feta20.enc',
+	'parmesanMusic' : 'parmesan20.enc',
 	}
 
 
@@ -292,7 +295,9 @@ option_definitions = [
 	('', 'w', 'warranty', _ ("show warranty and copyright")),
 	('', '', 'dos-kpath', _ ("try to use Miktex kpsewhich")),
 	('', '', 'potrace', _ ("Use potrace")),
-	('', '', 'autotrace', _ ("Use autotrace"))
+	('', '', 'autotrace', _ ("Use autotrace")),
+	('', '', 'noround', _ ("Don't round coordinates of control points to integer values (use with --grid)")),
+	('GRID', '', 'grid', _ ("Set reciprocal grid size in em units"))
 	
 	]
 
@@ -328,13 +333,13 @@ def find_file (nm):
 
 def autotrace_command (fn, opts):
 	opts = " " + opts + " --background-color=FFFFFF --output-format=eps --input-format=pbm "
-	return trace_binary + opts + " --output-file=char.eps  %s  " % fn
+	return trace_binary + opts + backend_options + " --output-file=char.eps  %s  " % fn
 
 
 def potrace_command (fn, opts):
 	return trace_binary + opts \
 	      + ' -u %d ' % potrace_scale \
-	      + "  -q -c --eps --output=char.eps %s " % (fn)
+	      + backend_options + "  -q -c --eps --output=char.eps %s " % (fn) 
 
 trace_command = None
 trace_binary = '' 
@@ -458,7 +463,10 @@ def autotrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 			continue
 		cmd= toks[-1]
 		args = map (lambda m, s=inv_scale : s * string.atof(m), toks[:-1])
-		args = zip_to_pairs (map (round, args))
+		if round_to_int:
+			args = zip_to_pairs (map (round, args))
+		else :
+			args = zip_to_pairs (args)
 		commands.append ((cmd,args))
 
 	expand = {
@@ -488,7 +496,10 @@ def autotrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 
 		a = na
 		c = expand[c]
-		a = map (lambda x: '%d' % int (round (x)),  unzip_pairs (a))
+		if round_to_int:
+			a = map (lambda x: '%d' % int (round (x)),  unzip_pairs (a))
+		else :
+			a = map (lambda x: '%d %d div' % (int (round (x * potrace_scale)), potrace_scale),  unzip_pairs (a))
 
 		t1_outline = t1_outline + '  %s %s\n' % (string.join (a),c)
 
@@ -551,10 +562,16 @@ def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 			bbox = update_bbox_with_point (bbox, lz)
 			zs.append (lz)
 
-		last_discr_z = (int (round (z[0])), int (round (z[1])))
+		if round_to_int:
+			last_discr_z = (int (round (z[0])), int (round (z[1])))
+		else :
+			last_discr_z = (z[0], z[1])
 		args = []
 		for a in zs:
-			a = (int (round (a[0])), int (round (a[1])))
+			if round_to_int:
+				a = (int (round (a[0])), int (round (a[1])))
+			else :
+				a = (a[0], a[1])
 			args.append ( (a[0] - last_discr_z[0],
 				       a[1] - last_discr_z[1]))
 
@@ -570,7 +587,10 @@ def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 		if c == 'rmoveto':
 			t1_outline += ' closepath '
 	
-		args = map (lambda x: '%d' % int (round (x)),  unzip_pairs (args))
+		if round_to_int:
+			args = map (lambda x: '%d' % int (round (x)),  unzip_pairs (args))
+		else :
+			args = map (lambda x: '%d %d div' % (int (round (x * potrace_scale)), potrace_scale),  unzip_pairs (args))
 
 		t1_outline = t1_outline + '  %s %s\n' % (string.join (args),c)
 
@@ -854,7 +874,7 @@ def getenv (var, default):
 def gen_pixel_font (filename, metric, magnification):
 	"""
 	Generate a GF file  for FILENAME, such that `magnification'*mfscale
-	(default 1000 * 1.0) points fit on the designsize.
+	(default 1000 * 1.0) pixels fit on the designsize.
 	"""
 	base_dpi = 600
 
@@ -874,7 +894,7 @@ def gen_pixel_font (filename, metric, magnification):
 
 		progress (_ ("Running Metafont..."))
 
-		cmdstr = r"mf '\mode:=ljfour; mag:=%f; nonstopmode; input %s'" %  (mag,filename)
+		cmdstr = r"mf '\mode:=ljfour; mag:=%f; nonstopmode; input %s'" %  (mag, filename)
 		if not verbose_p:
 			cmdstr = cmdstr +  ' 1>/dev/null 2>/dev/null'
 		st = system (cmdstr, ignore_error = 1)
@@ -1060,11 +1080,17 @@ for (o,a) in options:
 		trace_binary = 'potrace'
 	elif o == '--autotrace' :
 		trace_binary = 'autotrace'
+	elif o == '--noround' :
+		round_to_int = 0
+	elif o == '--grid' :
+		potrace_scale = string.atof(a)
 	else:
 		raise 'Ugh -- forgot to implement option %s. :)' % o
 
 
 	
+backend_options = getenv('MFTRACE_BACKEND_OPTIONS','')
+
 stat = os.system ('potrace --version > /dev/null') 
 if trace_binary <> 'autotrace' and stat == 0:
 	trace_binary = 'potrace'

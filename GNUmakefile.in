@@ -18,6 +18,7 @@ exec_prefix=@exec_prefix@
 bindir=@bindir@
 mandir=@mandir@
 PYTHON=@PYTHON@
+EXEEXT=@EXEEXT@
 
 all: compile
 
@@ -57,15 +58,15 @@ GNUmakefile: GNUmakefile.in
 install: mftrace gf2pbm $(PYC_MODULES)
 	mkdir -p $(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man1
 	cp mftrace $(DESTDIR)$(bindir)
-	cp gf2pbm $(DESTDIR)$(bindir)
-	chmod 755 $(DESTDIR)$(bindir)/gf2pbm
+	cp gf2pbm$(EXEEXT) $(DESTDIR)$(bindir)/gf2pbm$(EXEEXT)
+	chmod 755 $(DESTDIR)$(bindir)/gf2pbm$(EXEEXT)
 	chmod 755 $(DESTDIR)$(bindir)/mftrace
 	mkdir -p $(DESTDIR)$(datadir)
 	cp mftrace.1 $(DESTDIR)$(mandir)/man1/
 	cp $(PY_MODULES) $(PYC_MODULES)  $(DESTDIR)$(datadir) 
 
 uninstall:
-	rm $(DESTDIR)$(bindir)/mftrace $(DESTDIR)$(bindir)/gf2pbm
+	rm $(DESTDIR)$(bindir)/mftrace $(DESTDIR)$(bindir)/gf2pbm$(EXEEXT)
 	cd $(DESTDIR)$(datadir) && rm $(DESTDIR)$(PY_MODULES)
 	-rmdir $(DESTDIR)$(bindir) $(DESTDIR)$(datadir)
 	-rmdir $(DESTDIR)$(prefix) $(DESTDIR)$(exec_prefix)

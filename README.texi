@@ -116,6 +116,10 @@ Command line options:
   decimal numbers.
 @item --gffile=@var{name}
 =  Take glyphs from file @var{name}. 
+@item --grid @var{gridsize}
+Set reciprocal grid size in em units. For example @code{--grid 10} will round
+coordinates of control points to 1/10 of em unit. Useful simultaneously
+with @code{--noround}  option. Default @var{gridsize} value is 1, i. e. round to integer.
 @item -h,--help 
  help on options.
 @item -k,--keep 
@@ -144,7 +148,10 @@ reported as a bug, and changed to
     ...
 @end example
 
-
+@item --noround 
+Don't round coordinates of control points to integer
+values. Useful simultaneously  with
+@code{--grid} option. Disabled by default.
 
 @item -o,--output-base=FILE
  Output to FILE.pfa or FILE.pfb.
@@ -183,6 +190,9 @@ and Weight fields. It does so by guessing values for the CM font
 series. For other fonts, it tries to read an AFM file (which is not
 likely to exist). Suggestions for a more generic way to handle this
 are welcome.
+
+Additional options may be passed to the backend program (potrace or autotrace)
+with the @code{MFTRACE_BACKEND_OPTIONS} environment variable.
 
 
 @section Discussion
