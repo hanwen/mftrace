@@ -22,7 +22,7 @@ Versions prior to 1.0.5 were called `pktrace'.
 @section Download
 
 @itemize @bullet
-@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/mftrace-1.0.16.tar.gz}
+@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/mftrace-@MFTVERSION@.tar.gz}
 @item Anonymous CVS at 
 @code{anoncvs@@subversions.gnu.org:/cvsroot/lilypond}, module
 @code{mftrace}.
@@ -206,12 +206,7 @@ packages. (Note: Yours Truly did not look further into MetaType)
 @section Bugs and todo
 
 @itemize
-<<<<<<< README.texi
 @item Discuss fonts & copyright.
-@item Invent a decent way to come up with UniqueIDs.
-@item Inverse name mapping:  convert cmr10 to Computer-Modern-Roman-10
-=======
->>>>>>> 1.8
 @item Submit @file{tfm.py} to www.python.org. @file{tfm.py}  is a python
   module to parse Tex Font Metric file.
 @end itemize 

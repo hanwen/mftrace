@@ -27,10 +27,12 @@ gf2pbm: gf2pbm.c
 	gcc -O2 -Wall -o $@ $<
 
 README.txt: README.texi
-	makeinfo --no-split --no-headers --output $@  $<
+	sed 's/@MFTVERSION@/@VERSION@/g' < $< > $<.in
+	makeinfo --no-split --no-headers --output $@  $<.in
 
 README.html: README.texi
-	makeinfo --html --no-split --no-headers --output $@  $<
+	sed 's/@MFTVERSION@/@VERSION@/g' < $< > $<.in
+	makeinfo --html --no-split --no-headers --output $@  $<.in
 
 dist: $(FILES)
 	mkdir $(distdir)
