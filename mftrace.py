@@ -49,6 +49,8 @@ origdir= os.getcwd ()
 coding_dict = {
 	'Extended TeX Font Encoding - Latin' : 'tex256.enc',
 	'TeX text': 'tex256.enc',
+	'feta braces': 'feta-braces0.enc',
+	'feta number': 'feta-nummer10.enc',
 	'feta music': 'feta20.enc',
 	'parmesan music' : 'parmesan20.enc',
 	}
