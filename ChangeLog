@@ -1,3 +1,10 @@
+2004-07-08  Jan Nieuwenhuizen  <janneke@gnu.org>
+
+	* mftrace.py (stat): Add cwd to include path before (ugh?)
+	changing to /tmp.
+	(gen_pixel_font): Check for log file before reading it.
+	Make dirs in paths absolute.
+
 2004-06-21  Jan Nieuwenhuizen  <janneke@gnu.org>
 
 	* mftrace.py: Remove dead --output-base option.  Small cleanups

@@ -885,8 +885,31 @@ def gen_pixel_font (filename, metric, magnification):
 		f = open ('%s.%dgf' % (filename, prod))
 	except IOError:
 		os.environ['KPSE_DOT'] = '%s:' % origdir
-		os.environ['MFINPUTS'] = '%s:%s' % (origdir, getenv ('MFINPUTS', ''))
-		os.environ['TFMFONTS'] = '%s:%s' % (origdir, getenv ('TFMINPUTS', ''))
+
+		os.environ['MFINPUTS'] = '%s:%s' % (origdir,
+						    getenv ('MFINPUTS', ''))
+		os.environ['TFMFONTS'] = '%s:%s' % (origdir,
+						    getenv ('TFMINPUTS', ''))
+
+		# FIXME: we should not change to another (tmp) dir?
+		# or else make all relavitive dirs in paths absolute.
+		def abs_dir (x, dir):
+			if os.path.abspath (x) != x:
+				return os.path.join (dir, x)
+			return x
+
+		def abs_path (path, dir):
+			# Python's ABSPATH means ABSDIR
+			dir = os.path.abspath (dir)
+			return string.join (map (lambda x: abs_dir (x, dir),
+						 string.split (path,
+							       os.pathsep)),
+					    os.pathsep)
+
+		os.environ['MFINPUTS'] = abs_path (os.environ['MFINPUTS'],
+						   origdir)
+		os.environ['TFMFONTS'] = abs_path (os.environ['TFMFONTS'],
+						   origdir)
 
 		progress (_ ("Running Metafont..."))
 
@@ -896,7 +919,10 @@ def gen_pixel_font (filename, metric, magnification):
 		st = system (cmdstr, ignore_error = 1)
 		progress ('\n')
 
-		log = open ('%s.log' % filename).read ()
+		logfile = '%s.log' % filename
+		log = ''
+		if os.path.exists (logfile):
+			log = open (logfile).read ()
 
 		if st:
 			sys.stderr.write ('\n\nMetafont failed.  Excerpt from the log file: \n\n*****')
@@ -1161,6 +1187,7 @@ for filename in files:
 	if verbose_p:
 		progress ('Temporary directory is `%s\' ' % temp_dir)
 
+	include_dirs.append (os.getcwd ())
 	os.chdir (temp_dir)
 
 	if not gf_fontname:
