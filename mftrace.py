@@ -819,7 +819,9 @@ def make_outputs (fontname, formats):
 	if simplify_p:
 		simplify_cmd ='''SelectAll ();
 AddExtrema();
+SelectAll ();
 Simplify ();
+SelectAll ();
 AutoHint ();'''
 
 	open ('to-ttf.pe', 'w').write ('''#!/usr/bin/env %(fontforge_bin)s
@@ -930,6 +932,7 @@ except getopt.error, s:
 
 def derive_font_name (family, fullname):
 	fullname = re.sub (family, '', fullname)
+	family = re.sub (' ',  '', family)
 	fullname = re.sub ('Oldstyle Figures', 'OsF', fullname)
 	fullname = re.sub ('Small Caps', 'SC', fullname)
 	fullname = re.sub ('[Mm]edium', '', fullname)
@@ -945,10 +948,10 @@ def cm_guess_font_info (filename, fontinfo):
 		design_size = string.atoi (m.group (1))
 		fontinfo['DesignSize'] = design_size
 
-	prefixes = [("cmtt", "CModernTypewriter"),
-		    ("cmvtt", "CModernVariableWidthTypewriter"),
-		    ("cmss", "CModernSans"),
-		    ("cm", "CModern")]
+	prefixes = [("cmtt", "Computer Modern Typewriter"),
+		    ("cmvtt", "Computer Modern Variable Width Typewriter"),
+		    ("cmss", "Computer Modern Sans"),
+		    ("cm", "Computer Modern")]
 
 	family = ''
  	for (k, v) in prefixes:
@@ -1016,9 +1019,9 @@ def ec_guess_font_info (filename, fontinfo):
 		design_size = string.atoi (m.group (1))
 		fontinfo['DesignSize'] = design_size
 
-	prefixes = [("ecss", "ECModernSans"),
-		    ("ectt", "ECModernTypewriter"),
-		    ("ec", "ECModern")]
+	prefixes = [("ecss", "European Computer Modern Sans"),
+		    ("ectt", "European Computer Modern Typewriter"),
+		    ("ec", "European Computer Modern")]
 
 	family = ''
  	for (k, v) in prefixes:
