@@ -22,7 +22,7 @@ Versions prior to 1.0.5 were called `pktrace'.
 @section Download
 
 @itemize @bullet
-@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/mftrace-1.0.14.tar.gz}
+@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/mftrace-1.0.15.tar.gz}
 @item Anonymous CVS at 
 @code{anoncvs@@subversions.gnu.org:/cvsroot/lilypond}, module
 @code{mftrace}.
