@@ -1,3 +1,7 @@
+2003-09-30  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* mftrace.py (do_autotrace_one): return nonzero for failed glyphs.
+
 2003-07-17  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
 
 	* mftrace.py (coding_dict): default to feta-braces10.enc for

@@ -27,7 +27,7 @@ if prefix <> '@' + 'prefix@':
         libdir = interpolate (libdir) % vars()
 
 # run from textrace-source dir.
-
+exit_value = 0
 simplify_p = 0
 verbose_p = 0
 pfa_p = 0
@@ -366,6 +366,7 @@ Please submit a bugreport to autotrace development.""" % (error_file,
 		if keep_trying_p:
 			warning (msg)
 			sys.stderr.write ("\nContinuing trace...\n")
+			exit_value = 1
 		else:
 			msg = msg + '\nRun mftrace with --keep-trying to produce a font anyway\n'
 			error (msg)
@@ -1060,3 +1061,5 @@ for filename in files:
 
 	os.chdir (origdir)
 	cleanup_temp ()
+
+sys.exit (exit_value)
