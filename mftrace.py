@@ -776,21 +776,27 @@ def update_bbox_with_bbox (bb, dims):
 
 	return (llx, lly, urx, ury)
 
+def get_binary (name):
+	search_path = string.split (os.environ['PATH'], ':')
+	for p in search_path:
+		nm = os.path.join (p, name)
+		if os.path.exists (nm):
+			return nm
+
+	return ''
+
 def check_pfaedit_scripting ():
 	global fontforge_cmd
-	stat = system ("fontforge -usage > pfv 2>&1 > /dev/null",
+	for ff in ['fontforge', 'pfaedit']:
+		if get_binary(ff):
+			fontforge_cmd = ff
+	
+	stat = system ("%s -usage > pfv 2>&1 " % fontforge_cmd,
 		       ignore_error = 1)
-	if stat != 0:
-		stat = system ("pfaedit -usage > pfv 2>&1", ignore_error = 1)
-		if stat == 0:
-			fontforge_cmd = 'pfaedit'
-	else:
-		fontforge_cmd = 'fontforge'
 
 	if stat != 0:
-		warning ("Command `fontforge -usage' failed.  Cannot simplify or convert to TTF.")
+		warning ("Command `%s -usage' failed.  Cannot simplify or convert to TTF.\n" % fontforge_cmd)
 		return 0
-
 
 	if fontforge_cmd == 'pfaedit' \
 	   and re.search ("-script", open ('pfv').read ()) == None:
@@ -804,6 +810,8 @@ def make_outputs (fontname, formats):
 	"""
 
 	if not check_pfaedit_scripting ():
+		shutil.copy2 (fontname + '.pfa.raw',
+			      fontname + '.pfa')
 		return 0
 
 	# not used?

@@ -1,3 +1,10 @@
+2005-03-05  Han-Wen Nienhuys  <hanwen@xs4all.nl>
+
+	* configure.in (PYTHON): release 1.1.3
+
+	* mftrace.py (make_outputs): copy if fontforge nonexistent
+	(get_binary): search PATH for fontforge
+
 2005-01-02  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
 	* mftrace.py (ec_guess_font_info): handle stretch and weight
