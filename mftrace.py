@@ -1113,13 +1113,13 @@ for (o, a) in options:
 
 backend_options = getenv ('MFTRACE_BACKEND_OPTIONS', '')
 
-stat = os.system ('potrace --version 2&1 1>& /dev/null')
+stat = os.system ('potrace --version > /dev/null 2&1 ')
 if trace_binary != 'autotrace' and stat == 0:
 	trace_binary = 'potrace'
 	trace_command = potrace_command
 	path_to_type1_ops = potrace_path_to_type1_ops
 
-stat = os.system ('autotrace --version 2>&1 1>& /dev/null')
+stat = os.system ('autotrace --version > /dev/null 2>&1 ')
 if trace_binary != 'potrace' and stat == 0:
 	trace_binary = 'autotrace'
 	trace_command = autotrace_command
