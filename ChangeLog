@@ -1,3 +1,8 @@
+2003-07-17  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* mftrace.py (coding_dict): default to feta-braces10.enc for
+	feta-braces.
+
 2003-04-20  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
 
 	* mftrace.py (cm_guess_font_info): always define ItalicAngle.
