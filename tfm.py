@@ -3,9 +3,9 @@ import sys
 def compose_tfm_number (seq):
 	shift = (len (seq)-1)*8
 
-	cs = 0
+	cs = 0L
 	for b in seq:
-		cs = cs  + (ord (b) << shift)
+		cs = cs  + (long (ord (b)) << shift)
 		shift = shift - 8
 	return cs
 
@@ -16,7 +16,7 @@ def compose_tfm_number (seq):
 #
 class Tfm_reader:
 	def get_string (self):
-		b = ord( self.left[0])
+		b = ord (self.left[0])
 		s =self.left[1:1 + b]
 		self.left = self.left[1+b:]
 		

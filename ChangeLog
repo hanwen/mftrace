@@ -1,3 +1,7 @@
+2004-03-21  Han-Wen Nienhuys   <hanwen@xs4all.nl>
+
+	* tfm.py (compose_tfm_number): use long. 
+
 2004-03-08  Werner Lemberg  <wl@gnu.org>
 
 	* mftrace.py: Preserve all PBM and EPS files if keep_temp_dir_p is
