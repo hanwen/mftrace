@@ -837,6 +837,7 @@ This should be tailored for each metafont font set.
 	
 	prefixes = [("cmtt", "Computer Modern Typewriter Text"),
 		    ("cmvtt", "Computer Modern Variable Width Typewriter Text"),
+		    ("cmss", "Computer Modern Sans Serif"),
 		    ("cm", "Computer Modern")]
 
 	family = ''
@@ -847,8 +848,7 @@ This should be tailored for each metafont font set.
 			break
 
 	# shapes
-	prefixes = [("ss", "Sans Serif"),
-		    ("r", "Roman"),
+	prefixes = [("r", "Roman"),
 		    ("mi", "Math italic"),
 		    ("u", "Unslanted italic"),
 		    ("sl", "Oblique"),
@@ -870,9 +870,9 @@ This should be tailored for each metafont font set.
 			weight = v
 			filename = re.sub (k, '', filename)
 
-	if re.search ('italic', shape) or re.search ('slant', shape):
+	if re.search ('italic', shape) or re.search ('Oblique', shape):
 		a = 14
-		if re.search ("sans", series):
+		if re.search ("Sans", family):
 			a = 12
 			
 		fontinfo ["ItalicAngle"] = a

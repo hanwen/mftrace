@@ -1,3 +1,7 @@
+2003-04-19  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* mftrace.py (cm_guess_font_info): set family for cmss. 
+
 2003-04-16  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
 
 	* mftrace.py (cm_guess_font_info): guess info for CM fonts.
