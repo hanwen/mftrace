@@ -47,9 +47,9 @@ do the real work: a tracing program and t1asm.  To run mftrace you need:
 
 @section Recommended
 
-A recent version (020215 or newer) of
-@uref{http://pfaedit.sourceforge.net,pfaedit} is recommended. If it is
-present, then mftrace will run the font through pfaedit to simplify and
+A recent version (040215 or newer) of
+@uref{http://fontforge.sourceforge.net,FontForge} is recommended. If it is
+present, then mftrace will run the font through FontForge to simplify and
 autohint it.
 
 @section Red Hat
@@ -72,11 +72,11 @@ install all requirements by running (as root):
     apt-get install mftrace
 
 @end example
-If you wish to also install the pfaedit package to simplify and
+If you wish to also install the FontForge package to simplify and
 autohint the font, then run the command
 @example
 
-    apt-get install pfaedit
+    apt-get install fontforge
 
 @end example
 
@@ -147,12 +147,12 @@ reported as a bug, and changed to
 @item -o,--output-base=FILE
  Output to FILE.pfa or FILE.pfb.
 @item --simplify
- Pass the font through PfaEdit for automatic  simplification and hinting.
+ Pass the font through FontForge for automatic  simplification and hinting.
 @item --tfmfile=FILE   
  Use @var{file} for the TFM file.  This file is needed to determine at
  what resolution to run MetaFont.
 @item -t,--truetype
- Generate a TrueType file (requires pfaedit).
+ Generate a TrueType file (requires FontForge).
 @item  -V,--verbose 
  Be verbose: print all commands as they are invoked. This is useful
  for debugging.
@@ -207,8 +207,8 @@ is similar in design to mftrace. However, metatype aims at producing
 only TrueType.  Operating MetaType requires more additional
 packages. (Note: Yours Truly did not look further into MetaType)
 
-How about @uref{http://pfaedit.sourceforge.net/,PfaEdit} itself?
-PfaEdit is an interactive editor, but it can be scripted. Since it
+How about @uref{http://fontforge.sourceforge.net/,FontForge} itself?
+FontForge is an interactive editor, but it can be scripted. Since it
 supports bitmap tracing and TeX bitmap fonts, it should be possible to
 duplicate -at least partially- the functionality of mftrace.
 
@@ -233,7 +233,7 @@ to @email{hanwen@@cs.uu.nl,Han-Wen Nienhuys}.
 
 The biggest credits go out to Martin Weber for AutoTrace, Peter
 Selinger for potrace and @email{gww@@silcom.com,George Williams}, for
-PfaEdit.
+FontForge.
 
 The package also contains gf2pbm, a utility to convert a MetaFont GF
 file to a PBM file. Its source code was based on Paul Vojta's Xdvi

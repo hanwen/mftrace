@@ -37,6 +37,8 @@ dos_kpath_p = 0
 ttf_p = 0
 keep_trying_p = 0
 
+fontforge_cmd = 'fontforge'
+
 # You can take this higher, but then rounding errors will have
 # nasty side effects.
 potrace_scale = 1
@@ -266,14 +268,14 @@ option_definitions = [
 	('', 'a', 'pfa', _ ("Generate PFA file (default)")),
 	('','', 'afm',  _("Generate AFM file (implies --simplify)")),
 	('', 'b', 'pfb', _ ("Generate PFB file")),
-	('', '', 'simplify', _("Simplify using pfaedit")),
+	('', '', 'simplify', _("Simplify using fontforge")),
 	('FILE', '', 'gffile', _("Use gf FILE instead of running Metafont")),
 	('DIR', 'I', 'include', _("Add to path for searching files")),
 	('LIST','', 'glyphs', _('Process only these glyphs. LIST is comma separated')),
 	('FILE', '', 'tfmfile' , _("Use FILE for the TFM file")),
 	('FILE', 'o', 'output-base', _("Set output file name")), 
 	('ENC', 'e', 'encoding', _("Use encoding file ENC")),
-	('', 't', 'truetype', _("Generate TrueType file (requires pfaedit).")),
+	('', 't', 'truetype', _("Generate TrueType file (requires fontforge).")),
 	('', '', 'keep-trying', _("Don't stop if tracing fails")),
 	('', 'w', 'warranty', _ ("show warranty and copyright")),
 	('', '', 'dos-kpath', _ ("try to use Miktex kpsewhich")),
@@ -756,12 +758,20 @@ def update_bbox_with_bbox (bb, dims):
 	return (llx,lly,urx,ury) 
 
 def check_pfaedit_scripting ():
-	stat = system ("pfaedit -usage > pfv 2>&1", ignore_error = 1)
+	stat = system ("fontforge -usage > pfv 2>&1", ignore_error = 1)
+	fontforge_cmd = 'fontforge'
 	if stat <> 0:
-		warning ("Command `pfaedit -usage' failed. Cannot simplify or convert to TTF.")
+		stat = system ("pfaedit -usage > pfv 2>&1", ignore_error = 1)
+		if stat == 0:
+			fontforge_cmd = 'pfaedit'
+
+	if stat <> 0:
+		warning ("Command `fontforge -usage' failed. Cannot simplify or convert to TTF.")
 		return 0
-		
-	if re.search ("-script", open ('pfv').read()) == None:
+
+	
+	if fontforge_cmd == 'pfaedit' and \
+	       re.search ("-script", open ('pfv').read()) == None:
 		warning ("pfaedit does not support -script. Install 020215 or later.\nCannot simplify or convert to TTF.\n")
 		return 0
 	return 1
@@ -779,7 +789,7 @@ def cleanup_font (file):
 	
 	progress (_ ("Simplifying font... "))
 	
-	open ('simplify.pe', 'w').write ('''#!/usr/bin/env pfaedit
+	open ('simplify.pe', 'w').write ('''#!/usr/bin/env %s
 Open ($1);
 MergeKern($2);
 SelectAll ();
@@ -787,8 +797,8 @@ Simplify ();
 AutoHint ();
 Generate ("%s");
 Quit (0);
-''' % file)
-	system ("pfaedit -script simplify.pe %s %s" % (file, tfmfile))
+''' % (fontforge_cmd, file))
+	system ("%s -script simplify.pe %s %s" % (fontforge_cmd, file, tfmfile))
 	progress ('\n')
 
 def make_ttf (fontname):
@@ -802,7 +812,7 @@ def make_ttf (fontname):
 	# not used?
 	shutil.copy2 (fontname + '.pfx', "before-pfaedit.pfx")
 	
-	open ('to-ttf.pe', 'w').write ('''#!/usr/bin/env pfaedit
+	open ('to-ttf.pe', 'w').write ('''#!/usr/bin/env %s
 Open ($1);
 MergeKern($2);
 SelectAll ();
@@ -810,9 +820,9 @@ Simplify ();
 AutoHint ();
 Generate ("%s");
 Quit (0);
-''' % (filename + '.ttf'))
+''' % (fontforge_cmd, filename + '.ttf'))
 	
-	system ("pfaedit -script to-ttf.pe %s %s" % ((filename + '.pfx'), tfmfile))
+	system ("%s -script to-ttf.pe %s %s" % (fontforge_cmd, (filename + '.pfx'), tfmfile))
 	
 
 def getenv (var, default):
