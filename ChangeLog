@@ -1,3 +1,13 @@
+2004-06-21  Jan Nieuwenhuizen  <janneke@gnu.org>
+
+	* mftrace.py: Remove dead --output-base option.  Small cleanups
+	(use TAB for indent, space after comma, not before, space before
+	parentheses, not after, etc).
+
+	* GNUmakefile.in (install): Use install instead of cp.
+
+	* configure.in: Substitute EXEEXT.  Fixes install.
+
 2004-06-11  Han-Wen Nienhuys   <hanwen@xs4all.nl>
 
 	* configure.in (PYTHON): release .33
