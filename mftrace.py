@@ -887,25 +887,27 @@ This should be tailored for each metafont font set.
 
 afmfile = ''
 def guess_fontinfo (filename):
-	if re.search ('^cm', filename):
-		return cm_guess_font_info (filename)
-
-	global afmfile
-	if not afmfile:
-		afmfile = find_file (filename + '.afm')
-
-	if afmfile:
-		afmfile = os.path.abspath (afmfile)
-		afm_struct = afm.read_afm_file (afmfile)
-		return Font_info (afm_struct.__dict__)
 
 	fi = { 'FontName' : filename,
 	       'FamilyName'  : filename,
 	       "Weight" : 'regular',
 	       "ItalicAngle" : 0,
 	       'FullName' : filename}
+
+	if re.search ('^cm', filename):
+		fi.update (cm_guess_font_info (filename))
+
+		return fi
+
+	global afmfile
+	if not afmfile:
+		afmfile = find_file (filename + '.afm')
 	
-	
+	if afmfile:
+		afmfile = os.path.abspath (afmfile)
+		afm_struct = afm.read_afm_file (afmfile)
+		fi.update (afm_struct.__dict__)
+
 	return fi
 
 tfmfile = ''
@@ -975,32 +977,6 @@ if not files:
 	sys.exit(2)
 
 
-class Font_info:
-	def set_defaults (self, name):
-		self.FontName = name
-		self.FullName = name
-		self.EncodingScheme = 'AdobeStandard'
-
-		# FontName is usually: <FamilyName>-<Weight>;
-		# if possible, split off last section.
-		s = string.join (string.split (name, '-')[:-1], '-')
-		if s:
-			self.FamilyName = s
-		else:
-			self.FamilyName = name
-
-		self.Weight = 'Regular'
-	
-	def __init__ (self, x):
-		if type (x) == type ("hallo"):
-			self.set_defaults (x)
-		elif type (x) == type ({}):
-			self.set_defaults (x['FontName'])
-			for k in x.keys ():
-				self.__dict__[k] = x[k]
-
-	def __getitem__ (self, key):
-		return self.__dict__[key]
 
 for filename in files:
 	encoding_file = encoding_file_override

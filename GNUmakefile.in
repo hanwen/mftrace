@@ -72,9 +72,9 @@ clean:
 	rm -f *'~' '#'*
 
 
-TEST_FONTS=ecbi0900
+TEST_FONTS=parmesan20 ecbi0900 logo10
 test:
-	$(foreach a, $(TEST_FONTS), mftrace -V $(a) &&) && true
+	$(foreach a, $(TEST_FONTS), $(PYTHON) mftrace.py --glyphs 65 -V $(a) &&)true
 
 udist:  README.html
 	autoconf
