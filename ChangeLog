@@ -1,8 +1,15 @@
+2004-03-08  Werner Lemberg  <wl@gnu.org>
+
+	* mftrace.py: Preserve all PBM and EPS files if keep_temp_dir_p is
+	set.
+
+	* mftrace.1: Updated and revised.
+	
 2004-03-08  Han-Wen Nienhuys   <hanwen@xs4all.nl>
 
 	* mftrace.py (check_pfaedit_scripting): fontforge detection
 	bugfix.
-sg
+
 2004-03-07  Han-Wen Nienhuys   <hanwen@xs4all.nl>
 
 	* mftrace.py (coding_dict): add tetex encodings. 
