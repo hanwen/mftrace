@@ -1,3 +1,13 @@
+2004-11-19  Han-Wen Nienhuys  <hanwen@xs4all.nl>
+
+	* configure.in (PYTHON): release .35 
+
+	* mftrace.py (abs_path): use lexmarks 1200dpi; ljfour is not
+	neutral
+	(cleanup_font): RoundToInt() only if round_to_int is set 
+	(autotrace_path_to_type1_ops): subtract inv_scale iso. 1. (Andrey
+	V. Panov).
+
 2004-11-06  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
 	* mftrace.py (stat): rewrite redirection.

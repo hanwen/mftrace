@@ -467,7 +467,7 @@ def autotrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 		}
 
 	cx = 0
-	cy = size_y - off_y -1
+	cy = size_y - off_y - inv_scale
 
 	# t1asm seems to fuck up when using sbw. Oh well.
 	t1_outline =  '  %d %d hsbw\n' % (- off_x, tfm_wid)
@@ -824,17 +824,19 @@ def cleanup_font (file):
 	shutil.copy2 (file, "before-pfaedit.pfx")
 
 	progress (_ ("Simplifying font... "))
-
+	round_cmd = ''
+	if round_to_int :
+		round_cmd = 'RoundToInt();\n'
 	open ('simplify.pe', 'w').write ('''#!/usr/bin/env %s
 Open ($1);
 MergeKern($2);
 SelectAll ();
 Simplify ();
 AutoHint ();
-RoundToInt();
+%s
 Generate ("%s");
 Quit (0);
-''' % (fontforge_cmd, file))
+''' % (fontforge_cmd, round_cmd, file))
 	system ("%s -script simplify.pe %s %s" % (fontforge_cmd, file, tfmfile))
 	progress ('\n')
 
@@ -855,10 +857,10 @@ MergeKern($2);
 SelectAll ();
 Simplify ();
 AutoHint ();
-RoundToInt();
+%s
 Generate ("%s");
 Quit (0);
-''' % (fontforge_cmd, filename + '.ttf'))
+''' % (fontforge_cmd, round_to_int, filename + '.ttf'))
 
 	system ("%s -script to-ttf.pe %s %s" % (fontforge_cmd,
 						(filename + '.pfx'), tfmfile))
@@ -874,7 +876,7 @@ def gen_pixel_font (filename, metric, magnification):
 	Generate a GF file for FILENAME, such that `magnification'*mfscale
 	(default 1000 * 1.0) pixels fit on the designsize.
 	"""
-	base_dpi = 600
+	base_dpi = 1200
 
 	size = metric.design_size
 
@@ -915,7 +917,7 @@ def gen_pixel_font (filename, metric, magnification):
 
 		progress (_ ("Running Metafont..."))
 
-		cmdstr = r"mf '\mode:=ljfour; mag:=%f; nonstopmode; input %s'" %  (mag, filename)
+		cmdstr = r"mf '\mode:=lexmarks; mag:=%f; nonstopmode; input %s'" %  (mag, filename)
 		if not verbose_p:
 			cmdstr = cmdstr + ' 1>/dev/null 2>/dev/null'
 		st = system (cmdstr, ignore_error = 1)
