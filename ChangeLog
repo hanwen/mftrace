@@ -1,3 +1,12 @@
+2004-06-11  Han-Wen Nienhuys   <hanwen@xs4all.nl>
+
+	* configure.in (PYTHON): release .33
+
+2004-06-11  Andrey V. Panov  <panov@canopus.iacp.dvo.ru>
+
+	* mftrace.py (autotrace_path_to_type1_ops, potrace_path_to_type1_ops): denominator for
+	coordinates is divided by inv_scale. This fixes rounding errors.
+
 2004-06-04  Andrey V. Panov  <panov@canopus.iacp.dvo.ru>
 
 	* mftrace.py: add possibility to pass options to a backend program and not to round 

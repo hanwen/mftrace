@@ -43,7 +43,7 @@ fontforge_cmd = 'fontforge'
 # You can take this higher, but then rounding errors will have
 # nasty side effects.
 # Used as reciprocal grid size
-potrace_scale = 1
+potrace_scale = 1.0
 round_to_int = 1
 
 magnification = 1000.0
@@ -499,7 +499,7 @@ def autotrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 		if round_to_int:
 			a = map (lambda x: '%d' % int (round (x)),  unzip_pairs (a))
 		else :
-			a = map (lambda x: '%d %d div' % (int (round (x * potrace_scale)), potrace_scale),  unzip_pairs (a))
+			a = map (lambda x: '%d %d div' % (int (round (x * potrace_scale/inv_scale)), int( round (potrace_scale/inv_scale))),  unzip_pairs (a))
 
 		t1_outline = t1_outline + '  %s %s\n' % (string.join (a),c)
 
@@ -548,7 +548,7 @@ def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 	# Type1 fonts have relative coordinates (doubly relative for
 	# rrcurveto), so must convert moveto and rcurveto.
 
-	z = (0,  size_y - off_y -1)
+	z = (0.0,  size_y - off_y - 1.0)
 	nc = []
 	for (c, args) in commands:
 		args = map (lambda x: (x[0] * (1.0  / potrace_scale), x[1] * (1.0/potrace_scale)), args)
@@ -590,7 +590,7 @@ def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 		if round_to_int:
 			args = map (lambda x: '%d' % int (round (x)),  unzip_pairs (args))
 		else :
-			args = map (lambda x: '%d %d div' % (int (round (x * potrace_scale)), potrace_scale),  unzip_pairs (args))
+			args = map (lambda x: '%d %d div' % (int (round (x * potrace_scale/inv_scale)), int( round (potrace_scale/inv_scale))),  unzip_pairs (args))
 
 		t1_outline = t1_outline + '  %s %s\n' % (string.join (args),c)
 
@@ -1083,7 +1083,7 @@ for (o,a) in options:
 	elif o == '--noround' :
 		round_to_int = 0
 	elif o == '--grid' :
-		potrace_scale = string.atof(a)
+		potrace_scale = round (string.atof(a))
 	else:
 		raise 'Ugh -- forgot to implement option %s. :)' % o
 
