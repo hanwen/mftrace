@@ -152,8 +152,9 @@ show warranty and copyright
 
 Mftrace tries to fill in sensible values for the FontFamily, FullName
 and Weight fields. It does so by guessing values for the CM font
-series. For other fonts, it tries to read an AFM file. Suggestions for
-a more generic way to handle this are welcome. 
+series. For other fonts, it tries to read an AFM file (which is not
+likely to exist). Suggestions for a more generic way to handle this
+are welcome.
 
 
 @section Discussion
