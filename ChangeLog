@@ -1,3 +1,7 @@
+2004-07-13  Jan Nieuwenhuizen  <janneke@gnu.org>
+
+	* mftrace (abs_path): Remove debugging code.
+
 2004-07-08  Jan Nieuwenhuizen  <janneke@gnu.org>
 
 	* mftrace.py (stat): Add cwd to include path before (ugh?)
