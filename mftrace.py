@@ -33,7 +33,6 @@ dos_kpath_p = 0
 keep_trying_p = 0
 backend_options = ''
 formats = []
-fontforge_cmd = 'fontforge'
 read_afm_p = 1
 
 # You can take this higher, but then rounding errors will have
@@ -785,31 +784,34 @@ def get_binary (name):
 
 	return ''
 
-def check_pfaedit_scripting ():
-	global fontforge_cmd
+def get_fontforge_command ():
+	fontforge_cmd = ''
 	for ff in ['fontforge', 'pfaedit']:
 		if get_binary(ff):
 			fontforge_cmd = ff
-	
-	stat = system ("%s -usage > pfv 2>&1 " % fontforge_cmd,
-		       ignore_error = 1)
+
+	stat = 1
+	if fontforge_cmd:
+		stat = system ("%s -usage > pfv 2>&1 " % fontforge_cmd,
+			       ignore_error = 1)
 
 	if stat != 0:
 		warning ("Command `%s -usage' failed.  Cannot simplify or convert to TTF.\n" % fontforge_cmd)
-		return 0
+		return ''
 
 	if fontforge_cmd == 'pfaedit' \
 	   and re.search ("-script", open ('pfv').read ()) == None:
 		warning ("pfaedit does not support -script.  Install 020215 or later.\nCannot simplify or convert to TTF.\n")
-		return 0
-	return 1
+		return ''
+	return fontforge_cmd
 
 def make_outputs (fontname, formats):
 	"""
 	run pfaedit to convert to other formats
 	"""
 
-	if not check_pfaedit_scripting ():
+	ff_command = get_fontforge_command ()
+	if not ff_command:
 		shutil.copy2 (fontname + '.pfa.raw',
 			      fontname + '.pfa')
 		return 0
@@ -822,7 +824,6 @@ def make_outputs (fontname, formats):
 	for f in formats:
 		generate_cmds += 'Generate("%s");' % (filename  + '.' + f)
 
-	fontforge_bin = fontforge_cmd
 	simplify_cmd = ''
 	if simplify_p:
 		simplify_cmd ='''SelectAll ();
@@ -831,7 +832,7 @@ AddExtrema();
 Simplify ();
 AutoHint ();'''
 
-	open ('to-ttf.pe', 'w').write ('''#!/usr/bin/env %(fontforge_bin)s
+	open ('to-ttf.pe', 'w').write ('''#!/usr/bin/env %(ff_command)s
 Open ($1);
 MergeKern($2);
 %(round_cmd)s
@@ -840,7 +841,7 @@ MergeKern($2);
 Quit (0);
 ''' % vars())
 
-	system ("%s -script to-ttf.pe %s %s" % (fontforge_cmd,
+	system ("%s -script to-ttf.pe %s %s" % (ff_command,
 						(filename + '.pfa.raw'), tfmfile))
 
 def getenv (var, default):

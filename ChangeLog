@@ -1,5 +1,9 @@
 2005-03-05  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
+	* mftrace.py (check_pfaedit_scripting): whoops, only call
+	fontforge_cmd if nonnull. 
+	(get_fontforge_command): change calling convention: return binary name.
+
 	* configure.in (PYTHON): release 1.1.3
 
 	* mftrace.py (make_outputs): copy if fontforge nonexistent
