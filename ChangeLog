@@ -1,0 +1,165 @@
+Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* mftrace.py (gen_pixel_font): show error log if MetaFont failed.
+
+2002-10-18  Jan Nieuwenhuizen  <janneke@gnu.org>
+
+	* mftrace.py (popen, system): Fix for verbose output.
+	(Font_info.set_defaults): Add EncodingScheme.
+
+2002-10-16  Jan Nieuwenhuizen  <janneke@gnu.org>
+
+	* mftrace.py: Use afm to set more sensible font names.  Allow
+	generating multiple fonts from one trace.
+
+	* GNUmakefile.in: Add afm.py.
+
+	* afm.py: New file.
+
+2002-10-10  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* mftrace.spec.in (Prereq): use %{_mandir}.
+
+	* mftrace.py: don't overwrite encoding file for
+	every next file.
+
+2002-08-21  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* mftrace.py: take multiple arguments.
+
+2002-08-20  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* mftrace.py (option_definitions): Patch by Jesse Pavel
+	<jpavel@alum.mit.edu>: don't change bbox or font-matrix for
+	--magnification
+
+
+2002-08-08  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* mftrace.py (make_ttf): add TrueType conversion.
+	(func): add miktex kpathsea support.
+
+	* configure.in: Change name to mftrace.
+
+2002-04-10  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* pktrace.py: add magnification so yinit can be traced.
+	(do_autotrace_one): stop if autotrace is interupted with ^C.
+
+2002-03-24  Han-Wen  <hanwen@cs.uu.nl>
+
+	* pktrace.py (find_file): add -I, --include option for files.
+	Make one function for finding files. 
+
+	* Add feta-music encoding.
+
+2002-03-19  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* pktrace.py (cleanup_font): More verbose pfaedit reporting.
+
+	* Change version to 1.0
+
+	* Machinery to guess .enc file from TFM coding string.
+
+	* Doco updates
+
+	* pktrace.spec: RedHat .spec
+
+	* Include working dir into path
+
+	* Allow variable size encodings
+
+	* Man page (Thanks julian)
+
+	* gf2pbm.c: Fix on other-endian (PPC)  machines (Thanks Jan).
+
+	* Support pfaedit -script to simplify and hint font;
+	turned off for now, since pfaedit is not reliable enough yet.
+
+	* Oops. Produce font also  when --verbose is off
+
+	* --glyphs option
+
+	* Even better autotrace bugreporting 
+
+	* Make clean removes tfm.pyc
+
+	* Capture mktextfm output for font location 
+
+	* Don't create NUMBER.pbm when gf2pbm is run with -s 
+
+	* `test' makefile target
+
+	* Handle autotrace fails better, and add --keep-trying option
+
+	* Output PFA by default  
+
+	* Fix -e option
+
+	* Escape fontname in regexp.
+
+	* Run kpsewhich on encoding argument. 
+
+	* Fix permissions on temporary directory.
+
+	* Test output on GhostScript and PostScript printer too (only
+	tried pfaedit before)
+
+	* Fix FontBBox calculation
+
+	* Don't crash on (nearly) empty glyphs
+
+	* Install .pyc  as well.
+
+	* Fix t1asm warning.
+
+
+Release 0.6
+
+	* type1fix.pl: remove. Dump perl dependency.
+
+	* gf2pbm.c: use to dump the bitmap info. Dump pktype dependency. 
+
+	* trace2.ps: removed.  Dump the Ghostscript dependency. 
+
+	* call mktextfm if no TFM found.
+
+	* Big/Little endian fixes. Now gf2pbm works on PowerPC as well.
+
+Release 0.4
+
+	* gf2pbm.c: hack to have robust bitmap extraction.
+
+	* Uninstall target
+
+	* -p bugfix
+
+	* texinfo Readme.
+
+Release 0.3
+
+	* tfm.py: a Python interface to the TeX TFM file format.
+
+	* Use TFM widths for the bounding box. Bugfix for the
+	Y-coordinates of the bbox.
+
+
+Release 0.2
+
+	* Don't read/write dimension file.
+
+	* Read encoding file into python, and only once. This
+reduces tracing time. 
+
+	* For non-existant glyphs, write fake Char String directly.
+
+Release 0.1
+
+	* --pfa option
+
+	* --encoding option
+
+	* Fold t1d2gsx into pktrace.
+
+
+

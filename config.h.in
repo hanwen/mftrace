@@ -1,0 +1,4 @@
+/* @AUTOGENERATE@ */
+
+/* define if you have bigendian words */
+#undef WORDS_BIGENDIAN

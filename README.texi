@@ -1,0 +1,248 @@
+\input texinfo @c -*-texinfo-*-
+@setfilename README.info
+@settitle  mftrace - Scalable Fonts for MetaFont
+@node Top, , , 
+@top
+
+@chapter mftrace - Scalable PostScript Fonts for MetaFont
+
+@section Introduction
+
+@code{mftrace} is a small Python program that lets you trace a @TeX{}
+bitmap font into a PFA or PFB font (A PostScript Type1 Scalable Font)
+or TTF (TrueType) font.  It is licensed under the GNU GPL.
+
+Scalable fonts offer many advantages over bitmaps, as they allow
+documents to render correctly at many printer resolutions. Moreover,
+Ghostscript can generate much better PDF, if given scalable PostScript
+fonts.   
+
+Versions prior to 1.0.5 were called `pktrace'.
+
+@section Download
+
+@itemize @bullet
+@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/mftrace-1.0.10.tar.gz}
+@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/pktrace-1.0.4.tar.gz}
+@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/pktrace-0.5.tar.gz}
+@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/pktrace-0.4.tar.gz}
+@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/pktrace-0.3.tar.gz}
+@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/pktrace-0.2.tar.gz}
+@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/pktrace-0.1.tar.gz}
+@end itemize
+
+
+
+@section Required
+
+@file{mftrace} is a thin Python wrapper around some other programs that
+do the real work: Autotrace and t1asm.  To run mftrace you need:
+@itemize @bullet
+@item Autotrace -- see @uref{http://autotrace.sourceforge.net}.
+  Version 0.30 is recommended, earlier versions contain crucial bugs.
+@item Python--1.5 or later. See @uref{http://www.python.org/}
+@item t1utils. See @uref{http://www.lcdf.org/~eddietwo/type/}
+@item  TeX--your tex installation should include
+@itemize @bullet
+  @item  kpsewhich,
+  @item  MetaFont
+@end itemize
+@end itemize
+
+@section Recommended
+
+A recent version (020215 or newer) of
+@uref{http://pfaedit.sourceforge.net,pfaedit} is recommended. If it is
+present, then mftrace will run the font through pfaedit to simplify and
+autohint it.
+
+@section Red Hat
+
+A RPM may be built by issuing
+
+@example
+
+        rpm -tb mftrace-@var{version}.tar.gz
+
+@end example
+
+@section Debian GNU/Linux
+
+Users of Debian unstable (and Debian 3.0 when it is released) can
+install all requirements by running (as root):
+@example
+
+    apt-get install mftrace
+
+@end example
+If you wish to also install the pfaedit package to simplify and
+autohint the font, then run the command
+@example
+
+    apt-get install pfaedit
+
+@end example
+
+
+@section Install
+
+Install the prerequite packages. Then run
+@example
+
+    ./configure
+    make install
+
+@end example
+in the mftrace directory. Run as follows:
+@example
+
+mftrace cmr10
+
+@end example
+
+@section Invoking mftrace.
+
+Command line options:
+@table @code
+@item -a,--pfa    
+ Generate PFA file (Default)
+@item -b, --pfb
+ Generate a PFB file
+@item -e,--encoding=ENC   
+ Use encoding file ENC
+@item --glyphs=LIST
+  Only process glyphs in LIST, which is a  comma-delimited  list of
+  decimal numbers.
+@item -h,--help 
+ help on options.
+@item -k,--keep 
+ Retain all temporary files in the directory @file{mftrace.dir/}. This
+ is useful for debugging problems.
+@item --keep-trying
+Try to continue if autotrace fails: first try it with a less smoothed
+curve, and if that fails, skip the character.
+
+ By default mftrace outputs @file{autotrace-bug-FONTNAME-NUMBER.pbm} and
+stops the process with a request to file a bugreport.
+@item --magnification
+The magnification to use for the PFA file. The default is 1000. The
+larger the more precise the PFA file will be. However, when
+magnification is too large METAFONT can crash with overflow errors.
+@item -o,--output-base=FILE
+ Output to FILE.pfa or FILE.pfb.
+@item --simplify
+ Pass the font through PfaEdit for automatic  simplification and hinting.
+@item --tfmfile=FILE   
+ Use @var{file} for the TFM file.  This file is needed to determine at
+ what resolution to run MetaFont.
+@item -t,--truetype
+ Generate a TrueType file (requires pfaedit).
+@item  -V,--verbose 
+ Be verbose: print all commands as they are invoked. This is useful
+ for debugging.
+@item -v,--version 
+ Print version number
+@item --dos-kpath
+ Try to kludge up the paths coming from MikTeX for a cygwin
+environment. If this doesn't work, specify @code{--tfmfile} and
+@code{--encoding} manually.
+@item -w,--warranty  
+show warranty and copyright
+@end table
+
+@section Discussion
+
+Why use @code{mftrace} over
+@uref{http://textrace.sourceforge.net,textrace}?  Textrace and mftrace
+are functionally similar. However, mftrace is quicker, more cleanly
+written and can be installed using standard methods. Additionally,
+textrace requires perl, ghostscript and dvips.
+
+How about @uref{http://www.truetex.com,MetaFog}? MetaFog operates
+directly on the curves that generate the bitmap font, its outlines will
+probably be smaller and better. However, MetaFog is a proprietary
+product: its source code is not available, and it will only run on a
+limited number of platforms.
+
+How about @uref{ftp://bop.eps.gda.pl/pub/metatype1/,MetaType1}?
+MetaType1 is a very simplistic approach that puts severe constraints on
+what may be done in a font program. It does not work for fonts
+containing overlaps and shaped pens.
+
+How about @uref{http://metatype.sourceforge.net/,MetaType}?  MetaType
+is similar in design to mftrace. However, metatype aims at producing
+only TrueType.  Operating MetaType requires more additional
+packages. (Note: Yours Truly did not look further into MetaType)
+
+
+@section Bugs and todo
+
+@itemize
+@item Inverse name mapping:  convert cmr10 to Computer-Modern-Roman-10
+@item Submit @file{tfm.py} to www.python.org. @file{tfm.py}  is a python
+  module to parse Tex Font Metric file.
+@item Convert TFM to AFM as well. 
+
+
+AFM is an ascii format, so writing it to disk not difficult. TFM is
+binary, but tfm.py provides tfm read functionality. To do this, the
+read functionality of tfm.py should be expanded a little, and the rest
+is trivial. I'm too busy to do this, but of course I gladly accept
+patches!
+
+@end itemize 
+
+Should you encounter bugs, then please send a bugreport to
+@email{hanwen@@cs.uu.nl,Han-Wen Nienhuys}.  
+
+@section Author
+
+@email{hanwen@@cs.uu.nl,Han-Wen Nienhuys}
+
+
+@section Credits
+
+The biggest credits go out to Martin Weber, who wrote AutoTrace and
+@email{gww@@silcom.com,George Williams}, who wrote pfaedit.
+
+The package also contains gf2pbm, a utility to convert a MetaFont GF
+file to a PBM file. Its source code was based on Paul Vojta's Xdvi
+program. The license notice is reproduced here:
+
+@quotation
+Copyright (c) 1990-1999  Paul Vojta
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+PAUL VOJTA BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+@end quotation
+
+Thanks to @uref{http://www.maths.qmul.ac.uk/~jdg/,Julian Gilbey} for
+finding many bugs.
+
+
+@section See also
+
+@itemize @bullet
+@item @uref{http://partners.adobe.com/asn/developer/pdfs/tn/T1Format.pdf,Type1
+font specification} 
+@item @uref{http://partners.adobe.com/asn/developer/pdfs/tn/5015.Type1_Supp.pdf,Supplement
+to the Type1 specification}.
+@end itemize
+
+@bye
+
+

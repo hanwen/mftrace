@@ -1,0 +1,84 @@
+
+
+PY_MODULES= afm.py tfm.py
+PYC_MODULES = $(PY_MODULES:%=%c)
+FILES= mftrace.py GNUmakefile.in \
+	gf2pbm.c mftrace.1 \
+	README.texi README.txt ChangeLog \
+	mftrace.spec.in 	mftrace.spec \
+	$(PY_MODULES) configure configure.in config.h.in
+
+
+NAME=mftrace
+VERSION=@VERSION@
+distdir=$(NAME)-$(VERSION)
+prefix=@prefix@
+datadir=@datadir@/mftrace/
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+mandir=@mandir@
+PYTHON=@PYTHON@
+
+all: compile
+
+compile: mftrace gf2pbm
+
+gf2pbm: gf2pbm.c
+	gcc -O2 -Wall -o $@ $<
+
+README.txt: README.texi
+	makeinfo --no-split --no-headers --output $@  $<
+
+README.html: README.texi
+	makeinfo --html --no-split --no-headers --output $@  $<
+
+dist: $(FILES)
+	mkdir $(distdir)
+	ln $(FILES) $(distdir)
+	tar --owner=0 --group=0  -zcf $(distdir).tar.gz $(distdir)
+	rm -rf $(distdir)
+
+mftrace: mftrace.py
+	./config.status
+
+configure: configure.in
+	autoconf
+	./config.status
+
+GNUmakefile: GNUmakefile.in
+	./config.status
+	chmod a-w GNUmakefile
+
+%.pyc: %.py
+	$(PYTHON) -c 'import py_compile; py_compile.compile ("$<")'
+
+install: mftrace gf2pbm $(PYC_MODULES)
+	mkdir -p $(bindir) $(mandir)/man1
+	install -m 755 mftrace $(bindir)
+	install -m 755 gf2pbm $(bindir)
+	mkdir -p $(datadir)
+	install -m 644 mftrace.1 $(mandir)/man1/
+	install -m 644 $(PY_MODULES) $(PYC_MODULES) $(datadir)
+
+uninstall:
+	rm $(bindir)/mftrace $(bindir)/gf2pbm
+	cd $(datadir) && rm $(PY_MODULES)
+	-rmdir $(bindir) $(datadir)
+	-rmdir $(prefix) $(exec_prefix)
+
+clean:
+	rm -f config.cache config.h config.log config.status GNUmakefile
+	rm -f mftrace gf2pbm $(PYC_MODULES)
+	rm -f *'~' '#'*
+
+
+TEST_FONTS=ecbi0900
+test:
+	$(foreach a, $(TEST_FONTS), mftrace -V $(a) &&) && true
+
+udist:  README.html
+	autoconf
+	./configure --prefix=$(HOME)/usr/pkg/mftrace
+	make dist
+	cp $(distdir).tar.gz $(HOME)/pub-www/mftrace/
+	mv $< $(HOME)/pub-www/mftrace/index.html
