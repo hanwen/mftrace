@@ -68,7 +68,7 @@ coding_dict = {
 	'Extended TeX Font Encoding - Latin': 'tex256.enc',
 
 	# LilyPond.
-	'fetaBraces': 'feta-braces0.enc',
+	'fetaBraces': 'feta-braces-a.enc',
 	'fetaNumber': 'feta-nummer10.enc',
 	'fetaMusic': 'feta20.enc',
 	'parmesanMusic': 'parmesan20.enc',
@@ -831,6 +831,7 @@ MergeKern($2);
 SelectAll ();
 Simplify ();
 AutoHint ();
+RoundToInt();
 Generate ("%s");
 Quit (0);
 ''' % (fontforge_cmd, file))
@@ -854,6 +855,7 @@ MergeKern($2);
 SelectAll ();
 Simplify ();
 AutoHint ();
+RoundToInt();
 Generate ("%s");
 Quit (0);
 ''' % (fontforge_cmd, filename + '.ttf'))
