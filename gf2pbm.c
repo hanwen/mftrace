@@ -389,8 +389,8 @@ read_GF_char(struct font *fontp, wide_ubyte ch)
 		case SKIP1:
 		case SKIP2:
 		case SKIP3:
-		    *((char **) &basep) +=
-			num(GF_file, WIDENINT cmnd - SKIP0) * bytes_wide;
+		  *((char **) &basep) +=
+		    num(GF_file, WIDENINT cmnd - SKIP0) * bytes_wide;
 		case SKIP0:
 		    new_row = true;
 		    paint_switch = White;
@@ -411,9 +411,11 @@ read_GF_char(struct font *fontp, wide_ubyte ch)
 		    fprintf(stderr, "Bad command in GF file:  %d", cmnd);
 	    } /* end switch */
 	    if (new_row) {
-		*((char **) &basep) += bytes_wide;
-		if (basep >= maxp || cp >= basep) too_many_bits(ch);
-		cp = basep;
+
+	      *((char **) &basep) +=
+		bytes_wide;
+	      if (basep >= maxp || cp >= basep) too_many_bits(ch);
+		 cp = basep;
 		word_weight = BMBITS;
 		new_row = false;
 	    }

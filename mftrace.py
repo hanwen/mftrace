@@ -9,10 +9,10 @@ import tempfile
 import shutil
 
 prefix = '@prefix@'
-exec_prefix = '@exec_prefix@'
+bindir = '@bindir@'
 datadir = '@datadir@'
 libdir = '@libdir@'
-
+exec_prefix = '@exec_prefix@'
 
 def interpolate (str):
 	str = string.replace (str, '{', '(')
@@ -22,6 +22,7 @@ def interpolate (str):
 
 if prefix != '@' + 'prefix@':
 	exec_prefix = interpolate (exec_prefix) % vars ()
+	bindir = interpolate (bindir) % vars ()
 	datadir = os.path.join (interpolate (datadir) % vars (), 'mftrace')
 	libdir = interpolate (libdir) % vars ()
 
@@ -381,7 +382,7 @@ def make_pbm (filename, outname, char_number):
 	Return FALSE if the glyph is not valid.
 	"""
 
-	command = "%s/gf2pbm -n %d -o %s %s" % (exec_prefix, char_number, outname, filename)
+	command = "%s/gf2pbm -n %d -o %s %s" % (bindir, char_number, outname, filename)
 	status = system (command, ignore_error = 1)
 
 	return (status == 0)
@@ -595,7 +596,7 @@ def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 	return (bbox, t1_outline)
 
 def read_gf_dims (name, c):
-	str = popen ('%s/gf2pbm -n %d -s %s' % (exec_prefix, c, name)).read ()
+	str = popen ('%s/gf2pbm -n %d -s %s' % (bindir, c, name)).read ()
 	m = re.search ('size: ([0-9]+)+x([0-9]+), offset: \(([0-9-]+),([0-9-]+)\)', str)
 
 	return tuple (map (string.atoi, m.groups ()))
