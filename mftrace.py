@@ -871,6 +871,7 @@ This should be tailored for each metafont font set.
 			weight = v
 			filename = re.sub (k, '', filename)
 
+	fontinfo['ItalicAngle'] = 0
 	if re.search ('[Ii]talic', shape) or re.search ('[Oo]blique', shape):
 		a = 14
 		if re.search ("Sans", family):
@@ -901,7 +902,9 @@ def guess_fontinfo (filename):
 	fi = { 'FontName' : filename,
 	       'FamilyName'  : filename,
 	       "Weight" : 'regular',
+	       "ItalicAngle" : 0,
 	       'FullName' : filename}
+	
 	
 	return fi
 
