@@ -32,6 +32,7 @@ simplify_p = 0
 verbose_p = 0
 pfa_p = 0
 pfb_p = 0
+afm_p = 0
 dos_kpath_p = 0
 ttf_p = 0
 keep_trying_p = 0
@@ -259,6 +260,7 @@ option_definitions = [
 	('', 'V', 'verbose', _ ("Verbose")),
 	('', 'v', 'version', _ ("Print version number")),
 	('', 'a', 'pfa', _ ("Generate PFA file (default)")),
+	('','', 'afm',  _("Generate AFM file (implies --simplify)")),
 	('', 'b', 'pfb', _ ("Generate PFB file")),
 	('', '', 'simplify', _("Simplify using pfaedit")),
 	('DIR', 'I', 'include', _("Add to path for searching files")),	
@@ -630,7 +632,7 @@ cleartomark
 		'FontName': '%s' % fontinfo['FontName'],
 		'VVV': '001',
 		'WWW': '001',
-		'Notice': 'Generated from MetaFont bitmap by mftrace, http://www.cs.uu.nl/~hanwen/mftrace/ ',
+		'Notice': 'Generated from MetaFont bitmap by mftrace %s, http://www.cs.uu.nl/~hanwen/mftrace/ ' % program_version,
 		'FullName': '%s' % fontinfo['FullName'],
 		'FamilyName': '%s' % fontinfo['FamilyName'],
 		'Weight': '%s' % fontinfo['Weight'],
@@ -663,7 +665,7 @@ cleartomark
 	else:
 		outname = fontname + '.pfb'
 		
-	progress (_ ("Assembling font (%s)... ") % outname)
+	progress (_ ("Assembling font to `%s'... ") % outname)
 	system ('t1asm %s mftrace.t1asm %s' % (opt, outname))
 	progress ('\n')
 	
@@ -707,17 +709,18 @@ def cleanup_font (file):
 	# not used?
 	shutil.copy2 (file, "before-pfaedit.pfx")
 	
-	progress (_ ("Simplifying font (%s)... ") % file)
+	progress (_ ("Simplifying font... "))
 	
 	open ('simplify.pe', 'w').write ('''#!/usr/bin/env pfaedit
 Open ($1);
+MergeKern($2);
 SelectAll ();
 Simplify ();
 AutoHint ();
 Generate ("%s");
 Quit (0);
 ''' % file)
-	system ("pfaedit -script simplify.pe %s" % file)
+	system ("pfaedit -script simplify.pe %s %s" % (file, tfmfile))
 	progress ('\n')
 
 def make_ttf (fontname):
@@ -733,6 +736,7 @@ def make_ttf (fontname):
 	
 	open ('to-ttf.pe', 'w').write ('''#!/usr/bin/env pfaedit
 Open ($1);
+MergeKern($2);
 SelectAll ();
 Simplify ();
 AutoHint ();
@@ -740,7 +744,7 @@ Generate ("%s");
 Quit (0);
 ''' % (filename + '.ttf'))
 	
-	system ("pfaedit -script to-ttf.pe %s" % (filename + '.pfx'))
+	system ("pfaedit -script to-ttf.pe %s %s" % ((filename + '.pfx'), tfmfile))
 	
 
 def getenv (var, default):
@@ -859,6 +863,10 @@ for (o,a) in options:
 		simplify_p = 1
 	elif o == '--magnification':
 		magnification = string.atof(a)
+	elif o == '--afm':
+		afm_p = 1
+		simplify_p = 1
+		
 	else:
 		raise 'Ugh -- forgot to implement option %s. :)' % o
 
@@ -906,7 +914,7 @@ for filename in files:
 	encoding_file = encoding_file_override
 
 	basename = strip_extension(filename, '.mf')
-	progress (_ ("Font (%s)..." % basename))
+	progress (_ ("Font `%s'..." % basename))
 	progress ('\n')
 	
 	if not tfmfile:
@@ -968,6 +976,10 @@ for filename in files:
 		if simplify_p:
 			cleanup_font (basename + '.pfb')
 		shutil.copy2 (basename + '.pfb', origdir)
+
+
+	if afm_p and simplify_p:
+		shutil.copy2 (basename + '.afm', origdir)
 		
 	if ttf_p:
 		if simplify_p:

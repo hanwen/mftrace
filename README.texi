@@ -22,15 +22,11 @@ Versions prior to 1.0.5 were called `pktrace'.
 @section Download
 
 @itemize @bullet
-@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/mftrace-1.0.10.tar.gz}
-@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/pktrace-1.0.4.tar.gz}
-@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/pktrace-0.5.tar.gz}
-@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/pktrace-0.4.tar.gz}
-@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/pktrace-0.3.tar.gz}
-@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/pktrace-0.2.tar.gz}
-@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/pktrace-0.1.tar.gz}
+@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/mftrace-1.0.12.tar.gz}
+@item Anonymous CVS at 
+@code{anoncvs@@subversions.gnu.org:/cvsroot/lilypond}, module
+@code{mftrace}.
 @end itemize
-
 
 
 @section Required
@@ -104,6 +100,8 @@ mftrace cmr10
 
 Command line options:
 @table @code
+@item --afm
+ Generate an AFM file from the TFM file. Implies @code{--simplify}.
 @item -a,--pfa    
  Generate PFA file (Default)
 @item -b, --pfb
@@ -181,15 +179,6 @@ packages. (Note: Yours Truly did not look further into MetaType)
 @item Inverse name mapping:  convert cmr10 to Computer-Modern-Roman-10
 @item Submit @file{tfm.py} to www.python.org. @file{tfm.py}  is a python
   module to parse Tex Font Metric file.
-@item Convert TFM to AFM as well. 
-
-
-AFM is an ascii format, so writing it to disk not difficult. TFM is
-binary, but tfm.py provides tfm read functionality. To do this, the
-read functionality of tfm.py should be expanded a little, and the rest
-is trivial. I'm too busy to do this, but of course I gladly accept
-patches!
-
 @end itemize 
 
 Should you encounter bugs, then please send a bugreport to

@@ -1,3 +1,12 @@
+2002-11-19  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* mftrace.py (to_type1): add version to comment.
+
+2002-11-19  Ralf Stubner <ralf.stubner@physik.uni-erlangen.de>
+
+	* mftrace.py: tell pfaedit to use the kerning data from the TFM
+	file and save the produced AFM file.
+	
 2002-11-16  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
 
 	* mftrace.py (coding_dict): add parmesan encoding.
