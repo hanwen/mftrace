@@ -635,10 +635,10 @@ cleartomark
 		'VVV': '001',
 		'WWW': '001',
 		'Notice': 'Generated from MetaFont bitmap by mftrace %s, http://www.cs.uu.nl/~hanwen/mftrace/ ' % program_version,
-		'FullName': '%s' % fontinfo['FullName'],
-		'FamilyName': '%s' % fontinfo['FamilyName'],
-		'Weight': '%s' % fontinfo['Weight'],
-		'ItalicAngle': '0',
+		'FullName': fontinfo['FullName'],
+		'FamilyName': fontinfo['FamilyName'],
+		'Weight': fontinfo['Weight'],
+		'ItalicAngle': fontinfo['ItalicAngle'],
 		'isFixedPitch': 'false',
 		'UnderlinePosition': '-100',
 		'UnderlineThickness': '50',
@@ -854,7 +854,8 @@ This should be tailored for each metafont font set.
 		    ("sl", "Oblique"),
 		    ("csc", "Small caps"),
 		    ("ex", "Math extension"),
-		    ("ti", "Text italic")]
+		    ("ti", "Text italic"),
+		    ("i", "Italic")]
 	shape = '' 
  	for (k,v) in prefixes:
 		if re.search (k, filename):
@@ -870,7 +871,7 @@ This should be tailored for each metafont font set.
 			weight = v
 			filename = re.sub (k, '', filename)
 
-	if re.search ('italic', shape) or re.search ('Oblique', shape):
+	if re.search ('[Ii]talic', shape) or re.search ('[Oo]blique', shape):
 		a = 14
 		if re.search ("Sans", family):
 			a = 12
