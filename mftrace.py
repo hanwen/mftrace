@@ -571,6 +571,9 @@ def ps_encode_encoding (encoding):
 	return str
 	
  
+def gen_unique_id (dict):
+	nm ='FullName'
+	return 4000000 + (hash (nm) % 1000000)
 
 def to_type1 (outlines, bbox, fontname, encoding, magnification, pfa):
 	"""
@@ -591,7 +594,6 @@ def to_type1 (outlines, bbox, fontname, encoding, magnification, pfa):
 /UnderlineThickness %(UnderlineThickness)s def
 end readonly def
 /FontName /%(FontName)s def
-/UniqueID %(UniqueID)s def
 /FontType 1 def
 /PaintType 0 def 
 /FontMatrix [%(xrevscale)f 0 0 %(yrevscale)f 0 0] readonly def
@@ -606,7 +608,6 @@ dup /Private 20 dict dup begin
 /lenIV 4 def
 /password 5839 def
 /MinFeature {16 16} |-
-/UniqueID %(UniqueID)d def
 /BlueValues [] |-
 /OtherSubrs [ {} {} {} {} ] |-
 /ForceBold false def
@@ -628,7 +629,7 @@ pop mark currentfile closefile
 cleartomark
 """
 ## apparently, some fonts end the  file with cleartomark. Don't know why.
-	
+
 	vars = { 
 		'FontName': '%s' % fontinfo['FontName'],
 		'VVV': '001',
@@ -641,7 +642,6 @@ cleartomark
 		'isFixedPitch': 'false',
 		'UnderlinePosition': '-100',
 		'UnderlineThickness': '50',
-		'UniqueID':  0 ,
 		'xrevscale': 1.0/1000.0,
 		'yrevscale': 1.0/1000.0,
 		'llx' : bbox[0],

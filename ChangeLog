@@ -2,6 +2,10 @@
 
 	* mftrace.py (cm_guess_font_info): guess info for CM fonts.
 	(guess_fontinfo): put fontinfo generation in a separate function.
+	(gen_unique_id): generate UniqueID by hashing FullName into the
+	free range of the T1 UniqueID space.
+	(to_type1): actually, don't generate UniqueID at all, since it is
+	optional.
 
 2003-03-19  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
 
