@@ -1,3 +1,26 @@
+2003-12-18  Han-Wen Nienhuys   <hanwen@cs.uu.nl>
+
+	* gf2pbm.c: add header.
+
+2003-12-17  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* mftrace.py (potrace_path_to_type1_ops): handle different
+	components correctly
+
+	* GNUmakefile.in (FILES): add & use install-sh
+
+	* gf2pbm.c: use unistd.h for getopt
+
+2003-12-16  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* mftrace.py (potrace_path_to_type1_ops): handle empty glyphs
+	correctly
+
+2003-12-14  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
+
+	* mftrace.py (stat): detect tracing program
+	(potrace_path_to_type1_ops): potrace support
+
 2003-09-30  Han-Wen Nienhuys  <hanwen@cs.uu.nl>
 
 	* mftrace.py (do_autotrace_one): return nonzero for failed glyphs.

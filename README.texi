@@ -32,11 +32,11 @@ Versions prior to 1.0.5 were called `pktrace'.
 @section Required
 
 @file{mftrace} is a thin Python wrapper around some other programs that
-do the real work: Autotrace and t1asm.  To run mftrace you need:
+do the real work: a tracing program and t1asm.  To run mftrace you need:
 @itemize @bullet
-@item Autotrace -- see @uref{http://autotrace.sourceforge.net}.
-  Version 0.30 is recommended, earlier versions contain crucial bugs.
-@item Python--1.5 or later. See @uref{http://www.python.org/}
+@item A tracing program: autotrace >= 0.30 (see @uref{http://autotrace.sourceforge.net}
+      or potrace (see @uref{http://potrace.sourceforge.net})
+@item Python--2.1 or later. See @uref{http://www.python.org/}
 @item t1utils. See @uref{http://www.lcdf.org/~eddietwo/type/}
 @item  TeX--your tex installation should include
 @itemize @bullet
@@ -120,10 +120,10 @@ Command line options:
  Retain all temporary files in the directory @file{mftrace.dir/}. This
  is useful for debugging problems.
 @item --keep-trying
-Try to continue if autotrace fails: first try it with a less smoothed
+Try to continue if tracing fails: first try it with a less smoothed
 curve, and if that fails, skip the character.
 
- By default mftrace outputs @file{autotrace-bug-FONTNAME-NUMBER.pbm} and
+ By default mftrace outputs @file{trace-bug-FONTNAME-NUMBER.pbm} and
 stops the process with a request to file a bugreport.
 @item --magnification
 The magnification to use for the PFA file. The default is 1000. The
@@ -164,6 +164,11 @@ environment. If this doesn't work, specify @code{--tfmfile} and
 @code{--encoding} manually.
 @item -w,--warranty  
 show warranty and copyright
+@item --potrace
+use Potrace (default).
+@item --autotrace
+use AutoTrace.
+
 @end table
 
 Mftrace uses kpathsea for finding fonts, so any kpathsea variable can
@@ -202,6 +207,11 @@ is similar in design to mftrace. However, metatype aims at producing
 only TrueType.  Operating MetaType requires more additional
 packages. (Note: Yours Truly did not look further into MetaType)
 
+How about @uref{http://pfaedit.sourceforge.net/,PfaEdit} itself?
+PfaEdit is an interactive editor, but it can be scripted. Since it
+supports bitmap tracing and TeX bitmap fonts, it should be possible to
+duplicate -at least partially- the functionality of mftrace.
+
 
 @section Bugs and todo
 
@@ -221,8 +231,9 @@ to @email{hanwen@@cs.uu.nl,Han-Wen Nienhuys}.
 
 @section Credits
 
-The biggest credits go out to Martin Weber, who wrote AutoTrace and
-@email{gww@@silcom.com,George Williams}, who wrote pfaedit.
+The biggest credits go out to Martin Weber for AutoTrace, Peter
+Selinger for potrace and @email{gww@@silcom.com,George Williams}, for
+PfaEdit.
 
 The package also contains gf2pbm, a utility to convert a MetaFont GF
 file to a PBM file. Its source code was based on Paul Vojta's Xdvi

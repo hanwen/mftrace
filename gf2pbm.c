@@ -30,7 +30,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <getopt.h>
+#include <unistd.h>		/* getopt. */
+#include <strings.h>
+
 #include "config.h"
 
 #define	ARGS(x)	x

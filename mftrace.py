@@ -36,8 +36,10 @@ afm_p = 0
 dos_kpath_p = 0
 ttf_p = 0
 keep_trying_p = 0
+
 # should be installed.
-autotrace_bin = 'autotrace'
+potrace_scale = 10
+
 magnification = 1000.0
 program_name = 'mftrace'
 temp_dir = os.path.join (os.getcwd (), program_name + '.dir' )
@@ -104,8 +106,6 @@ def warning (s):
 	errorport.write (_ ("warning: ") + s)
 		
 def error (s):
-
-
 	'''Report the error S.  Exit by raising an exception. Please
 	do not abuse by trying to catch this error. If you do not want
 	a stack trace, write to the output directly.
@@ -276,6 +276,9 @@ option_definitions = [
 	('', '', 'keep-trying', _("Don't stop if autotrace fails")),
 	('', 'w', 'warranty', _ ("show warranty and copyright")),
 	('', '', 'dos-kpath', _ ("try to use Miktex kpsewhich")),
+	('', '', 'potrace', _ ("Use potrace")),
+	('', '', 'autotrace', _ ("Use autotrace"))
+	
 	]
 
 
@@ -308,60 +311,44 @@ def find_file (nm):
 # TRACING.
 ################################################################
 
-def autotrace_command (fi, fn, opts):
-	opts = " " + opts + " --output-format=eps --input-format=pbm "
-	cmd = autotrace_bin + opts + " --output-file=char.eps -filter-iterations %d %s  " % (fi,fn)
-	return cmd
+def autotrace_command (fn, opts):
+	opts = " " + opts + " --background-color=FFFFFF --output-format=eps --input-format=pbm "
+	return trace_binary + opts + " --output-file=char.eps  %s  " % fn
 
-def run_autotrace  (fi,fn,opts):
-	stat = system (autotrace_command (fi,fn,opts), 1)
-	return stat
 
-def do_autotrace_best_fi (fn, opts):
+def potrace_command (fn, opts):
+	return trace_binary + opts \
+	      + ' -u %f ' % potrace_scale \
+	      + "  -q -c --eps --output=char.eps %s " % (fn)
 
-	""" Run autotrace, and find the
-	best filter-iterations value.
+trace_command = None
+trace_binary = '' 
+path_to_type1_ops = None
+
+
+
+def trace_one (pbmfile, id):
 	"""
-	fi = 8
-	while fi >= 0:
-		if run_autotrace (fi, fn, opts) ==0:
-			return 0
-
-		fi  = fi -1  
-
-	return 1
-
-def blank_pbm (filename):
+	Run tracer, do error handling 
 	"""
-	Kill the contents of a PBM: write 0xFF to the PBM.
-	"""
-	f = open (filename)
-	l = f.readline ()
-	length = len (f.read())
 
-	f.close ()
-	
-	open (filename, 'w').write ('%s\n%s' % (l,'\377' * length))
+	status = system (trace_command (pbmfile, ''), 1)
 
-def do_autotrace_one (pbmfile, id):
-	"""
-	Run autotrace, first with -background-color, then without.
-	"""
-	
-	status = run_autotrace (9, pbmfile , '-background-color FFFFFF')
 	if status == 2:
 		sys.stderr.write ("\nUser interrupt. Exiting\n")
 		sys.exit(2)
+		
 	if status <> 0:
-		error_file = os.path.join (origdir, 'autotrace-bug-%s.pbm' % id)
+		error_file = os.path.join (origdir, 'trace-bug-%s.pbm' % id)
 		shutil.copy2 (pbmfile, error_file)
-		msg = """Autotrace failed on bitmap. Bitmap left in `%s\'
+		msg = """Trace failed on bitmap. Bitmap left in `%s\'
 Failed command was:
 
 	%s
 	
-Please submit a bugreport to autotrace development.""" % (error_file,
-							  autotrace_command (9, error_file, '-background-color FFFFFF'))
+Please submit a bugreport to %s development.""" % (error_file, 
+						   autotrace_command (error_file, ''),
+						   trace_binary)
 
 		if keep_trying_p:
 			warning (msg)
@@ -373,9 +360,8 @@ Please submit a bugreport to autotrace development.""" % (error_file,
 	else:
 		return 1
 
-	status = do_autotrace_best_fi (pbmfile, '-background-color FFFFFF')
 	if status <> 0:
-		warning ("Failing even  -filter-iterations=0. Skipping character.\n")
+		warning ("Failed, skipping character.\n")
 		return 0
 	else:
 		return 1
@@ -443,7 +429,6 @@ def autotrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 	commands = []
 	
 
-
 	while ls[0] <> '*U\n':
 		l = ls[0]
 		ls = ls[1:]
@@ -457,12 +442,10 @@ def autotrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 		args = zip_to_pairs (map (round, args))
 		commands.append ((cmd,args))
 
-
 	expand = {
 		'l': 'rlineto',
 		'm': 'rmoveto',
 		'c': 'rrcurveto',
-		'sbw' : 'sbw',
 		'f': 'closepath' ,
 		}
 
@@ -473,7 +456,7 @@ def autotrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 	t1_outline =  '  %d %d hsbw\n' % (- off_x, tfm_wid)
 	bbox =  (10000,10000,-10000,-10000)
 
-	for (c,args) in commands[0:]:
+	for (c,args) in commands:
 
 		na = []
 		for a in args:
@@ -486,7 +469,7 @@ def autotrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 
 		a = na
 		c = expand[c]
-		a = map (lambda x: '%d' % int (x),  unzip_pairs (a))
+		a = map (lambda x: '%d' % int (round (x)),  unzip_pairs (a))
 
 		t1_outline = t1_outline + '  %s %s\n' % (string.join (a),c)
 
@@ -494,6 +477,90 @@ def autotrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
 	t1_outline = '{\n %s } |- \n' % t1_outline
 	
 	return (bbox, t1_outline)
+
+def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid):
+	inv_scale = 1000.0/magnification
+	
+	(size_y, size_x, off_x,off_y)= map(lambda m, s=inv_scale : m * s, bitmap_metrics)
+	ls = open (at_file).readlines ()
+	bbox =  (10000,10000,-10000,-10000)
+
+	while ls and ls[0] <> '0 setgray\n':
+		ls = ls[1:]
+
+	if ls == []:
+		return (bbox, '')
+	ls = ls[1:]
+	commands = []
+	
+	while ls and ls[0] <> 'grestore\n':
+		l = ls[0]
+		ls = ls[1:]
+
+		if l == 'fill\n':
+			continue
+		
+		toks = string.split (l)
+
+		if len(toks) < 1:
+			continue
+		cmd= toks[-1]
+		args = map (lambda m, s=inv_scale : s * string.atof(m), toks[:-1])
+		args = zip_to_pairs (map (round, args))
+		commands.append ((cmd,args))
+
+	cx = 0
+	cy = size_y - off_y -1
+
+
+	# t1asm seems to fuck up when using sbw. Oh well. 
+	t1_outline =  '  %d %d hsbw\n' % (- off_x, tfm_wid)
+	bbox =  (10000,10000,-10000,-10000)
+
+	# Type1 fonts have relative coordinates (doubly relative for
+	# rrcurveto), so must convert moveto and rcurveto.
+
+	for (c, args) in commands:
+		args = map (lambda x: (x[0] * 1.0  / potrace_scale, x[1]*1.0/potrace_scale), args)
+		
+		if c == 'rlineto':
+			(dx,dy)= args[0]
+			cx += dx
+			cy += dy
+		elif c == 'rcurveto':
+			na = []
+			(last_dx,last_dy) = (0,0)
+			for a in args:
+				(dx,  dy) = a
+				na.append ((dx  - last_dx, dy - last_dy))
+				bbox = update_bbox_with_point (bbox,
+							       (cx + last_dx , cy + last_dy) )
+				last_dx = dx
+				last_dy = dy
+			
+			(cx, cy) = (last_dx + cx, last_dy  + cy)
+			args = na
+			c = 'rrcurveto'
+		elif c == 'moveto':
+			c = 'rmoveto'
+			t1_outline += " closepath "
+			x, y = args[0]
+			dx = x - cx
+			dy = y - cy
+			(cx, cy) = (x,y)
+			args = [(dx, dy)]
+			
+		bbox = update_bbox_with_point (bbox, (cx, cy))
+
+		args = map (lambda x: '%d' % int (round (x)),  unzip_pairs (args))
+
+		t1_outline = t1_outline + '  %s %s\n' % (string.join (args),c)
+
+	t1_outline = t1_outline + ' endchar '
+	t1_outline = '{\n %s } |- \n' % t1_outline
+	
+	return (bbox, t1_outline)
+
 	
 def read_gf_dims (name, c):
 	str = popen ('gf2pbm -n %d -s %s' % (c, name)).read ()
@@ -502,8 +569,7 @@ def read_gf_dims (name, c):
 	return tuple (map (string.atoi ,m.groups ()))
 		       
 
-	
-def autotrace_font (fontname, gf_file, metric, glyphs, encoding, magnification):
+def trace_font (fontname, gf_file, metric, glyphs, encoding, magnification):
 	t1os = []
 	font_bbox =  (10000,10000,-10000,-10000)
 
@@ -529,7 +595,7 @@ def autotrace_font (fontname, gf_file, metric, glyphs, encoding, magnification):
 			sys.stderr.flush()
 
 		# this wants the id, not the filename.
-		success = do_autotrace_one ("char.pbm", '%s-%d' % (gf_fontname, a))
+		success = trace_one ("char.pbm", '%s-%d' % (gf_fontname, a))
 		if not success :
 			sys.stderr.write ("(skipping character)]")
 			sys.stderr.flush ()			
@@ -540,7 +606,7 @@ def autotrace_font (fontname, gf_file, metric, glyphs, encoding, magnification):
 			sys.stderr.flush()
 		metric_width = metric.get_char (a).width
 		tw = int (round (metric_width / metric.design_size * 1000))
-		(bbox, t1o)  = autotrace_path_to_type1_ops ("char.eps",
+		(bbox, t1o)  = path_to_type1_ops ("char.eps",
 						    (h, w, xo, yo),
 						    tw)
 
@@ -961,9 +1027,29 @@ for (o,a) in options:
 	elif o == '--afm':
 		afm_p = 1
 		simplify_p = 1
-		
+	elif o == '--potrace':
+		trace_binary = 'potrace'
+	elif o == '--autotrace' :
+		trace_binary = 'autotrace'
 	else:
 		raise 'Ugh -- forgot to implement option %s. :)' % o
+
+
+	
+stat = os.system ('potrace --version > /dev/null') 
+if trace_binary <> 'autotrace' and stat == 0:
+	trace_binary = 'potrace'
+	trace_command = potrace_command
+	path_to_type1_ops = potrace_path_to_type1_ops
+
+stat = os.system ('autotrace --version > /dev/null') 
+if trace_binary <> 'potrace' and stat == 0:
+	trace_binary = 'autotrace'
+	trace_command = autotrace_command
+	path_to_type1_ops = autotrace_path_to_type1_ops
+
+if not trace_binary:
+	error (_("No tracing program found. Exit."))
 
 identify (sys.stderr)
 if not pfa_p and not pfb_p and not ttf_p:
@@ -1038,7 +1124,7 @@ for filename in files:
 		gf_fontname = find_file (gf_fontname)
 
 	# the heart of the program:
-	autotrace_font (basename, gf_fontname, metric, glyph_range, encoding, magnification)
+	trace_font (basename, gf_fontname, metric, glyph_range, encoding, magnification)
 
 	if pfa_p:
 		if simplify_p:

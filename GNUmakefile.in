@@ -3,9 +3,9 @@
 PY_MODULES= afm.py tfm.py
 PYC_MODULES = $(PY_MODULES:%=%c)
 FILES= mftrace.py GNUmakefile.in \
-	gf2pbm.c mftrace.1 \
+	gf2pbm.c mftrace.1 install-sh \
 	README.texi README.txt ChangeLog \
-	mftrace.spec.in 	mftrace.spec \
+	mftrace.spec.in mftrace.spec \
 	$(PY_MODULES) configure configure.in config.h.in
 
 
@@ -18,6 +18,7 @@ exec_prefix=@exec_prefix@
 bindir=@bindir@
 mandir=@mandir@
 PYTHON=@PYTHON@
+INSTALL=@srcdir@/install-sh
 
 all: compile
 
@@ -56,11 +57,13 @@ GNUmakefile: GNUmakefile.in
 
 install: mftrace gf2pbm $(PYC_MODULES)
 	mkdir -p $(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man1
-	install -m 755 mftrace $(DESTDIR)$(bindir)
-	install -m 755 gf2pbm $(DESTDIR)$(bindir)
+	$(INSTALL) -m 755 mftrace $(DESTDIR)$(bindir)
+	$(INSTALL) -m 755 gf2pbm $(DESTDIR)$(bindir)
 	mkdir -p $(DESTDIR)$(datadir)
-	install -m 644 mftrace.1 $(DESTDIR)$(mandir)/man1/
-	install -m 644 $(PY_MODULES) $(PYC_MODULES) $(DESTDIR)$(datadir)
+	$(INSTALL) -m 644 mftrace.1 $(DESTDIR)$(mandir)/man1/
+	for a in $(PY_MODULES) $(PYC_MODULES) ; do \
+		$(INSTALL) -m 644 $$a $(DESTDIR)$(datadir) ; \
+	done
 
 uninstall:
 	rm $(DESTDIR)$(bindir)/mftrace $(DESTDIR)$(bindir)/gf2pbm
@@ -86,3 +89,6 @@ udist:  README.html
 	make dist
 	cp $(distdir).tar.gz $(WWWDIR)/mftrace/
 	mv $< $(WWWDIR)/mftrace/index.html
+
+rpm: dist
+	rpmbuild -tb mftrace-$(VERSION).tar.gz
