@@ -78,9 +78,11 @@ TEST_FONTS=parmesan20 ecbi0900 logo10
 test:
 	$(foreach a, $(TEST_FONTS), $(PYTHON) mftrace.py --glyphs 65 -V $(a) &&)true
 
+
+WWWDIR=$(HOME)/public_html
 udist:  README.html
 	autoconf
 	./configure --prefix=$(HOME)/usr/pkg/mftrace
 	make dist
-	cp $(distdir).tar.gz $(HOME)/pub-www/mftrace/
-	mv $< $(HOME)/pub-www/mftrace/index.html
+	cp $(distdir).tar.gz $(WWWDIR)/mftrace/
+	mv $< $(WWWDIR)/mftrace/index.html

@@ -4,7 +4,7 @@ AC_CONFIG_HEADER(config.h:config.h.in)
 AC_PATH_PROG(PYTHON, ${PYTHON:-python}, -echo no python)
 AC_SUBST(PYTHON)
 
-export VERSION="1.0.16" 
+export VERSION="1.0.17" 
 AC_SUBST(VERSION)
 
 AC_C_BIGENDIAN
