@@ -1,4 +1,4 @@
-
+# -*-makefile-*-
 
 PY_MODULES= afm.py tfm.py
 PYC_MODULES = $(PY_MODULES:%=%c)
@@ -42,14 +42,14 @@ dist: $(FILES)
 	tar --owner=0 --group=0  -zcf $(distdir).tar.gz $(distdir)
 	rm -rf $(distdir)
 
-mftrace: mftrace.py
+mftrace: mftrace.py configure
 	./config.status
 
 configure: configure.in
 	autoconf
-	./config.status
+	./configure
 
-GNUmakefile: GNUmakefile.in
+GNUmakefile: GNUmakefile.in configure
 	./config.status
 	chmod a-w GNUmakefile
 

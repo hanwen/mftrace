@@ -1,3 +1,9 @@
+2004-12-19  Jan Nieuwenhuizen  <janneke@gnu.org>
+
+	* GNUmakefile.in (GNUmakefile): Depend on configure
+	(configure): Run ./configure after running autoconf (not
+	config.status, which has old, cached values).
+
 2004-12-19  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
 	* configure.in (PYTHON): bump version to 1.1.0
