@@ -267,7 +267,7 @@ option_definitions = [
 	('', 'b', 'pfb', _ ("Generate PFB file")),
 	('', '', 'simplify', _("Simplify using pfaedit")),
 	('FILE', '', 'gffile', _("Use gf FILE instead of running Metafont")),
-	('DIR', 'I', 'include', _("Add to path for searching files")),	
+	('DIR', 'I', 'include', _("Add to path for searching files")),
 	('LIST','', 'glyphs', _('Process only these glyphs. LIST is comma separated')),
 	('FILE', '', 'tfmfile' , _("Use FILE for the TFM file")),
 	('FILE', 'o', 'output-base', _("Set output file name")), 
@@ -292,6 +292,7 @@ def find_file (nm):
 	
 	p = popen ('kpsewhich %s' % nm).read ()[:-1]
 
+	# urg. Did I do this ? 
 	if dos_kpath_p:
 		orig = p 
 		def func(m):
@@ -818,6 +819,84 @@ except getopt.error, s:
 	sys.exit (2)
 
 fontinfo = {}
+
+def cm_guess_font_info (filename):
+	"""this function fills in sensible values for fontinfo. 
+This should be tailored for each metafont font set.
+	"""
+	
+
+	fontinfo ={"FontName" :  filename}
+	# urg.
+	filename = re.sub ("cm(.*)tt", r"cmtt\1", filename)
+	
+	prefixes = [("cmtt", "Computer Modern Typewriter Text"),
+		    ("cmvtt", "Computer Modern Variable Width Typewriter Text"),
+		    ("cm", "Computer Modern")]
+
+	family = ''
+ 	for (k,v) in prefixes:
+		if re.search (k, filename):
+			family = v
+			filename = re.sub (k, '', filename)
+			break
+
+	# shapes
+	prefixes = [("ss", "Sans Serif"),
+		    ("r", "Roman"),
+		    ("mi", "Math italic"),
+		    ("u", "Unslanted italic"),
+		    ("sl", "Oblique"),
+		    ("csc", "Small caps"),
+		    ("ex", "Math extension"),
+		    ("ti", "Text italic")]
+	shape = '' 
+ 	for (k,v) in prefixes:
+		if re.search (k, filename):
+			shape = v
+			filename = re.sub (k, '', filename)
+	prefixes = [("bx", "Bold Extended"),
+		    ("b", "Bold"),
+		    ("dc", "Demi Bold Condensed"),
+		    ("d", "Demi bold")]
+	weight = 'medium'
+	for (k,v) in prefixes:
+		if re.search (k, filename):
+			weight = v
+			filename = re.sub (k, '', filename)
+
+	if re.search ('italic', shape) or re.search ('slant', shape):
+		a = 14
+		if re.search ("sans", series):
+			a = 12
+			
+		fontinfo ["ItalicAngle"] = a
+		
+	fontinfo['Weight'] = weight
+	fontinfo["FamilyName"] = family
+	fontinfo['FullName'] = '%s %s %s' % (family, shape, weight) 
+
+	return fontinfo
+	
+def guess_fontinfo (filename):
+	if re.search ('^cm', filename):
+		return cm_guess_font_info (filename)
+
+	if not afmfile:
+		afmfile = find_file (filename + '.afm')
+
+	if afmfile:
+		afmfile = os.path.abspath (afmfile)
+		afm = afm.read_afm_file (afmfile)
+		return Font_info (afm.__dict__)
+
+	fi = { 'FontName' : filename,
+	       'FamilyName'  : filename,
+	       "Weight" : 'regular',
+	       'FullName' : filename}
+	
+	return fi
+
 afmfile = ''
 tfmfile = ''
 outname = ''
@@ -934,15 +1013,8 @@ for filename in files:
 	tfmfile = os.path.abspath(tfmfile)
 	metric = tfm.read_tfm_file (tfmfile)
 
-	if not afmfile:
-		afmfile = find_file (basename + '.afm')
+	fontinfo = guess_fontinfo (basename)
 
-	if afmfile:
-		afmfile = os.path.abspath (afmfile)
-		afm = afm.read_afm_file (afmfile)
-		fontinfo = Font_info (afm.__dict__)
-	else:
-		fontinfo = Font_info (basename)
 		
 	if encoding_file and not os.path.exists (encoding_file):
 		encoding_file = find_file (encoding_file)

@@ -150,6 +150,12 @@ environment. If this doesn't work, specify @code{--tfmfile} and
 show warranty and copyright
 @end table
 
+Mftrace tries to fill in sensible values for the FontFamily, FullName
+and Weight fields. It does so by guessing values for the CM font
+series. For other fonts, it tries to read an AFM file. Suggestions for
+a more generic way to handle this are welcome. 
+
+
 @section Discussion
 
 Why use @code{mftrace} over
