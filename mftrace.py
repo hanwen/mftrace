@@ -753,8 +753,9 @@ cleartomark
 
 	outname = fontname + '.pfa'
 
-	progress (_ ("Assembling raw font to `%s'... ") % outname)
-	system ('t1asm --pfa mftrace.t1asm %s' % outname + '.raw')
+	rawname = outname + '.raw'
+	progress (_ ("Assembling raw font to `%s'... ") % rawname)
+	system ('t1asm --pfa mftrace.t1asm %s' % rawname)
 	progress ('\n')
 
 def update_bbox_with_point (bbox, pt):
@@ -821,7 +822,7 @@ def make_outputs (fontname, formats):
 
 	generate_cmds = ''
 	for f in formats:
-		generate_cmds += 'Generate("%s");' % (filename  + '.' + f)
+		generate_cmds += 'Generate("%s");' % (fontname + '.' + f)
 
 	simplify_cmd = ''
 	if simplify_p:
@@ -841,7 +842,7 @@ Quit (0);
 ''' % vars())
 
 	system ("%s -script to-ttf.pe %s %s" % (ff_command,
-						(filename + '.pfa.raw'), tfmfile))
+						(fontname+ '.pfa.raw'), tfmfile))
 
 def getenv (var, default):
 	if os.environ.has_key (var):

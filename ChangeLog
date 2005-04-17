@@ -1,6 +1,11 @@
+2005-04-17  Jan Nieuwenhuizen  <janneke@gnu.org>
+
+	* mftrace.py (make_outputs): Bugfix: do not use global filename.
+
 2005-03-30  Andrey V. Panov  <panov@canopus.iacp.dvo.ru>
 
-	* mftrace.py: add possibility to pass glyph ranges with --glyph option.
+	* mftrace.py: add possibility to pass glyph ranges with --glyph
+	option.
 
 2005-03-27  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
