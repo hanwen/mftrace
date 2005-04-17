@@ -1,6 +1,8 @@
 2005-04-17  Jan Nieuwenhuizen  <janneke@gnu.org>
 
 	* mftrace.py (make_outputs): Bugfix: do not use global filename.
+	(trace_font): Make --verbose usable by printing character
+	generating commands only once.
 
 2005-03-30  Andrey V. Panov  <panov@canopus.iacp.dvo.ru>
 

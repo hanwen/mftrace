@@ -384,7 +384,6 @@ def make_pbm (filename, outname, char_number):
 
 	command = "%s/gf2pbm -n %d -o %s %s" % (bindir, char_number, outname, filename)
 	status = system (command, ignore_error = 1)
-
 	return (status == 0)
 
 def read_encoding (file):
@@ -612,6 +611,9 @@ def trace_font (fontname, gf_file, metric, glyphs, encoding,
 
 	# for single glyph testing.
 	# glyphs = []
+	first_p = 1
+	global verbose_p
+	vp = verbose_p
 	for a in glyphs:
 		valid = metric.has_char (a)
 		if not valid:
@@ -649,6 +651,10 @@ def trace_font (fontname, gf_file, metric, glyphs, encoding,
 
 		t1os.append ('/%s %s ' % (encoding[a], t1o))
 
+		if first_p:
+			verbose_p = 0
+
+	verbose_p = vp
 	progress ('\n')
 	to_type1 (t1os, font_bbox, fontname, encoding, magnification, fontinfo )
 
