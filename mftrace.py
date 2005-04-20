@@ -280,7 +280,6 @@ option_definitions = [
 	('LIST', '', 'glyphs', _ ('Process only these glyphs.  LIST is comma separated')),
 	('FILE', '', 'tfmfile', _ ("Use FILE for the TFM file")),
 	('FILE', 'e', 'encoding', _ ("Use encoding file FILE")),
-	('', 't', 'truetype', _ ("Generate TrueType file (requires fontforge)")),
 	('', '', 'keep-trying', _ ("Don't stop if tracing fails")),
 	('', 'w', 'warranty', _ ("show warranty and copyright")),
 	('', '', 'dos-kpath', _ ("try to use Miktex kpsewhich")),
@@ -1168,8 +1167,6 @@ for (o, a) in options:
 				glyph_range.append (glyph_subrange[0])
 	elif o == '--tfmfile':
 		tfmfile = a
-	elif o == '--truetype' or o == '-t':
-		ttf_p = 1
 	elif o == '--dos-kpath':
 		dos_kpath_p = 1
 	elif o == '--formats' or o == '-f':

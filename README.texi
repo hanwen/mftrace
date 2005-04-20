@@ -118,7 +118,7 @@ Command line options:
 =  Take glyphs from file @var{name}. 
 @item --grid @var{gridsize}
 Set reciprocal grid size in em units multiplied by ratio magnification/1000. 
-For example @code{--grid 10 --magnification 1000) will round
+For example @code{--grid 10 --magnification 1000} will round
 coordinates of control points to 1/10 of em unit. Useful simultaneously
 with @code{--noround}  option. Default @var{gridsize} value is 1, i. e. round to integer.
 @item -h,--help 

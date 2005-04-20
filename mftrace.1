@@ -1,4 +1,4 @@
-.TH MFTRACE 1 "March 30, 2005"
+.TH MFTRACE 1 "April 5, 2004"
 .
 .
 .SH NAME
@@ -38,87 +38,38 @@ This program follows the usual GNU command line syntax, with long
 options starting with two dashes (`-').
 .
 .TP
-.BR \-a ", " \-\-pfa
-Generate a PFA file (default).
-.
-.TP
-.B \-\-afm
-Generate AFM file.  Implies
-.BR \-\-simplify .
-.
-.TP
-.B \-\-autotrace
-Use
-.B autotrace
-for tracing bitmaps.
-.
-.TP
-.BR \-b ", " \-\-pfb
-Generate a PFB file.
-.
-.TP
-.B \-\-dos-kpath
-Try to use MikTeX's version of
-.B kpsewhich.
-.
-.TP
-.BR \-e " " \fIENC\fP ", " \-\-encoding=\fIENC\fP
-Use encoding file
-.IR ENC .
-(The default is to use `tex256.enc'.)
-.
-.TP
-.BI \-\-gffile= FILE
-Use gf
-.I FILE
-instead of running Metafont.
-.
-.TP
-.BI \-\-glyphs= LIST
-Process only these glyphs.
-.I LIST
-is a comma separated list of glyph indices or ranges.
-.
-.TP
-.B \-h, \-\-help
-Show summary of options.
-.
-.TP
-.BR \-I " " \fIDIR\fP ", " \-\-include= \fIDIR\fP
-Add
-.I DIR
-to the current path for searching files.
-.
-.TP
 .BR \-k , \-\-keep
 Keep all output in directory `mftrace.dir'.
 .
 .TP
-.B \-\-keep-trying
-Try to continue if autotrace fails: first try it with a less smoothed
-curve, and if that fails, skip the character.  By default
-.B mftrace
-leaves a file `trace-bug-\fIfont\fP-\fIchar\fP.pbm' and stops the process
-with a request to file a bugreport.
-.
-.TP
 .BI \-\-magnification= MAG
-Set magnification value for Metafont to
-.I MAG
-(default value is 1000).
+The magnification to use for the PFA file. The default is 1000. The
+larger the magnification, the more precise the PFA file will
+be. However, when the magnification is too large METAFONT can crash
+with overflow errors.
+.PP
+Sadly, many MF fonts contain resolution checks
+.sp
+.RS
+    if dots_per_inch * design_size > 1500:
+.RE
+.sp
+This check is susceptible to overflow errors.  Such code should be
+reported as a bug, and changed to
+.sp
+.RS
+    if dots_per_inch > (1500 / design_size):
+.RE
+.sp
 .
 .TP
-.BR \-o " " \fIFILE\fP ", " \-\-output-base= \fIFILE\fP
-Output to
-.IR FILE .pfa
-or
-.IR FILE .pfb.
-.
-.TP
-.B \-\-potrace
-Use
-.B potrace
-for tracing bitmaps.
+.BI \-\-formats= FMT1,FMT2,...
+Specify which formats to generate (default is pfa).  Choices are: afm,
+pfa, pfb, ttf, svg.  Note that
+.B \%fontforge
+(formerly called
+.BR \%pfaedit )
+must be installed to generate any format other than pfa.
 .
 .TP
 .B \-\-simplify
@@ -129,6 +80,25 @@ This will pass the created Type1 font through
 to simplify and autohint it.
 .
 .TP
+.BI \-\-gffile= FILE
+Use generic font file
+.I FILE
+instead of running Metafont.
+.
+.TP
+.BR \-I " " \fIDIR\fP ", " \-\-include= \fIDIR\fP
+Add
+.I DIR
+to the current path for searching files.
+.
+.TP
+.BI \-\-glyphs= LIST
+Process only these glyphs.
+.I LIST
+is a comma separated list of decimal numbers or ranges, for example
+1-10,50,55,90-100.
+.
+.TP
 .BI \-\-tfmfile= FILE
 Use
 .I FILE
@@ -136,13 +106,68 @@ for the TFM file.  (The default is to use
 .IR \%fontname .tfm).
 .
 .TP
-.BR \-t ", " \-\-truetype
-Generate TrueType file.  This requires
-.BR \%fontforge .
+.BR \-e " " \fIENC\fP ", " \-\-encoding=\fIENC\fP
+Use encoding file
+.IR ENC .
+.B mftrace
+will try to determine the encoding file automatically, from the
+encoding specified in the TFM file, the default being tex256.enc.
+.
+.TP
+.B \-\-keep-trying
+Try to continue if autotrace fails: first try it with a less smoothed
+curve, and if that fails, skip the character.  By default
+.B mftrace
+leaves a file `trace-bug-\fIfont\fP-\fIchar\fP.pbm' and stops the process
+with a request to file a bugreport.
+.
+.TP
+.B \-\-dos-kpath
+Try to use MikTeX's version of
+.B kpsewhich.
+.
+.TP
+.B \-\-potrace
+Use
+.B potrace
+for tracing bitmaps.  The default is to use
+.B potrace
+if it is found, otherwise to use
+.BR autotrace .
+.
+.TP
+.B \-\-autotrace
+Use
+.B autotrace
+for tracing bitmaps.
+.
+.TP
+.B \-\-no-afm
+Don't read the AFM file to find font information.
+.
+.TP
+.B \-\-noround
+Do not round coordinates of control points to integer values (use with
+.BR \-\-grid ).
+Disabled by default.
+.
+.TP
+.BI \-\-grid= GRID
+Set reciprocal grid size in em units multiplied by ratio
+magnification/1000.  For example, \fB\-\-grid\fP 10
+\fB\-\-magnification\fP 1000 will round coordinates of control points
+to 1/10 of em unit.  Useful simultaneously with the \fB\-\-noround\fB
+option.  Default \fIGRID\fP value is 1, i.e., round to integer.  This
+option is only used with
+.BR potrace .
 .
 .TP
 .B \-V, \-\-verbose
 Be verbose.
+.
+.TP
+.B \-h, \-\-help
+Show summary of options.
 .
 .TP
 .B \-v, \-\-version
