@@ -124,7 +124,7 @@ Command line options:
  PFA, PFB, TTF and SVG. Default is to generate a PFA file. Note that 
  @file{fontforge} (formerly called @file{pfaedit}) needs to be installed
  in order to generate any format except PFA or PFB. For generating AFM 
- you need either @file{fontforge} or @{ghostscript}.
+ you need either @file{fontforge} or @file{ghostscript}.
 @item -e,--encoding=@var{enc}   
  Use encoding file @var{enc}. Encoding files used by @code{mftrace} are 
  basically in the  GhostScript/dvips format, but you may use a special
@@ -242,7 +242,7 @@ and shaped pens.
 
 How about @uref{http://fontforge.sourceforge.net/,FontForge} itself?
 FontForge is an interactive editor, but it can be scripted. Since it
-supports bitmap tracing and TeX bitmap fonts, it is possible to
+supports bitmap tracing and @TeX{} bitmap fonts, it is possible to
 duplicate the functionality of mftrace.  However, out of the box,
 FontForge does not recognize TeX encodings.
 
