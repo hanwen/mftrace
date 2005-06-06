@@ -380,7 +380,7 @@ def make_pbm (filename, outname, char_number):
 	""" Extract bitmap from the PK file FILENAME (absolute) using `gf2pbm'.
 	Return FALSE if the glyph is not valid.
 	"""
-
+	
 	command = "%s/gf2pbm -n %d -o %s %s" % (bindir, char_number, outname, filename)
 	status = system (command, ignore_error = 1)
 	return (status == 0)
@@ -929,10 +929,10 @@ AddExtrema();
 Simplify ();
 %(round_cmd)
 AutoHint ();''' % vars()
-	elif round_to_int:
-		simplify_cmd = 'RoundToInt()'
-		
-	open ('to-ttf.pe', 'w').write ('''#!/usr/bin/env %(ff_command)s
+		elif round_to_int:
+			simplify_cmd = 'RoundToInt()'
+
+		open ('to-ttf.pe', 'w').write ('''#!/usr/bin/env %(ff_command)s
 Open ($1);
 MergeKern($2);
 %(round_cmd)s

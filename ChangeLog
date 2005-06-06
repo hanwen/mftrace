@@ -1,3 +1,8 @@
+2005-06-06  Han-Wen Nienhuys  <hanwen@xs4all.nl>
+
+	* configure.in: move test to end.
+	(PYTHON): release 1.1.10
+
 2005-06-04  Alexej Kryukov  <akrioukov@newmail.ru>
 
 	* mftrace.py: Implemented a function (get_afm) which allows to
