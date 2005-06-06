@@ -69,7 +69,11 @@ pfa, pfb, ttf, svg.  Note that
 .B \%fontforge
 (formerly called
 .BR \%pfaedit )
-must be installed to generate any format other than pfa.
+must be installed to generate any format except pfa or pfb. For generating
+afm you need either
+.B \%fontforge
+or
+.B \%ghostscript .
 .
 .TP
 .B \-\-simplify
@@ -109,14 +113,24 @@ for the TFM file.  (The default is to use
 .BR \-e " " \fIENC\fP ", " \-\-encoding=\fIENC\fP
 Use encoding file
 .IR ENC .
+Encoding files used by
+.B mftrace
+are basically in the GhostScript/dvips format, but you may use a 
+special 
+.B \.notavail
+glyph name in order to tell mftrace not to process a specific glyph. 
+If this option is not specified,  
 .B mftrace
 will try to determine the encoding file automatically, from the
 encoding specified in the TFM file, the default being tex256.enc.
 .
 .TP
 .B \-\-keep-trying
-Try to continue if autotrace fails: first try it with a less smoothed
-curve, and if that fails, skip the character.  By default
+Try to continue if external programs called by mftrace fail. If METAFONT
+crashes with overflow errors, but nevertheless outputs a GF file, try to 
+process its output as is (useful for some buggy fonts, see above). If 
+potrace/autotrace fails to trace a specific character, first try it with 
+a less smoothed curve, and if that fails, skip the character. By default
 .B mftrace
 leaves a file `trace-bug-\fIfont\fP-\fIchar\fP.pbm' and stops the process
 with a request to file a bugreport.

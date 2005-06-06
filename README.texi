@@ -21,7 +21,7 @@ Versions prior to 1.0.5 were called `pktrace'.
 
 @section Download
 
-@itemize @bullet
+@itemize
 @item @uref{http://www.cs.uu.nl/~hanwen/mftrace/mftrace-@MFTVERSION@.tar.gz}
 @item Anonymous CVS at 
 @code{anoncvs@@subversions.gnu.org:/cvsroot/lilypond}, module
@@ -47,10 +47,28 @@ do the real work: a tracing program and t1asm.  To run mftrace you need:
 
 @section Recommended
 
-A recent version (040215 or newer) of
-@uref{http://fontforge.sourceforge.net,FontForge} is recommended. If it is
-present, then mftrace will run the font through FontForge to simplify and
-autohint it.
+@itemize @bullet
+@item  A recent version (040215 or newer) of
+@uref{http://fontforge.sourceforge.net,FontForge}. By default mftrace 
+always checks if FontForge is present on user's system. If it is available,
+then mftrace will run the font through FontForge to simplify and autohint it.
+FontForge is also used to generate output in additional formats (e. g. 
+TrueType).
+
+However, if you don't like your font to be run through FontForge, you
+may prevent this by requesting only those mftrace options, which may be
+executed without accessing this font editor. Namely, you should not request
+any output formats except PFA, PFB or AFM. Additionally, you should not 
+use the --simplify option, while the --noround option must be enabled.
+
+@item Alternatively, you need GhostScript with its @file{printafm}
+utility, available somethere in your PATH. @code{mftrace} may use
+@file{printafm} to generate AFM files (the algorithm is basically the same
+as in the @file{t12afm.sh} script, distributed with @file{TeXtrace}).
+However, this is done only if FontForge is not used for processing
+the font.
+
+@end itemize
 
 @section Red Hat
 
@@ -102,12 +120,18 @@ mftrace cmr10
 Command line options:
 @table @code
 @item --formats=LIST
-      A comma-separated list of formats to generate. Choices include:
-      AFM, PFA, PFB, TTF and SVG. Default is to generate a PFA file.
+ A comma-separated list of formats to generate. Choices include:  AFM, 
+ PFA, PFB, TTF and SVG. Default is to generate a PFA file. Note that 
+ @file{fontforge} (formerly called @file{pfaedit}) needs to be installed
+ in order to generate any format except PFA or PFB. For generating AFM 
+ you need either @file{fontforge} or @{ghostscript}.
 @item -e,--encoding=@var{enc}   
- Use encoding file @var{enc}.
- mftrace will try to determine the encoding file automatically, from
- the encoding specified in the TFM file.
+ Use encoding file @var{enc}. Encoding files used by @code{mftrace} are 
+ basically in the  GhostScript/dvips format, but you may use a special
+ @code{.notavail} glyph name in order to tell mftrace not to process
+ a specific glyph. If this option is not specified,  mftrace will try to 
+ determine the encoding file automatically, from the encoding specified 
+ in the TFM file.
 @item --glyphs=@var{list}
   Only process glyphs in @var{list}, which is a  comma-delimited  list of
   decimal numbers or ranges.
@@ -127,8 +151,11 @@ with @code{--noround}  option. Default @var{gridsize} value is 1, i. e. round to
  Retain all temporary files in the directory @file{mftrace.dir/}. This
  is useful for debugging problems.
 @item --keep-trying
-Try to continue if tracing fails: first try it with a less smoothed
-curve, and if that fails, skip the character.
+ Try to continue if external programs called by mftrace fail. If METAFONT
+ crashes with overflow errors, but nevertheless outputs a GF file, try to 
+ process its output as is (useful for some buggy fonts, see below). If 
+ potrace/autotrace fails to trace a specific character, first try it with 
+ a less smoothed curve, and if that fails, skip the character.
 
  By default mftrace outputs @file{trace-bug-FONTNAME-NUMBER.pbm} and
 stops the process with a request to file a bugreport.

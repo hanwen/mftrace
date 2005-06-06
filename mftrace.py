@@ -614,12 +614,16 @@ def trace_font (fontname, gf_file, metric, glyphs, encoding,
 	global verbose_p
 	vp = verbose_p
 	for a in glyphs:
+    		if encoding[a] == ".notavail":
+        		continue
 		valid = metric.has_char (a)
 		if not valid:
+        		encoding[a] = ".notavail"
 			continue
 
 		valid = make_pbm (gf_file, 'char.pbm', a)
 		if not valid:
+        		encoding[a] = ".notavail"
 			continue
 
 		(w, h, xo, yo) = read_gf_dims (gf_file, a)
@@ -633,6 +637,7 @@ def trace_font (fontname, gf_file, metric, glyphs, encoding,
 		if not success:
 			sys.stderr.write ("(skipping character)]")
 			sys.stderr.flush ()
+        		encoding[a] = ".notavail"
 			continue
 
 		if not verbose_p:
@@ -644,6 +649,7 @@ def trace_font (fontname, gf_file, metric, glyphs, encoding,
 						 tw)
 
 		if t1o == '':
+        		encoding[a] = ".notavail"
 			continue
 
 		font_bbox = update_bbox_with_bbox (font_bbox, bbox)
@@ -662,7 +668,8 @@ def ps_encode_encoding (encoding):
 	      % (len (encoding), len (encoding)-1)
 
 	for i in range (0, len (encoding)):
-		str = str + 'dup %d /%s put\n' % (i, encoding[i])
+    		if encoding[i] != ".notavail":
+			str = str + 'dup %d /%s put\n' % (i, encoding[i])
 
 	return str
 
@@ -756,13 +763,6 @@ cleartomark
 
 	opt = ''
 
-	outname = fontname + '.pfa'
-
-	rawname = outname + '.raw'
-	progress (_ ("Assembling raw font to `%s'... ") % rawname)
-	system ('t1asm --pfa mftrace.t1asm %s' % rawname)
-	progress ('\n')
-
 def update_bbox_with_point (bbox, pt):
 	(llx, lly, urx, ury) = bbox
 	llx = min (pt[0], llx)
@@ -810,33 +810,128 @@ def get_fontforge_command ():
 		return ''
 	return fontforge_cmd
 
-def make_outputs (fontname, formats):
-	"""
-	run pfaedit to convert to other formats
-	"""
+def tfm2kpx (tfmname, encoding):
+	kpx_lines = []
+	pl = popen ("tftopl %s" % (tfmname))
+	
+	label_pattern = re.compile (
+		"\A   \(LABEL ([DOHC]{1}) ([A-Za-z0-9]*)\)")
+	krn_pattern = re.compile (
+		"\A   \(KRN ([DOHC]{1}) ([A-Za-z0-9]*) R (-?[\d\.]+)\)")
 
-	ff_command = get_fontforge_command ()
-	if not ff_command:
-		shutil.copy2 (fontname + '.pfa.raw',
-			      fontname + '.pfa')
-		return 0
+	first = 0
+	second = 0
 
-	# not used?
-	if round_to_int :
-		round_cmd = 'RoundToInt();\n'
+	for line in pl.readlines ():
+		
+		label_match = label_pattern.search (line)
+		if not (label_match is None):
+			if label_match.group (1) == "D":
+				first = int (label_match.group (2))
+			elif label_match.group (1) == "O":
+				first = string.atoi (label_match.group (2), 8)
+			elif label_match.group (1) == "C":
+				first = ord (label_match.group (2))
+			
+		krn_match = krn_pattern.search (line)
+		if not (krn_match is None):
+			if krn_match.group (1) == "D":
+				second = int (krn_match.group (2))
+			elif krn_match.group (1) == "O":
+				second = string.atoi (krn_match.group (2), 8)
+			elif krn_match.group (1) == "C":
+				second = ord (krn_match.group (2))
+			
+			krn = round (float (krn_match.group (3)) * 1000)
+			
+			if (encoding[first] != '.notavail' and 
+				encoding[first] != '.notdef' and
+				encoding[second] != '.notavail' and 
+				encoding[second] != '.notdef'):
+				
+				kpx_lines.append ("KPX %s %s %d\n" % (
+					encoding[first], encoding[second], krn))
+	
+	return kpx_lines
 
-	generate_cmds = ''
-	for f in formats:
-		generate_cmds += 'Generate("%s");' % (fontname + '.' + f)
+def get_afm (t1_path, tfmname, encoding, out_path):
+	afm_stream = popen ("printafm %s" % (t1_path))
+	afm_lines = []
+	kpx_lines = tfm2kpx (tfmname, encoding)
+	
+	for line in afm_stream.readlines ():
+		afm_lines.append (line)
+		
+		if re.match (r"^EndCharMetrics", line, re.I):
+			afm_lines.append ("StartKernData\n")
+			afm_lines.append ("StartKernPairs %d\n" % len (kpx_lines))
+			
+			for kpx_line in kpx_lines:
+				afm_lines.append (kpx_line)
+			
+			afm_lines.append ("EndKernPairs\n")
+			afm_lines.append ("EndKernData\n")
+	 
+	progress (_ ("Writing metrics to `%s'... ") % out_path)
+	afm_file = open (out_path, 'w')
+	afm_file.writelines (afm_lines)
+	afm_file.flush ()
+	afm_file.close ()
+	
+	progress ('\n')
 
-	simplify_cmd = ''
-	if simplify_p:
-		simplify_cmd ='''SelectAll ();
-SelectAll ();
+def assemble_font (fontname, format, is_raw):
+    ext = '.' + format
+    asm_opt = '--pfa'
+    
+    if format == 'pfb':
+        asm_opt = '--pfb'
+
+    if is_raw:
+        ext = ext + '.raw'
+    
+    outname = fontname + ext
+
+    progress (_ ("Assembling raw font to `%s'... ") % outname)
+    system ('t1asm %s mftrace.t1asm %s' % (asm_opt, outname))
+    progress ('\n')
+    return outname
+
+def make_outputs (fontname, formats, encoding):
+  	"""
+  	run pfaedit to convert to other formats
+  	"""
+  
+	ff_needed = 0
+	ff_command = ""
+    
+	if (simplify_p or round_to_int or 'ttf' in formats or 'svg' in formats):
+		ff_needed = 1
+	if ff_needed:
+		ff_command = get_fontforge_command ()
+    
+	if ff_needed and ff_command:
+		raw_name = assemble_font (fontname, 'PFA', 1)
+
+		round_cmd = ''
+		if round_to_int :
+			round_cmd = 'RoundToInt();\n'
+
+		generate_cmds = ''
+		for f in formats:
+			generate_cmds += 'Generate("%s");' % (filename  + '.' + f)
+
+		simplify_cmd = ''
+		if simplify_p:
+			simplify_cmd ='''SelectAll ();
+
 AddExtrema();
 Simplify ();
-AutoHint ();'''
-
+%(round_cmd)
+AutoHint ();''' % vars()
+	elif round_to_int:
+		simplify_cmd = 'RoundToInt()'
+		
 	open ('to-ttf.pe', 'w').write ('''#!/usr/bin/env %(ff_command)s
 Open ($1);
 MergeKern($2);
@@ -846,8 +941,20 @@ MergeKern($2);
 Quit (0);
 ''' % vars())
 
-	system ("%s -script to-ttf.pe %s %s" % (ff_command,
-						(fontname+ '.pfa.raw'), tfmfile))
+		system ("%s -script to-ttf.pe %s %s" % (ff_command,
+			    (raw_name), tfmfile))
+	else:
+		t1_path = ''
+	
+		if ('pfa' in formats):
+			t1_path = assemble_font (fontname, 'pfa', 0)
+
+		if ('pfb' in formats):
+			t1_path = assemble_font (fontname, 'pfb', 0)
+	
+		if (t1_path != '' and 'afm' in formats):
+			get_afm (t1_path, tfmfile, encoding, fontname + '.afm')
+
 
 def getenv (var, default):
 	if os.environ.has_key (var):
@@ -909,8 +1016,11 @@ def gen_pixel_font (filename, metric, magnification):
 
 		logfile = '%s.log' % filename
 		log = ''
+                prod = 0
 		if os.path.exists (logfile):
 			log = open (logfile).read ()
+			m = re.search ('Output written on %s.([0-9]+)gf' % re.escape (filename), log)
+			prod = string.atoi (m.group (1))
 
 		if st:
 			sys.stderr.write ('\n\nMetafont failed.  Excerpt from the log file: \n\n*****')
@@ -926,9 +1036,12 @@ Apparently, some numbers overflowed.  Try using --magnification with a
 lower number.  (Current magnification: %d)
 """ % magnification)
 
-			sys.exit (1)
-		m = re.search ('Output written on %s.([0-9]+)gf' % re.escape (filename), log)
-		prod = string.atoi (m.group (1))
+			if not keep_trying_p or prod == 0:
+				sys.exit (1)
+			else:
+				sys.stderr.write ('\n\nTrying to proceed despite of the Metafont errors...\n')
+		
+	    
 
 	return "%s.%d" % (filename, prod)
 
@@ -1206,7 +1319,7 @@ if trace_binary != 'potrace' and stat == 0:
 	path_to_type1_ops = autotrace_path_to_type1_ops
 
 if not trace_binary:
-	error (_ ("No tracing program found. Exit."))
+	error (_ ("No tracing program found.\nInstall potrace or autotrace."))
 
 
 identify (sys.stderr)
@@ -1284,7 +1397,7 @@ for filename in files:
 	trace_font (basename, gf_fontname, metric, glyph_range, encoding,
 		    magnification, fontinfo)
 		
-	make_outputs (basename, formats)
+	make_outputs (basename, formats, encoding)
 	for format in formats:
 		shutil.copy2 (basename + '.' + format, origdir)
 

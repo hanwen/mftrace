@@ -1,3 +1,40 @@
+2005-06-04  Alexej Kryukov  <akrioukov@newmail.ru>
+
+	* mftrace.py: Implemented a function (get_afm) which allows to
+	generate AFM files without using fontforge. This function requires
+	ghostscript to be present on user's system and uses the same
+	algorithm, as the t12afm.sh script, distributed with TeXtrace.
+	
+	* mftrace.py: mftrace now tries to access fontforge only if any
+	functions which really require passing the font to fontforge are
+	requested. This functions include rounding to integer (note that
+	it *is* enabled by default), simplifying and autohinting, as well
+	as generating any output formats except PFA or PFB. Otherwise the
+	output is generated directly with t1asm. Note that for generating
+	AFM either fontforge or the built-in get_afm function may be used,
+	depending from the factors listed above.
+	
+	* mftrace.py: The --keep-trying option now causes mftrace to
+	ignore not only potrace/autotrace errors, but also METAFONT errors
+	(in case METAFONT reports an error, but, nevertheless, generates a
+	GF file). This may be useful for processing some buggy fonts in
+	heigh resolutions.
+	
+	* mftrace.py: mftrace now recognizes a special `.notavail' glyph
+	name in encoding files which you may specify via its `--encoding'
+	option.  You may use this name to prevent mftrace from processing
+	any specific glyphs (e. g. because they are blank in the
+	corresponding TeX codepage, so that there is no need to trace
+	them). This name is also automatically inserted into the encoding
+	table used by mftrace during the conversion process, if
+	potrace/autotrace fails to process a specific character. Again, by
+	this way we prevent useless blank characters from appearing in the
+	resulting PostScript output.
+	  
+2005-06-04  Han-Wen Nienhuys  <hanwen@xs4all.nl>
+
+	* mftrace.py (stat): more verbosity.
+
 2005-04-20  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
 	* configure.in (PYTHON): release 1.1.9
