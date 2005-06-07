@@ -48,25 +48,20 @@ do the real work: a tracing program and t1asm.  To run mftrace you need:
 @section Recommended
 
 @itemize @bullet
-@item  A recent version (040215 or newer) of
-@uref{http://fontforge.sourceforge.net,FontForge}. By default mftrace 
-always checks if FontForge is present on user's system. If it is available,
-then mftrace will run the font through FontForge to simplify and autohint it.
-FontForge is also used to generate output in additional formats (e. g. 
-TrueType).
-
-However, if you don't like your font to be run through FontForge, you
-may prevent this by requesting only those mftrace options, which may be
-executed without accessing this font editor. Namely, you should not request
-any output formats except PFA, PFB or AFM. Additionally, you should not 
-use the --simplify option, while the --noround option must be enabled.
+@item A recent version (040215 or newer) of
+@uref{http://fontforge.sourceforge.net,FontForge}. Some of @code{mftrace}
+functionality requires FontForge to be present on user's system. This
+includes rounding to integer, simplifying and autohinting font outlines,
+as well as generating any output formats except PFA, PFB and AFM. You
+should not request any of these features using @code{mftrace} options if
+you don't like your font to be run through FontForge (note that in this
+case you also have to explicitly specify @code{--noround} to disable 
+rounding to integer).
 
 @item Alternatively, you need GhostScript with its @file{printafm}
-utility, available somethere in your PATH. @code{mftrace} may use
-@file{printafm} to generate AFM files (the algorithm is basically the same
-as in the @file{t12afm.sh} script, distributed with @file{TeXtrace}).
-However, this is done only if FontForge is not used for processing
-the font.
+utility, available somethere in your PATH. @code{mftrace} uses
+@file{printafm} to generate AFM files in case there is no need to
+process the font with FontForge.
 
 @end itemize
 

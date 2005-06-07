@@ -913,10 +913,6 @@ def make_outputs (fontname, formats, encoding):
 	if ff_needed and ff_command:
 		raw_name = assemble_font (fontname, 'PFA', 1)
 
-		round_cmd = ''
-		if round_to_int :
-			round_cmd = 'RoundToInt();\n'
-
 		generate_cmds = ''
 		for f in formats:
 			generate_cmds += 'Generate("%s");' % (filename  + '.' + f)
@@ -930,7 +926,7 @@ Simplify ();
 %(round_cmd)
 AutoHint ();''' % vars()
 		elif round_to_int:
-			simplify_cmd = 'RoundToInt()'
+			simplify_cmd = 'RoundToInt();'
 
 		open ('to-ttf.pe', 'w').write ('''#!/usr/bin/env %(ff_command)s
 Open ($1);
