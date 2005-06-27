@@ -911,27 +911,26 @@ def make_outputs (fontname, formats, encoding):
 		ff_command = get_fontforge_command ()
     
 	if ff_needed and ff_command:
-		raw_name = assemble_font (fontname, 'PFA', 1)
+		raw_name = assemble_font (fontname, 'pfa', 1)
 
+		simplify_cmd = ''
+		if round_to_int:
+			simplify_cmd = 'RoundToInt ();'
 		generate_cmds = ''
 		for f in formats:
 			generate_cmds += 'Generate("%s");' % (filename  + '.' + f)
 
-		simplify_cmd = ''
 		if simplify_p:
 			simplify_cmd ='''SelectAll ();
 
 AddExtrema();
 Simplify ();
-%(round_cmd)
+%(simplify_cmd)s
 AutoHint ();''' % vars()
-		elif round_to_int:
-			simplify_cmd = 'RoundToInt();'
 
 		open ('to-ttf.pe', 'w').write ('''#!/usr/bin/env %(ff_command)s
 Open ($1);
 MergeKern($2);
-%(round_cmd)s
 %(simplify_cmd)s
 %(generate_cmds)s
 Quit (0);
