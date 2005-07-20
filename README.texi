@@ -22,7 +22,7 @@ Versions prior to 1.0.5 were called `pktrace'.
 @section Download
 
 @itemize
-@item @uref{http://www.cs.uu.nl/~hanwen/mftrace/mftrace-@MFTVERSION@.tar.gz}
+@item @uref{http://www.xs4all.nl/~hanwen/mftrace/mftrace-@MFTVERSION@.tar.gz}
 @item Anonymous CVS at 
 @code{anoncvs@@subversions.gnu.org:/cvsroot/lilypond}, module
 @code{mftrace}.
@@ -251,11 +251,11 @@ FontForge does not recognize TeX encodings.
 @end itemize 
 
 Should you encounter any bug or problem, then please send a bugreport
-to @email{hanwen@@cs.uu.nl,Han-Wen Nienhuys}.
+to @email{hanwen@@xs4all.nl,Han-Wen Nienhuys}.
 
 @section Author
 
-@email{hanwen@@cs.uu.nl,Han-Wen Nienhuys}
+@email{hanwen@@xs4all.nl,Han-Wen Nienhuys}
 
 
 @section Credits

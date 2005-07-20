@@ -1,3 +1,7 @@
+2005-07-20  Han-Wen Nienhuys  <hanwen@xs4all.nl>
+
+	* README.texi (Top): cs.uu.nl -> xs4all.nl everywhere.
+
 2005-06-07  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
 	* README.texi: doc update by Alexej.

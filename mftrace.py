@@ -195,7 +195,7 @@ def help ():
 		('\n'),
 		(options_help_str (option_definitions)),
 		('\n\n'),
-		(_ ("Report bugs to %s") % 'hanwen@cs.uu.nl'),
+		(_ ("Report bugs to %s") % 'hanwen@xs4all.nl'),
 		('\n')]
 	map (sys.stdout.write, ls)
 
@@ -739,7 +739,7 @@ cleartomark
 	vars = {
 		'VVV': '001',
 		'WWW': '001',
-		'Notice': 'Generated from MetaFont bitmap by mftrace %s, http://www.cs.uu.nl/~hanwen/mftrace/ ' % program_version,
+		'Notice': 'Generated from MetaFont bitmap by mftrace %s, http://www.xs4all.nl/~hanwen/mftrace/ ' % program_version,
 		'UnderlinePosition': '-100',
 		'UnderlineThickness': '50',
 		'xrevscale': 1.0/1000.0,
