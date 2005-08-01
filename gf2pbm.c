@@ -302,6 +302,7 @@ read_GF_char(struct font *fontp, wide_ubyte ch)
 	ubyte	cmnd;
 	int	min_m, max_m, min_n, max_n;
 	BMUNIT	*cp, *basep, *maxp;
+	char	**basep_cpp = &basep;
 	int	bytes_wide;
 	bool	paint_switch;
 #define	White	false
@@ -389,7 +390,7 @@ read_GF_char(struct font *fontp, wide_ubyte ch)
 		case SKIP1:
 		case SKIP2:
 		case SKIP3:
-		  *((char **) &basep) +=
+		  *(basep_cpp) +=
 		    num(GF_file, WIDENINT cmnd - SKIP0) * bytes_wide;
 		case SKIP0:
 		    new_row = true;
@@ -412,7 +413,7 @@ read_GF_char(struct font *fontp, wide_ubyte ch)
 	    } /* end switch */
 	    if (new_row) {
 
-	      *((char **) &basep) +=
+	      *(basep_cpp) +=
 		bytes_wide;
 	      if (basep >= maxp || cp >= basep) too_many_bits(ch);
 		 cp = basep;

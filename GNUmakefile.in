@@ -25,9 +25,6 @@ all: compile
 
 compile: mftrace gf2pbm
 
-gf2pbm: gf2pbm.c
-	gcc -O2 -Wall -o $@ $<
-
 README.txt: README.texi
 	sed 's/@MFTVERSION@/@VERSION@/g' < $< > $<.in
 	makeinfo --no-split --no-headers --output $@  $<.in

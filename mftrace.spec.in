@@ -25,7 +25,7 @@ Ghostscript can generate much better PDF, if given scalable fonts.
 
 %build
 ./configure --prefix=/usr/
-make 
+make
 make README.txt
 
 

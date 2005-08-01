@@ -1,3 +1,11 @@
+2005-08-01  Han-Wen Nienhuys  <hanwen@xs4all.nl>
+
+	* gf2pbm.c: conform to strict aliasing rules (Patch by Stanislav
+	Brabec)
+
+	* GNUmakefile.in: removes explicit rule for CC (Patch by Stanislav
+	Brabec)
+
 2005-07-20  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
 	* README.texi (Top): cs.uu.nl -> xs4all.nl everywhere.
