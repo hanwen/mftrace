@@ -74,7 +74,8 @@ coding_dict = {
 
 if datadir == '@' + "datadir" + "@":
 	datadir = os.getcwd ()
-
+	bindir =  os.getcwd ()
+	
 sys.path.append (datadir)
 
 import afm
@@ -380,7 +381,7 @@ def make_pbm (filename, outname, char_number):
 	""" Extract bitmap from the PK file FILENAME (absolute) using `gf2pbm'.
 	Return FALSE if the glyph is not valid.
 	"""
-	
+
 	command = "%s/gf2pbm -n %d -o %s %s" % (bindir, char_number, outname, filename)
 	status = system (command, ignore_error = 1)
 	return (status == 0)
