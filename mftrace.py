@@ -98,7 +98,7 @@ except:
 		return s
 
 def shell_escape_filename (str):
-	str = re.sub ('[\'" ]', '\\\1', str)
+	str = re.sub ('[\'" ]', r'\\\1', str)
 	return str
 	
 
