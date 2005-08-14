@@ -1,3 +1,7 @@
+2005-08-14  Han-Wen Nienhuys  <hanwen@xs4all.nl>
+
+	* mftrace.py (make_outputs): re.escape files on command line.
+
 2005-08-01  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
 	* mftrace.py (coding_dict): set bindir too.

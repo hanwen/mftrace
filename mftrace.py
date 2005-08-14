@@ -894,7 +894,7 @@ def assemble_font (fontname, format, is_raw):
     outname = fontname + ext
 
     progress (_ ("Assembling raw font to `%s'... ") % outname)
-    system ('t1asm %s mftrace.t1asm %s' % (asm_opt, outname))
+    system ('t1asm %s mftrace.t1asm %s' % (asm_opt, re.escape (outname)))
     progress ('\n')
     return outname
 
@@ -938,7 +938,7 @@ Quit (0);
 ''' % vars())
 
 		system ("%s -script to-ttf.pe %s %s" % (ff_command,
-			    (raw_name), tfmfile))
+			    re.escape (raw_name), re.escape (tfmfile)))
 	else:
 		t1_path = ''
 	
