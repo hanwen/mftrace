@@ -97,6 +97,11 @@ except:
 	def _ (s):
 		return s
 
+def shell_escape_filename (str):
+	str = re.sub ('[\'" ]', '\\\1', str)
+	return str
+	
+
 def identify (port):
 	port.write ('%s %s\n' % (program_name, program_version))
 
@@ -894,7 +899,7 @@ def assemble_font (fontname, format, is_raw):
     outname = fontname + ext
 
     progress (_ ("Assembling raw font to `%s'... ") % outname)
-    system ('t1asm %s mftrace.t1asm %s' % (asm_opt, re.escape (outname)))
+    system ('t1asm %s mftrace.t1asm %s' % (asm_opt, shell_escape_filename (outname)))
     progress ('\n')
     return outname
 
@@ -938,7 +943,7 @@ Quit (0);
 ''' % vars())
 
 		system ("%s -script to-ttf.pe %s %s" % (ff_command,
-			    re.escape (raw_name), re.escape (tfmfile)))
+			    shell_escape_filename (raw_name), shell_escape_filename (tfmfile)))
 	else:
 		t1_path = ''
 	
