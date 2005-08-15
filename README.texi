@@ -267,17 +267,19 @@ FontForge.
 Thanks to all contributors for finding bugs,
 @itemize @bullet
 @item
-Stanislav Brabec
-@item
- @uref{http://www.maths.qmul.ac.uk/~jdg/,Julian Gilbey}
- @item
-G@"{u}nther Spahlinger 
-@item
 Andrey V. Panov
 @item
-Richard Mahoney
+Geoffrey Alan Washburn
 @item
- Many others
+ @uref{http://www.maths.qmul.ac.uk/~jdg/,Julian Gilbey}
+@item
+  G@"{u}nther Spahlinger 
+@item
+  Richard Mahoney
+@item
+  Stanislav Brabec
+@item
+   Many others
 @end itemize
 
 
