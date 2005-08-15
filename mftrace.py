@@ -923,7 +923,7 @@ def make_outputs (fontname, formats, encoding):
 			simplify_cmd = 'RoundToInt ();'
 		generate_cmds = ''
 		for f in formats:
-			generate_cmds += 'Generate("%s");' % (filename  + '.' + f)
+			generate_cmds += 'Generate("%s");' % (fontname  + '.' + f)
 
 		if simplify_p:
 			simplify_cmd ='''SelectAll ();
@@ -933,7 +933,7 @@ Simplify ();
 %(simplify_cmd)s
 AutoHint ();''' % vars()
 
-		open ('to-ttf.pe', 'w').write ('''#!/usr/bin/env %(ff_command)s
+		pe_script = ('''#!/usr/bin/env %(ff_command)s
 Open ($1);
 MergeKern($2);
 %(simplify_cmd)s
@@ -941,6 +941,9 @@ MergeKern($2);
 Quit (0);
 ''' % vars())
 
+		open ('to-ttf.pe', 'w').write (pe_script)
+		if verbose_p:
+			print 'Fontforge script', pe_script
 		system ("%s -script to-ttf.pe %s %s" % (ff_command,
 			    shell_escape_filename (raw_name), shell_escape_filename (tfmfile)))
 	else:

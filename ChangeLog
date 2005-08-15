@@ -1,5 +1,9 @@
 2005-08-15  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
+	* configure.in (PYTHON): 1.1.16
+
+	* mftrace.py (make_outputs): generate <fontname>.pfb not <filename>.pfb
+
 	* configure.in: release 1.1.15
 
 	* mftrace.py (shell_escape_filename): put offending chars in group. 
