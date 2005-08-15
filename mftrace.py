@@ -98,9 +98,8 @@ except:
 		return s
 
 def shell_escape_filename (str):
-	str = re.sub ('[\'" ]', r'\\\1', str)
+	str = re.sub ('([\'" ])', r'\\\1', str)
 	return str
-	
 
 def identify (port):
 	port.write ('%s %s\n' % (program_name, program_version))
@@ -307,7 +306,7 @@ def find_file (nm):
 		except IOError:
 			pass
 
-	p = popen ('kpsewhich %s' % nm).read ()[:-1]
+	p = popen ('kpsewhich %s' % shell_escape_filename (nm)).read ()[:-1]
 
 	# urg. Did I do this ?
 	if dos_kpath_p:
@@ -1346,7 +1345,7 @@ for filename in files:
 		tfmfile = find_file (basename + '.tfm')
 
 	if not tfmfile:
-		tfmfile = popen ("mktextfm %s 2>/dev/null" % basename).read ()
+		tfmfile = popen ("mktextfm %s 2>/dev/null" % shell_escape_filename (basename)).read ()
 		if tfmfile:
 			tfmfile = tfmfile[:-1]
 
