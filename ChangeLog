@@ -1,4 +1,11 @@
-2005-08-15  Han-Wen Nienhuys  <hanwen@xs4all.nl>
+2005-10-16  Han-Wen Nienhuys  <hanwen@xs4all.nl>
+
+	* README.texi (Top): add Thomas Bushnell BSG.
+
+	* gf2pbm.c (read_GF_char): fix type-punning pointer error.  This
+	fixes GCC4 big-endian -O2 build. Thanks to Thomas Bushnell BSG !
+
+ 2005-08-15  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
 	* configure.in (PYTHON): 1.1.16
 
