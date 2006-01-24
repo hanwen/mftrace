@@ -307,7 +307,7 @@ def find_file (nm):
 			pass
 
 	p = popen ('kpsewhich %s' % shell_escape_filename (nm)).read ()
-	p.strip (' \n\t\r')
+	p = p.strip ()
 	
 	if dos_kpath_p:
 		orig = p
