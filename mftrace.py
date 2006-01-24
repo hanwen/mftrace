@@ -306,9 +306,9 @@ def find_file (nm):
 		except IOError:
 			pass
 
-	p = popen ('kpsewhich %s' % shell_escape_filename (nm)).read ()[:-1]
-
-	# urg. Did I do this ?
+	p = popen ('kpsewhich %s' % shell_escape_filename (nm)).read ()
+	p.strip ()
+	
 	if dos_kpath_p:
 		orig = p
 		def func (m):
