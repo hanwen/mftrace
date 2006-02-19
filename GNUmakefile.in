@@ -54,13 +54,16 @@ GNUmakefile: GNUmakefile.in configure
 %.pyc: %.py
 	$(PYTHON) -c 'import py_compile; py_compile.compile ("$<")'
 
-install: mftrace gf2pbm $(PYC_MODULES)
+install: mftrace gf2pbm $(PYC_MODULES) install-man
 	install -d $(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man1
 	install mftrace $(DESTDIR)$(bindir)
 	install gf2pbm$(EXEEXT) $(DESTDIR)$(bindir)/gf2pbm$(EXEEXT)
 	install -d $(DESTDIR)$(datadir)
-	install -m644 $(MANPAGES) $(DESTDIR)$(mandir)/man1/
 	install -m644 $(PY_MODULES) $(PYC_MODULES) $(DESTDIR)$(datadir) 
+
+
+install-man: $(MANPAGES)
+	install -m644 $< $(DESTDIR)$(mandir)/man1/
 
 uninstall:
 	rm $(DESTDIR)$(bindir)/mftrace $(DESTDIR)$(bindir)/gf2pbm$(EXEEXT)
