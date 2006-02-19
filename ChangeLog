@@ -1,3 +1,7 @@
+2006-02-19  Han-Wen Nienhuys  <hanwen@xs4all.nl>
+
+	* GNUmakefile.in (CFLAGS): add srcdir support.
+
 2006-01-24  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
 	* mftrace.py (find_file): strip the whitespace from output

@@ -7,8 +7,9 @@ FILES= mftrace.py GNUmakefile.in \
 	README.texi README.txt ChangeLog \
 	mftrace.spec.in mftrace.spec \
 	$(PY_MODULES) configure configure.in config.h.in
-CFLAGS=-Wall -O2
-
+CFLAGS=-Wall -O2 -I.
+srcdir=@srcdir@
+VPATH=$(srcdir)
 NAME=mftrace
 MANPAGES=mftrace.1
 VERSION=@VERSION@
@@ -52,7 +53,6 @@ GNUmakefile: GNUmakefile.in configure
 
 %.pyc: %.py
 	$(PYTHON) -c 'import py_compile; py_compile.compile ("$<")'
-
 
 install: mftrace gf2pbm $(PYC_MODULES)
 	install -d $(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man1
