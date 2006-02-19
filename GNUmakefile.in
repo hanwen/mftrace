@@ -52,7 +52,7 @@ GNUmakefile: GNUmakefile.in configure
 	chmod a-w GNUmakefile
 
 %.pyc: %.py
-	$(PYTHON) -c 'import py_compile; py_compile.compile ("$<")'
+	$(PYTHON) -c 'import py_compile; py_compile.compile ("$<", cfile="$@")'
 
 install: mftrace gf2pbm $(PYC_MODULES) install-man install-py
 	install -d $(DESTDIR)$(bindir) 
