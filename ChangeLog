@@ -1,5 +1,7 @@
 2006-02-28  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
+	* README.texi (Top): patch for README and manpage too.
+
 	* configure.in (PYTHON): release .19
 
 	* mftrace.py (font_info): --define. patch by

@@ -199,18 +199,21 @@ use Potrace (default).
 @item --autotrace
 use AutoTrace.
 
+@item -D,--define=@var{symbol}=@var{value}
+Set the font info @var{symbol} to the given @var{value}. For example
+@code{-DFamilyName=Foo} sets the font family name to @code{Foo}.
+
+Mftrace tries to fill in sensible values for the FontName, FamilyName,
+FullName and Weight fields. It does so by guessing values for the CM font
+series. For other fonts, it tries to read an AFM file (which is not likely
+to exist). Suggestions for a more generic way to handle this are welcome.
+
 @end table
 
 Mftrace uses kpathsea for finding fonts, so any kpathsea variable can
 be used to fine-tune which files should be loaded.  For example, you
 can set @code{MFINPUTS} to specify which paths to search for
 @file{.mf} files.
-
-Mftrace tries to fill in sensible values for the FontFamily, FullName
-and Weight fields. It does so by guessing values for the CM font
-series. For other fonts, it tries to read an AFM file (which is not
-likely to exist). Suggestions for a more generic way to handle this
-are welcome.
 
 Additional options may be passed to the backend program (potrace or autotrace)
 with the @code{MFTRACE_BACKEND_OPTIONS} environment variable.

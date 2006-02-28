@@ -170,10 +170,17 @@ Disabled by default.
 Set reciprocal grid size in em units multiplied by ratio
 magnification/1000.  For example, \fB\-\-grid\fP 10
 \fB\-\-magnification\fP 1000 will round coordinates of control points
-to 1/10 of em unit.  Useful simultaneously with the \fB\-\-noround\fB
+to 1/10 of em unit.  Useful simultaneously with the \fB\-\-noround\fP
 option.  Default \fIGRID\fP value is 1, i.e., round to integer.  This
 option is only used with
 .BR potrace .
+.
+.TP
+.BI \-D,\-\-define= SYMBOL=VALUE
+Set the font info \fISYMBOL\fP to the given \fIVALUE\fP. For example
+\fB-D\fPFamilyName=Foo sets the font family name to \fIFoo\fP. Mftrace tries
+to fill in sensible default values for the FontName, FamilyName, FullName
+and Weight fields.
 .
 .TP
 .B \-V, \-\-verbose
