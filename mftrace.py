@@ -292,7 +292,8 @@ option_definitions = [
 	('', '', 'autotrace', _ ("Use autotrace")),
 	('', '', 'no-afm', _("Don't read AFM file")),
 	('', '', 'noround', _ ("Do not round coordinates of control points \n                             to integer values (use with --grid)")),
-	('GRID', '', 'grid', _ ("Set reciprocal grid size in em units"))
+	('GRID', '', 'grid', _ ("Set reciprocal grid size in em units")),
+	('SYMBOL=VALUE', 'D', 'define', _ ("Set the font info SYMBOL to VALUE"))
 	]
 
 
@@ -1251,6 +1252,7 @@ encoding_file_override = ''
 glyph_range = []
 glyph_ranges = []
 glyph_subrange = []
+font_info = {}
 for (o, a) in options:
 	if 0:
 		pass
@@ -1303,6 +1305,12 @@ for (o, a) in options:
 		read_afm_p = 0
 	elif o == '--grid':
 		potrace_scale = round (string.atof (a))
+	elif o == '--define' or o == '-D':
+		index = a.find('=')
+		if index == -1:
+			font_info[a] = 'true'
+		else:
+			font_info[a[:index]] = a[index+1:]
 	else:
 		raise 'Ugh -- forgot to implement option: %s.)' % o
 
@@ -1359,7 +1367,8 @@ for filename in files:
 	metric = tfm.read_tfm_file (tfmfile)
 
 	fontinfo = guess_fontinfo (basename)
-
+	for (k, v) in font_info.items():
+		fontinfo[k] = v
 
 	if encoding_file and not os.path.exists (encoding_file):
 		encoding_file = find_file (encoding_file)

@@ -1,3 +1,10 @@
+2006-02-28  Han-Wen Nienhuys  <hanwen@xs4all.nl>
+
+	* configure.in (PYTHON): release .19
+
+	* mftrace.py (font_info): --define. patch by
+	Emmanuel.Beffara@pps.jussieu.fr
+
 2006-02-19  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
 	* GNUmakefile.in (CFLAGS): add srcdir support.
