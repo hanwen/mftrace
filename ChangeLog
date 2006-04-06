@@ -1,3 +1,8 @@
+2006-04-06  Han-Wen Nienhuys  <hanwen@lilypond.org>
+
+	* mftrace.py (parse_command_line): use optparse iso. getopt.
+	pychecker cleanups. Now probably requires python 2.x.
+
 2006-02-28  Han-Wen Nienhuys  <hanwen@xs4all.nl>
 
 	* README.texi (Top): patch for README and manpage too.
