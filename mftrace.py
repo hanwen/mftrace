@@ -989,6 +989,7 @@ Copyright (c) 2005--2006 by
 		      metavar="FILE",
 		      action='store',
 		      dest="encoding_file",
+		      default="",
 		      help= _ ("Use encoding file FILE"))
 	p.add_option ('','--keep-trying',
 		      dest='keep_trying',
@@ -1030,7 +1031,6 @@ Copyright (c) 2005--2006 by
 		      action='append',help=_("Set the font info SYMBOL to VALUE"))
 
 	global options
-	options.encoding_file = ''
 	(options, files) = p.parse_args ()
 
 	if not files:
