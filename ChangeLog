@@ -1,3 +1,7 @@
+2006-04-27  Han-Wen Nienhuys  <hanwen@lilypond.org>
+
+	* mftrace.py (parse_command_line): move options.encoding_file upwards.
+
 2006-04-06  Han-Wen Nienhuys  <hanwen@lilypond.org>
 
 	* mftrace.py (parse_command_line): use optparse iso. getopt.

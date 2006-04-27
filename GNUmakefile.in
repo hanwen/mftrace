@@ -40,6 +40,9 @@ dist: $(FILES)
 	tar --owner=0 --group=0  -zcf $(distdir).tar.gz $(distdir)
 	rm -rf $(distdir)
 
+mftrace.spec: mftrace.spec.in configure
+	./config.status
+
 mftrace: mftrace.py configure
 	./config.status
 
@@ -85,7 +88,7 @@ clean:
 	rm -f *'~' '#'*
 
 
-TEST_FONTS=parmesan20 ecbi0900 logo10
+TEST_FONTS= ecbi0900 logo10
 test:
 	$(foreach a, $(TEST_FONTS), $(PYTHON) mftrace.py --glyphs 65 -V $(a) &&)true
 

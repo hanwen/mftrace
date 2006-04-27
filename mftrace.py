@@ -987,6 +987,8 @@ Copyright (c) 2005--2006 by
 		      dest='tfm_file')
 	p.add_option ('-e', '--encoding',
 		      metavar="FILE",
+		      action='store',
+		      dest="encoding_file",
 		      help= _ ("Use encoding file FILE"))
 	
 	p.add_option ('','--keep-trying',
@@ -1029,6 +1031,7 @@ Copyright (c) 2005--2006 by
 		      action='append',help=_("Set the font info SYMBOL to VALUE"))
 
 	global options
+	options.encoding_file = ''
 	(options, files) = p.parse_args ()
 
 	if not files:
@@ -1067,7 +1070,6 @@ Copyright (c) 2005--2006 by
 	options.glyphs = glyph_range
 	
 	options.trace_binary = ''
-	options.encoding_file = ''
 	if options.potrace:
 		options.trace_binary = 'potrace'
 	elif options.autotrace:
