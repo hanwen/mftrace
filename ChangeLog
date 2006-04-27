@@ -1,3 +1,11 @@
+2006-04-27  Werner Lemberg  <wl@gnu.org>
+
+	* mftrace.py <top_level>: Don't define `include_dirs' here. 
+	(parse_command_line) <'-I'>: Destination is `include_dirs', not
+	`includes'.
+	(do_file): Define `include_dirs' here.  Copy command line option
+	values properly and append `origdir' before handling encoding files.
+
 2006-04-27  Han-Wen Nienhuys  <hanwen@lilypond.org>
 
 	* mftrace.py (parse_command_line): move options.encoding_file upwards.

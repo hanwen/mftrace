@@ -187,7 +187,6 @@ coding_dict = {
 	}
 
 
-include_dirs = [origdir]
 def find_file (nm):
 	for d in include_dirs:
 		p = os.path.join (d, nm)
@@ -971,7 +970,7 @@ Copyright (c) 2005--2006 by
 		      dest="gffile",
 		      help= _("Use gf FILE instead of running Metafont"))
 	p.add_option ('-I', '--include',
-		      dest="includes",
+		      dest="include_dirs",
 		      action="append",
 		      default=[],
 		      help=_("Add to path for searching files"))
@@ -1288,6 +1287,9 @@ def guess_fontinfo (filename):
 
 def do_file (filename):	
 	encoding_file = options.encoding_file
+	global include_dirs
+	include_dirs = options.include_dirs
+	include_dirs.append (origdir)
 
 	basename = strip_extension (filename, '.mf')
 	progress (_ ("Font `%s'..." % basename))
@@ -1336,7 +1338,6 @@ def do_file (filename):
 	if options.verbose:
 		progress ('Temporary directory is `%s\' ' % temp_dir)
 
-	include_dirs.append (os.getcwd ())
 	os.chdir (temp_dir)
 
 	if not options.gffile:
