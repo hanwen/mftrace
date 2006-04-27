@@ -990,7 +990,6 @@ Copyright (c) 2005--2006 by
 		      action='store',
 		      dest="encoding_file",
 		      help= _ ("Use encoding file FILE"))
-	
 	p.add_option ('','--keep-trying',
 		      dest='keep_trying',
 		      default=False,
