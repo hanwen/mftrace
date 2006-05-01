@@ -16,23 +16,23 @@ libdir = '@libdir@'
 exec_prefix = '@exec_prefix@'
 
 def interpolate (str):
-	str = string.replace (str, '{', '(')
-	str = string.replace (str, '}', ')s')
-	str = string.replace (str, '$', '%')
-	return str
+    str = string.replace (str, '{', '(')
+    str = string.replace (str, '}', ')s')
+    str = string.replace (str, '$', '%')
+    return str
 
 if prefix != '@' + 'prefix@':
-	exec_prefix = interpolate (exec_prefix) % vars ()
-	bindir = interpolate (bindir) % vars ()
-	datadir = os.path.join (interpolate (datadir) % vars (), 'mftrace')
-	libdir = interpolate (libdir) % vars ()
+    exec_prefix = interpolate (exec_prefix) % vars ()
+    bindir = interpolate (bindir) % vars ()
+    datadir = os.path.join (interpolate (datadir) % vars (), 'mftrace')
+    libdir = interpolate (libdir) % vars ()
 
 
 
 if datadir == '@' + "datadir" + "@":
-	datadir = os.getcwd ()
-	bindir =  os.getcwd ()
-	
+    datadir = os.getcwd ()
+    bindir =  os.getcwd ()
+    
 sys.path.append (datadir)
 
 import afm
@@ -46,111 +46,111 @@ errorport = sys.stderr
 # source file of the GNU LilyPond music typesetter
 
 try:
-	import gettext
-	gettext.bindtextdomain ('mftrace', localedir)
-	gettext.textdomain ('mftrace')
-	_ = gettext.gettext
+    import gettext
+    gettext.bindtextdomain ('mftrace', localedir)
+    gettext.textdomain ('mftrace')
+    _ = gettext.gettext
 except:
-	def _ (s):
-		return s
+    def _ (s):
+        return s
 
 def shell_escape_filename (str):
-	str = re.sub ('([\'" ])', r'\\\1', str)
-	return str
+    str = re.sub ('([\'" ])', r'\\\1', str)
+    return str
 
 def identify (port):
-	port.write ('%s %s\n' % (program_name, program_version))
+    port.write ('%s %s\n' % (program_name, program_version))
 
 def warranty ():
-	identify (sys.stdout)
-	sys.stdout.write ('\n')
-	sys.stdout.write (_ ('Copyright (c) %s by' % ' 2001--2004'))
-	sys.stdout.write ('\n')
-	sys.stdout.write ('  Han-Wen Nienhuys')
-	sys.stdout.write ('  Jan Nieuwenhuizen')
-	sys.stdout.write ('\n')
-	sys.stdout.write (_ (r'''
+    identify (sys.stdout)
+    sys.stdout.write ('\n')
+    sys.stdout.write (_ ('Copyright (c) %s by' % ' 2001--2004'))
+    sys.stdout.write ('\n')
+    sys.stdout.write ('  Han-Wen Nienhuys')
+    sys.stdout.write ('  Jan Nieuwenhuizen')
+    sys.stdout.write ('\n')
+    sys.stdout.write (_ (r'''
 Distributed under terms of the GNU General Public License.  It comes with
 NO WARRANTY.'''))
-	sys.stdout.write ('\n')
+    sys.stdout.write ('\n')
 
 def progress (s):
-	errorport.write (s)
+    errorport.write (s)
 
 def warning (s):
-	errorport.write (_ ("warning: ") + s)
+    errorport.write (_ ("warning: ") + s)
 
 def error (s):
-	'''Report the error S.  Exit by raising an exception.  Please
-	do not abuse by trying to catch this error.  If you do not want
-	a stack trace, write to the output directly.
+    '''Report the error S.  Exit by raising an exception.  Please
+    do not abuse by trying to catch this error.  If you do not want
+    a stack trace, write to the output directly.
 
-	RETURN VALUE
+    RETURN VALUE
 
-	None
+    None
 
-	'''
+    '''
 
-	errorport.write (_ ("error: ") + s + '\n')
-	raise _ ("Exiting ... ")
+    errorport.write (_ ("error: ") + s + '\n')
+    raise _ ("Exiting ... ")
 
 def setup_temp ():
-	"""
-	Create a temporary directory, and return its name.
-	"""
-	global temp_dir
-	if not options.keep_temp_dir:
-		temp_dir = tempfile.mkdtemp (program_name)
+    """
+    Create a temporary directory, and return its name.
+    """
+    global temp_dir
+    if not options.keep_temp_dir:
+        temp_dir = tempfile.mkdtemp (program_name)
 
-	try:
-		os.mkdir (temp_dir, 0700)
-	except OSError:
-		pass
+    try:
+        os.mkdir (temp_dir, 0700)
+    except OSError:
+        pass
 
-	return temp_dir
+    return temp_dir
 
 def popen (cmd, mode = 'r', ignore_error = 0):
-	if options.verbose:
-		progress (_ ("Opening pipe `%s\'") % cmd)
-	pipe = os.popen (cmd, mode)
-	if options.verbose:
-		progress ('\n')
-	return pipe
+    if options.verbose:
+        progress (_ ("Opening pipe `%s\'") % cmd)
+    pipe = os.popen (cmd, mode)
+    if options.verbose:
+        progress ('\n')
+    return pipe
 
 def system (cmd, ignore_error = 0):
-	"""Run CMD. If IGNORE_ERROR is set, don't complain when CMD returns non zero.
+    """Run CMD. If IGNORE_ERROR is set, don't complain when CMD returns non zero.
 
-	RETURN VALUE
+    RETURN VALUE
 
-	Exit status of CMD
-	"""
+    Exit status of CMD
+    """
 
-	if options.verbose:
-		progress (_ ("Invoking `%s\'\n") % cmd)
-	st = os.system (cmd)
-	if st:
-		name = re.match ('[ \t]*([^ \t]*)', cmd).group (1)
-		msg = name + ': ' + _ ("command exited with value %d") % st
-		if ignore_error:
-			warning (msg + ' ' + _ ("(ignored)") + ' ')
-		else:
-			error (msg)
-	if options.verbose:
-		progress ('\n')
-	return st
+    if options.verbose:
+        progress (_ ("Invoking `%s\'\n") % cmd)
+    st = os.system (cmd)
+    if st:
+        name = re.match ('[ \t]*([^ \t]*)', cmd).group (1)
+        msg = name + ': ' + _ ("command exited with value %d") % st
+        if ignore_error:
+            warning (msg + ' ' + _ ("(ignored)") + ' ')
+        else:
+            error (msg)
+    if options.verbose:
+        progress ('\n')
+    return st
 
 def cleanup_temp ():
-	if not options.keep_temp_dir:
-		if options.verbose:
-			progress (_ ("Cleaning %s...") % temp_dir)
-		shutil.rmtree (temp_dir)
+    if not options.keep_temp_dir:
+        if options.verbose:
+            progress (_ ("Cleaning %s...") % temp_dir)
+        shutil.rmtree (temp_dir)
 
 
 def strip_extension (f, ext):
-	(p, e) = os.path.splitext (f)
-	if e == ext:
-		e = ''
-	return p + e
+    (p, e) = os.path.splitext (f)
+    if e == ext:
+        e = ''
+    return p + e
 
 
 ################################################################
@@ -168,409 +168,409 @@ origdir = os.getcwd ()
 
 coding_dict = {
 
-	# from TeTeX
-	'TeX typewriter text': '09fbbfac.enc', # cmtt10
-	'TeX math symbols':'10037936.enc ', # cmbsy
-	'ASCII caps and digits':'1b6d048e', # cminch
-	'TeX math italic': 'aae443f0.enc ', # cmmi10
-	'TeX extended ASCII':'d9b29452.enc',
-	'TeX text': 'f7b6d320.enc',
-	'TeX text without f-ligatures': '0ef0afca.enc',
+    # from TeTeX
+    'TeX typewriter text': '09fbbfac.enc', # cmtt10
+    'TeX math symbols':'10037936.enc ', # cmbsy
+    'ASCII caps and digits':'1b6d048e', # cminch
+    'TeX math italic': 'aae443f0.enc ', # cmmi10
+    'TeX extended ASCII':'d9b29452.enc',
+    'TeX text': 'f7b6d320.enc',
+    'TeX text without f-ligatures': '0ef0afca.enc',
 
-	'Extended TeX Font Encoding - Latin': 'tex256.enc',
+    'Extended TeX Font Encoding - Latin': 'tex256.enc',
 
-	# LilyPond.
-	'fetaBraces': 'feta-braces-a.enc',
-	'fetaNumber': 'feta-nummer10.enc',
-	'fetaMusic': 'feta20.enc',
-	'parmesanMusic': 'parmesan20.enc',
-	}
+    # LilyPond.
+    'fetaBraces': 'feta-braces-a.enc',
+    'fetaNumber': 'feta-nummer10.enc',
+    'fetaMusic': 'feta20.enc',
+    'parmesanMusic': 'parmesan20.enc',
+    }
 
 
 def find_file (nm):
-	for d in include_dirs:
-		p = os.path.join (d, nm)
-		try:
-			open (p)
-			return p
-		except IOError:
-			pass
+    for d in include_dirs:
+        p = os.path.join (d, nm)
+        try:
+            open (p)
+            return p
+        except IOError:
+            pass
 
-	p = popen ('kpsewhich %s' % shell_escape_filename (nm)).read ()
-	p = p.strip ()
-	
-	if options.dos_kpath:
-		orig = p
-		p = string.lower (p)
-		p = re.sub ('^([a-z]):', '/cygdrive/\\1', p)
-		p = re.sub ('\\\\', '/', p)
-		sys.stderr.write ("Got `%s' from kpsewhich, using `%s'\n" % (orig, p))
-	return p
+    p = popen ('kpsewhich %s' % shell_escape_filename (nm)).read ()
+    p = p.strip ()
+    
+    if options.dos_kpath:
+        orig = p
+        p = string.lower (p)
+        p = re.sub ('^([a-z]):', '/cygdrive/\\1', p)
+        p = re.sub ('\\\\', '/', p)
+        sys.stderr.write ("Got `%s' from kpsewhich, using `%s'\n" % (orig, p))
+    return p
 
 
 def flag_error ():
-	global exit_value
-	exit_value = 1
-			
+    global exit_value
+    exit_value = 1
+            
 ################################################################
 # TRACING.
 ################################################################
 
 def autotrace_command (fn, opts):
-	opts = " " + opts + " --background-color=FFFFFF --output-format=eps --input-format=pbm "
-	return options.trace_binary + opts + backend_options \
-	       + " --output-file=char.eps %s " % fn
+    opts = " " + opts + " --background-color=FFFFFF --output-format=eps --input-format=pbm "
+    return options.trace_binary + opts + backend_options \
+       + " --output-file=char.eps %s " % fn
 
 def potrace_command (fn, opts):
-	return options.trace_binary + opts \
-		+ ' -u %d ' % options.grid_scale \
-		+ backend_options \
-		+ " -q -c --eps --output=char.eps %s " % (fn)
+    return options.trace_binary + opts \
+        + ' -u %d ' % options.grid_scale \
+        + backend_options \
+        + " -q -c --eps --output=char.eps %s " % (fn)
 
 trace_command = None
 path_to_type1_ops = None
 
 def trace_one (pbmfile, id):
-	"""
-	Run tracer, do error handling
-	"""
+    """
+    Run tracer, do error handling
+    """
 
-	status = system (trace_command (pbmfile, ''), 1)
+    status = system (trace_command (pbmfile, ''), 1)
 
-	if status == 2:
-		sys.stderr.write ("\nUser interrupt. Exiting\n")
-		sys.exit (2)
+    if status == 2:
+        sys.stderr.write ("\nUser interrupt. Exiting\n")
+        sys.exit (2)
 
-	if status == 0 and options.keep_temp_dir:
-		shutil.copy2 (pbmfile, '%s.pbm' % id)
-		shutil.copy2 ('char.eps', '%s.eps' % id)
+    if status == 0 and options.keep_temp_dir:
+        shutil.copy2 (pbmfile, '%s.pbm' % id)
+        shutil.copy2 ('char.eps', '%s.eps' % id)
 
-	if status != 0:
-		error_file = os.path.join (origdir, 'trace-bug-%s.pbm' % id)
-		shutil.copy2 (pbmfile, error_file)
-		msg = """Trace failed on bitmap.  Bitmap left in `%s\'
+    if status != 0:
+        error_file = os.path.join (origdir, 'trace-bug-%s.pbm' % id)
+        shutil.copy2 (pbmfile, error_file)
+        msg = """Trace failed on bitmap.  Bitmap left in `%s\'
 Failed command was:
 
-	%s
+    %s
 
 Please submit a bugreport to %s development.""" \
-		% (error_file, trace_command (error_file, ''), options.trace_binary)
+        % (error_file, trace_command (error_file, ''), options.trace_binary)
 
-		if options.keep_trying:
-			warning (msg)
-			sys.stderr.write ("\nContinuing trace...\n")
-			flag_error ()
-		else:
-			msg = msg + '\nRun mftrace with --keep-trying to produce a font anyway\n'
-			error (msg)
-	else:
-		return 1
+        if options.keep_trying:
+            warning (msg)
+            sys.stderr.write ("\nContinuing trace...\n")
+            flag_error ()
+        else:
+            msg = msg + '\nRun mftrace with --keep-trying to produce a font anyway\n'
+            error (msg)
+    else:
+        return 1
 
-	if status != 0:
-		warning ("Failed, skipping character.\n")
-		return 0
-	else:
-		return 1
+    if status != 0:
+        warning ("Failed, skipping character.\n")
+        return 0
+    else:
+        return 1
 
 def make_pbm (filename, outname, char_number):
-	""" Extract bitmap from the PK file FILENAME (absolute) using `gf2pbm'.
-	Return FALSE if the glyph is not valid.
-	"""
+    """ Extract bitmap from the PK file FILENAME (absolute) using `gf2pbm'.
+    Return FALSE if the glyph is not valid.
+    """
 
-	command = "%s/gf2pbm -n %d -o %s %s" % (bindir, char_number, outname, filename)
-	status = system (command, ignore_error = 1)
-	return (status == 0)
+    command = "%s/gf2pbm -n %d -o %s %s" % (bindir, char_number, outname, filename)
+    status = system (command, ignore_error = 1)
+    return (status == 0)
 
 def read_encoding (file):
-	sys.stderr.write (_ ("Using encoding file: `%s'\n") % file)
+    sys.stderr.write (_ ("Using encoding file: `%s'\n") % file)
 
-	str = open (file).read ()
-	str = re.sub ("%.*", '', str)
-	str = re.sub ("[\n\t \f]+", ' ', str)
-	m = re.search ('/([^ ]+) \[([^\]]+)\] def', str)
-	if not m:
-		error ("Encoding file is invalid")
+    str = open (file).read ()
+    str = re.sub ("%.*", '', str)
+    str = re.sub ("[\n\t \f]+", ' ', str)
+    m = re.search ('/([^ ]+) \[([^\]]+)\] def', str)
+    if not m:
+        error ("Encoding file is invalid")
 
-	name = m.group (1)
-	cod = m.group (2)
-	cod = re.sub ('[ /]+', ' ', cod)
-	cods = string.split (cod)
+    name = m.group (1)
+    cod = m.group (2)
+    cod = re.sub ('[ /]+', ' ', cod)
+    cods = string.split (cod)
 
-	return (name, cods)
+    return (name, cods)
 
 def zip_to_pairs (as):
-	r = []
-	while as:
-		r.append ((as[0], as[1]))
-		as = as[2:]
-	return r
+    r = []
+    while as:
+        r.append ((as[0], as[1]))
+        as = as[2:]
+    return r
 
 def unzip_pairs (tups):
-	lst = []
-	while tups:
-		lst = lst + list (tups[0])
-		tups = tups[1:]
-	return lst
+    lst = []
+    while tups:
+        lst = lst + list (tups[0])
+        tups = tups[1:]
+    return lst
 
 def autotrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid, magnification):
-	inv_scale = 1000.0 / magnification
+    inv_scale = 1000.0 / magnification
 
-	(size_y, size_x, off_x, off_y) = map (lambda m, s = inv_scale: m * s,
-					      bitmap_metrics)
-	ls = open (at_file).readlines ()
-	bbox = (10000, 10000, -10000, -10000)
+    (size_y, size_x, off_x, off_y) = map (lambda m, s = inv_scale: m * s,
+                       bitmap_metrics)
+    ls = open (at_file).readlines ()
+    bbox = (10000, 10000, -10000, -10000)
 
-	while ls and ls[0] != '*u\n':
-		ls = ls[1:]
+    while ls and ls[0] != '*u\n':
+        ls = ls[1:]
 
-	if ls == []:
-		return (bbox, '')
+    if ls == []:
+        return (bbox, '')
 
-	ls = ls[1:]
+    ls = ls[1:]
 
-	commands = []
+    commands = []
 
 
-	while ls[0] != '*U\n':
-		ell = ls[0]
-		ls = ls[1:]
+    while ls[0] != '*U\n':
+        ell = ls[0]
+        ls = ls[1:]
 
-		toks = string.split (ell)
+        toks = string.split (ell)
 
-		if len (toks) < 1:
-			continue
-		cmd = toks[-1]
-		args = map (lambda m, s = inv_scale: s * float (m),
-			    toks[:-1])
-		if options.round_to_int:
-			args = zip_to_pairs (map (round, args))
-		else:
-			args = zip_to_pairs (args)
-		commands.append ((cmd, args))
+        if len (toks) < 1:
+            continue
+        cmd = toks[-1]
+        args = map (lambda m, s = inv_scale: s * float (m),
+              toks[:-1])
+        if options.round_to_int:
+            args = zip_to_pairs (map (round, args))
+        else:
+            args = zip_to_pairs (args)
+        commands.append ((cmd, args))
 
-	expand = {
-		'l': 'rlineto',
-		'm': 'rmoveto',
-		'c': 'rrcurveto',
-		'f': 'closepath',
-		}
+    expand = {
+        'l': 'rlineto',
+        'm': 'rmoveto',
+        'c': 'rrcurveto',
+        'f': 'closepath',
+        }
 
-	cx = 0
-	cy = size_y - off_y - inv_scale
+    cx = 0
+    cy = size_y - off_y - inv_scale
 
-	# t1asm seems to fuck up when using sbw. Oh well.
-	t1_outline =  '  %d %d hsbw\n' % (- off_x, tfm_wid)
-	bbox = (10000, 10000, -10000, -10000)
+    # t1asm seems to fuck up when using sbw. Oh well.
+    t1_outline =  '  %d %d hsbw\n' % (- off_x, tfm_wid)
+    bbox = (10000, 10000, -10000, -10000)
 
-	for (c, args) in commands:
+    for (c, args) in commands:
 
-		na = []
-		for a in args:
-			(nx, ny) = a
-			if c == 'l' or c == 'c':
-				bbox = update_bbox_with_point (bbox, a)
+        na = []
+        for a in args:
+            (nx, ny) = a
+            if c == 'l' or c == 'c':
+                bbox = update_bbox_with_point (bbox, a)
 
-			na.append ((nx - cx, ny - cy))
-			(cx, cy) = (nx, ny)
+            na.append ((nx - cx, ny - cy))
+            (cx, cy) = (nx, ny)
 
-		a = na
-		c = expand[c]
-		if options.round_to_int:
-			a = map (lambda x: '%d' % int (round (x)),
-				 unzip_pairs (a))
-		else:
-			a = map (lambda x: '%d %d div' \
-				 % (int (round (x * options.grid_scale/inv_scale)),
-				    int (round (options.grid_scale/inv_scale))),
-				 unzip_pairs (a))
+        a = na
+        c = expand[c]
+        if options.round_to_int:
+            a = map (lambda x: '%d' % int (round (x)),
+                unzip_pairs (a))
+        else:
+            a = map (lambda x: '%d %d div' \
+                % (int (round (x * options.grid_scale/inv_scale)),
+                  int (round (options.grid_scale/inv_scale))),
+                unzip_pairs (a))
 
-		t1_outline = t1_outline + ' %s %s\n' % (string.join (a), c)
+        t1_outline = t1_outline + ' %s %s\n' % (string.join (a), c)
 
-	t1_outline = t1_outline + ' endchar '
-	t1_outline = '{\n %s } |- \n' % t1_outline
+    t1_outline = t1_outline + ' endchar '
+    t1_outline = '{\n %s } |- \n' % t1_outline
 
-	return (bbox, t1_outline)
+    return (bbox, t1_outline)
 
 # FIXME: Cut and paste programming
 def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid, magnification):
-	inv_scale = 1000.0 / magnification
+    inv_scale = 1000.0 / magnification
 
-	(size_y, size_x, off_x, off_y) = map (lambda m,
-					      s = inv_scale: m * s,
-					      bitmap_metrics)
-	ls = open (at_file).readlines ()
-	bbox =  (10000, 10000, -10000, -10000)
+    (size_y, size_x, off_x, off_y) = map (lambda m,
+                       s = inv_scale: m * s,
+                       bitmap_metrics)
+    ls = open (at_file).readlines ()
+    bbox =  (10000, 10000, -10000, -10000)
 
-	while ls and ls[0] != '0 setgray\n':
-		ls = ls[1:]
+    while ls and ls[0] != '0 setgray\n':
+        ls = ls[1:]
 
-	if ls == []:
-		return (bbox, '')
-	ls = ls[1:]
-	commands = []
+    if ls == []:
+        return (bbox, '')
+    ls = ls[1:]
+    commands = []
 
-	while ls and ls[0] != 'grestore\n':
-		ell = ls[0]
-		ls = ls[1:]
+    while ls and ls[0] != 'grestore\n':
+        ell = ls[0]
+        ls = ls[1:]
 
-		if ell == 'fill\n':
-			continue
+        if ell == 'fill\n':
+            continue
 
-		toks = string.split (ell)
+        toks = string.split (ell)
 
-		if len (toks) < 1:
-			continue
-		cmd = toks[-1]
-		args = map (lambda m, s = inv_scale: s * float (m),
-			    toks[:-1])
-		args = zip_to_pairs (args)
-		commands.append ((cmd, args))
+        if len (toks) < 1:
+            continue
+        cmd = toks[-1]
+        args = map (lambda m, s = inv_scale: s * float (m),
+              toks[:-1])
+        args = zip_to_pairs (args)
+        commands.append ((cmd, args))
 
-	# t1asm seems to fuck up when using sbw. Oh well.
-	t1_outline = '  %d %d hsbw\n' % (- off_x, tfm_wid)
-	bbox =  (10000, 10000, -10000, -10000)
+    # t1asm seems to fuck up when using sbw. Oh well.
+    t1_outline = '  %d %d hsbw\n' % (- off_x, tfm_wid)
+    bbox =  (10000, 10000, -10000, -10000)
 
-	# Type1 fonts have relative coordinates (doubly relative for
-	# rrcurveto), so must convert moveto and rcurveto.
+    # Type1 fonts have relative coordinates (doubly relative for
+    # rrcurveto), so must convert moveto and rcurveto.
 
-	z = (0.0, size_y - off_y - 1.0)
-	for (c, args) in commands:
-		args = map (lambda x: (x[0] * (1.0 / options.grid_scale),
-				       x[1] * (1.0 / options.grid_scale)), args)
+    z = (0.0, size_y - off_y - 1.0)
+    for (c, args) in commands:
+        args = map (lambda x: (x[0] * (1.0 / options.grid_scale),
+                   x[1] * (1.0 / options.grid_scale)), args)
 
-		if c == 'moveto':
-			args = [(args[0][0] - z[0], args[0][1] - z[1])]
+        if c == 'moveto':
+            args = [(args[0][0] - z[0], args[0][1] - z[1])]
 
-		zs = []
-		for a in args:
-			lz = (z[0] + a[0], z[1] + a[1])
-			bbox = update_bbox_with_point (bbox, lz)
-			zs.append (lz)
+        zs = []
+        for a in args:
+            lz = (z[0] + a[0], z[1] + a[1])
+            bbox = update_bbox_with_point (bbox, lz)
+            zs.append (lz)
 
-		if options.round_to_int:
-			last_discr_z = (int (round (z[0])), int (round (z[1])))
-		else:
-			last_discr_z = (z[0], z[1])
-		args = []
-		for a in zs:
-			if options.round_to_int:
-				a = (int (round (a[0])), int (round (a[1])))
-			else:
-				a = (a[0], a[1])
-			args.append ((a[0] - last_discr_z[0],
-				       a[1] - last_discr_z[1]))
+        if options.round_to_int:
+            last_discr_z = (int (round (z[0])), int (round (z[1])))
+        else:
+            last_discr_z = (z[0], z[1])
+        args = []
+        for a in zs:
+            if options.round_to_int:
+                a = (int (round (a[0])), int (round (a[1])))
+            else:
+                a = (a[0], a[1])
+            args.append ((a[0] - last_discr_z[0],
+                   a[1] - last_discr_z[1]))
 
-			last_discr_z = a
+            last_discr_z = a
 
-		if zs:
-			z = zs[-1]
-		c = { 'rcurveto': 'rrcurveto',
-		      'moveto': 'rmoveto',
-		      'closepath': 'closepath',
-		      'rlineto': 'rlineto'}[c]
+        if zs:
+            z = zs[-1]
+        c = { 'rcurveto': 'rrcurveto',
+           'moveto': 'rmoveto',
+           'closepath': 'closepath',
+           'rlineto': 'rlineto'}[c]
 
-		if c == 'rmoveto':
-			t1_outline += ' closepath '
+        if c == 'rmoveto':
+            t1_outline += ' closepath '
 
-		if options.round_to_int:
-			args = map (lambda x: '%d' % int (round (x)),
-				    unzip_pairs (args))
-		else:
-			args = map (lambda x: '%d %d div' \
-				    % (int (round (x*options.grid_scale/inv_scale)),
-				       int (round (options.grid_scale/inv_scale))),
-				    unzip_pairs (args))
+        if options.round_to_int:
+            args = map (lambda x: '%d' % int (round (x)),
+                  unzip_pairs (args))
+        else:
+            args = map (lambda x: '%d %d div' \
+                  % (int (round (x*options.grid_scale/inv_scale)),
+                   int (round (options.grid_scale/inv_scale))),
+                  unzip_pairs (args))
 
-		t1_outline = t1_outline + '  %s %s\n' % (string.join (args), c)
+        t1_outline = t1_outline + '  %s %s\n' % (string.join (args), c)
 
-	t1_outline = t1_outline + ' endchar '
-	t1_outline = '{\n %s } |- \n' % t1_outline
+    t1_outline = t1_outline + ' endchar '
+    t1_outline = '{\n %s } |- \n' % t1_outline
 
-	return (bbox, t1_outline)
+    return (bbox, t1_outline)
 
 def read_gf_dims (name, c):
-	str = popen ('%s/gf2pbm -n %d -s %s' % (bindir, c, name)).read ()
-	m = re.search ('size: ([0-9]+)+x([0-9]+), offset: \(([0-9-]+),([0-9-]+)\)', str)
+    str = popen ('%s/gf2pbm -n %d -s %s' % (bindir, c, name)).read ()
+    m = re.search ('size: ([0-9]+)+x([0-9]+), offset: \(([0-9-]+),([0-9-]+)\)', str)
 
-	return tuple (map (int, m.groups ()))
+    return tuple (map (int, m.groups ()))
 
 def trace_font (fontname, gf_file, metric, glyphs, encoding,
-		magnification, fontinfo):
-	t1os = []
-	font_bbox = (10000, 10000, -10000, -10000)
+        magnification, fontinfo):
+    t1os = []
+    font_bbox = (10000, 10000, -10000, -10000)
 
-	progress (_ ("Tracing bitmaps... "))
+    progress (_ ("Tracing bitmaps... "))
 
-	# for single glyph testing.
-	# glyphs = []
-	for a in glyphs:
-    		if encoding[a] == ".notavail":
-        		continue
-		valid = metric.has_char (a)
-		if not valid:
-        		encoding[a] = ".notavail"
-			continue
+    # for single glyph testing.
+    # glyphs = []
+    for a in glyphs:
+          if encoding[a] == ".notavail":
+            continue
+        valid = metric.has_char (a)
+        if not valid:
+            encoding[a] = ".notavail"
+            continue
 
-		valid = make_pbm (gf_file, 'char.pbm', a)
-		if not valid:
-        		encoding[a] = ".notavail"
-			continue
+        valid = make_pbm (gf_file, 'char.pbm', a)
+        if not valid:
+            encoding[a] = ".notavail"
+            continue
 
-		(w, h, xo, yo) = read_gf_dims (gf_file, a)
+        (w, h, xo, yo) = read_gf_dims (gf_file, a)
 
-		if not options.verbose:
-			sys.stderr.write ('[%d' % a)
-			sys.stderr.flush ()
+        if not options.verbose:
+            sys.stderr.write ('[%d' % a)
+            sys.stderr.flush ()
 
-		# this wants the id, not the filename.
-		success = trace_one ("char.pbm", '%s-%d' % (options.gffile, a))
-		if not success:
-			sys.stderr.write ("(skipping character)]")
-			sys.stderr.flush ()
-        		encoding[a] = ".notavail"
-			continue
+        # this wants the id, not the filename.
+        success = trace_one ("char.pbm", '%s-%d' % (options.gffile, a))
+        if not success:
+            sys.stderr.write ("(skipping character)]")
+            sys.stderr.flush ()
+            encoding[a] = ".notavail"
+            continue
 
-		if not options.verbose:
-			sys.stderr.write (']')
-			sys.stderr.flush ()
-		metric_width = metric.get_char (a).width
-		tw = int (round (metric_width / metric.design_size * 1000))
-		(bbox, t1o) = path_to_type1_ops ("char.eps", (h, w, xo, yo),
-						 tw, magnification)
+        if not options.verbose:
+            sys.stderr.write (']')
+            sys.stderr.flush ()
+        metric_width = metric.get_char (a).width
+        tw = int (round (metric_width / metric.design_size * 1000))
+        (bbox, t1o) = path_to_type1_ops ("char.eps", (h, w, xo, yo),
+                        tw, magnification)
 
-		if t1o == '':
-        		encoding[a] = ".notavail"
-			continue
+        if t1o == '':
+            encoding[a] = ".notavail"
+            continue
 
-		font_bbox = update_bbox_with_bbox (font_bbox, bbox)
+        font_bbox = update_bbox_with_bbox (font_bbox, bbox)
 
-		t1os.append ('/%s %s ' % (encoding[a], t1o))
+        t1os.append ('/%s %s ' % (encoding[a], t1o))
 
-	progress ('\n')
-	to_type1 (t1os, font_bbox, fontname, encoding, magnification, fontinfo)
+    progress ('\n')
+    to_type1 (t1os, font_bbox, fontname, encoding, magnification, fontinfo)
 
 def ps_encode_encoding (encoding):
-	str = ' %d array\n0 1 %d {1 index exch /.notdef put} for\n' \
-	      % (len (encoding), len (encoding)-1)
+    str = ' %d array\n0 1 %d {1 index exch /.notdef put} for\n' \
+       % (len (encoding), len (encoding)-1)
 
-	for i in range (0, len (encoding)):
-    		if encoding[i] != ".notavail":
-			str = str + 'dup %d /%s put\n' % (i, encoding[i])
+    for i in range (0, len (encoding)):
+          if encoding[i] != ".notavail":
+            str = str + 'dup %d /%s put\n' % (i, encoding[i])
 
-	return str
+    return str
 
 
 def gen_unique_id (dict):
-	nm = 'FullName'
-	return 4000000 + (hash (nm) % 1000000)
+    nm = 'FullName'
+    return 4000000 + (hash (nm) % 1000000)
 
 def to_type1 (outlines, bbox, fontname, encoding, magnification, fontinfo):
-	
-	"""
-	Fill in the header template for the font, append charstrings,
-	and shove result through t1asm
-	"""
-	template = r"""%%!PS-AdobeFont-1.0: %(FontName)s %(VVV)s.%(WWW)s
+    
+    """
+    Fill in the header template for the font, append charstrings,
+    and shove result through t1asm
+    """
+    template = r"""%%!PS-AdobeFont-1.0: %(FontName)s %(VVV)s.%(WWW)s
 13 dict begin
 /FontInfo 16 dict dup begin
 /version (%(VVV)s.%(WWW)s) readonly def
@@ -609,7 +609,7 @@ dup 0 { return } |
 %(CharStrings)s
 
 
- /.notdef { 0 0 hsbw endchar } |-
+/.notdef { 0 0 hsbw endchar } |-
 end
 end
 readonly put
@@ -620,200 +620,200 @@ cleartomark
 """
 ## apparently, some fonts end the file with cleartomark.  Don't know why.
 
-	copied_fields = ['FontName', 'FamilyName', 'FullName', 'DesignSize',
-			 'ItalicAngle', 'isFixedPitch', 'Weight']
+    copied_fields = ['FontName', 'FamilyName', 'FullName', 'DesignSize',
+            'ItalicAngle', 'isFixedPitch', 'Weight']
 
-	vars = {
-		'VVV': '001',
-		'WWW': '001',
-		'Notice': 'Generated from MetaFont bitmap by mftrace %s, http://www.xs4all.nl/~hanwen/mftrace/ ' % program_version,
-		'UnderlinePosition': '-100',
-		'UnderlineThickness': '50',
-		'xrevscale': 1.0/1000.0,
-		'yrevscale': 1.0/1000.0,
-		'llx': bbox[0],
-		'lly': bbox[1],
-		'urx': bbox[2],
-		'ury': bbox[3],
-		'Encoding': ps_encode_encoding (encoding),
+    vars = {
+        'VVV': '001',
+        'WWW': '001',
+        'Notice': 'Generated from MetaFont bitmap by mftrace %s, http://www.xs4all.nl/~hanwen/mftrace/ ' % program_version,
+        'UnderlinePosition': '-100',
+        'UnderlineThickness': '50',
+        'xrevscale': 1.0/1000.0,
+        'yrevscale': 1.0/1000.0,
+        'llx': bbox[0],
+        'lly': bbox[1],
+        'urx': bbox[2],
+        'ury': bbox[3],
+        'Encoding': ps_encode_encoding (encoding),
 
-		# need one extra entry for .notdef
-		'CharStringsLen': len (outlines) + 1,
-		'CharStrings': string.join (outlines),
-		'CharBBox': '0 0 0 0',
-	}
+        # need one extra entry for .notdef
+        'CharStringsLen': len (outlines) + 1,
+        'CharStrings': string.join (outlines),
+        'CharBBox': '0 0 0 0',
+    }
 
-	for k in copied_fields:
-		vars[k] = fontinfo[k]
+    for k in copied_fields:
+        vars[k] = fontinfo[k]
 
-	open ('mftrace.t1asm', 'w').write (template % vars)
+    open ('mftrace.t1asm', 'w').write (template % vars)
 
 def update_bbox_with_point (bbox, pt):
-	(llx, lly, urx, ury) = bbox
-	llx = min (pt[0], llx)
-	lly = min (pt[1], lly)
-	urx = max (pt[0], urx)
-	ury = max (pt[1], ury)
+    (llx, lly, urx, ury) = bbox
+    llx = min (pt[0], llx)
+    lly = min (pt[1], lly)
+    urx = max (pt[0], urx)
+    ury = max (pt[1], ury)
 
-	return 	(llx, lly, urx, ury)
+    return         (llx, lly, urx, ury)
 
 def update_bbox_with_bbox (bb, dims):
-	(llx, lly, urx, ury) = bb
-	llx = min (llx, dims[0])
-	lly = min (lly, dims[1])
-	urx = max (urx, dims[2])
-	ury = max (ury, dims[3])
+    (llx, lly, urx, ury) = bb
+    llx = min (llx, dims[0])
+    lly = min (lly, dims[1])
+    urx = max (urx, dims[2])
+    ury = max (ury, dims[3])
 
-	return (llx, lly, urx, ury)
+    return (llx, lly, urx, ury)
 
 def get_binary (name):
-	search_path = string.split (os.environ['PATH'], ':')
-	for p in search_path:
-		nm = os.path.join (p, name)
-		if os.path.exists (nm):
-			return nm
+    search_path = string.split (os.environ['PATH'], ':')
+    for p in search_path:
+        nm = os.path.join (p, name)
+        if os.path.exists (nm):
+            return nm
 
-	return ''
+    return ''
 
 def get_fontforge_command ():
-	fontforge_cmd = ''
-	for ff in ['fontforge', 'pfaedit']:
-		if get_binary(ff):
-			fontforge_cmd = ff
+    fontforge_cmd = ''
+    for ff in ['fontforge', 'pfaedit']:
+        if get_binary(ff):
+            fontforge_cmd = ff
 
-	stat = 1
-	if fontforge_cmd:
-		stat = system ("%s -usage > pfv 2>&1 " % fontforge_cmd,
-			       ignore_error = 1)
+    stat = 1
+    if fontforge_cmd:
+        stat = system ("%s -usage > pfv 2>&1 " % fontforge_cmd,
+               ignore_error = 1)
 
-		if stat != 0:
-			warning ("Command `%s -usage' failed.  Cannot simplify or convert to TTF.\n" % fontforge_cmd)
+        if stat != 0:
+            warning ("Command `%s -usage' failed.  Cannot simplify or convert to TTF.\n" % fontforge_cmd)
 
-	if fontforge_cmd == 'pfaedit' \
-	   and re.search ("-script", open ('pfv').read ()) == None:
-		warning ("pfaedit does not support -script.  Install 020215 or later.\nCannot simplify or convert to TTF.\n")
-		return ''
-	return fontforge_cmd
+    if fontforge_cmd == 'pfaedit' \
+     and re.search ("-script", open ('pfv').read ()) == None:
+        warning ("pfaedit does not support -script.  Install 020215 or later.\nCannot simplify or convert to TTF.\n")
+        return ''
+    return fontforge_cmd
 
 def tfm2kpx (tfmname, encoding):
-	kpx_lines = []
-	pl = popen ("tftopl %s" % (tfmname))
-	
-	label_pattern = re.compile (
-		"\A   \(LABEL ([DOHC]{1}) ([A-Za-z0-9]*)\)")
-	krn_pattern = re.compile (
-		"\A   \(KRN ([DOHC]{1}) ([A-Za-z0-9]*) R (-?[\d\.]+)\)")
+    kpx_lines = []
+    pl = popen ("tftopl %s" % (tfmname))
+    
+    label_pattern = re.compile (
+        "\A   \(LABEL ([DOHC]{1}) ([A-Za-z0-9]*)\)")
+    krn_pattern = re.compile (
+        "\A   \(KRN ([DOHC]{1}) ([A-Za-z0-9]*) R (-?[\d\.]+)\)")
 
-	first = 0
-	second = 0
+    first = 0
+    second = 0
 
-	for line in pl.readlines ():
-		
-		label_match = label_pattern.search (line)
-		if not (label_match is None):
-			if label_match.group (1) == "D":
-				first = int (label_match.group (2))
-			elif label_match.group (1) == "O":
-				first = int (label_match.group (2), 8)
-			elif label_match.group (1) == "C":
-				first = ord (label_match.group (2))
-			
-		krn_match = krn_pattern.search (line)
-		if not (krn_match is None):
-			if krn_match.group (1) == "D":
-				second = int (krn_match.group (2))
-			elif krn_match.group (1) == "O":
-				second = int (krn_match.group (2), 8)
-			elif krn_match.group (1) == "C":
-				second = ord (krn_match.group (2))
-			
-			krn = round (float (krn_match.group (3)) * 1000)
-			
-			if (encoding[first] != '.notavail' and 
-				encoding[first] != '.notdef' and
-				encoding[second] != '.notavail' and 
-				encoding[second] != '.notdef'):
-				
-				kpx_lines.append ("KPX %s %s %d\n" % (
-					encoding[first], encoding[second], krn))
-	
-	return kpx_lines
+    for line in pl.readlines ():
+        
+        label_match = label_pattern.search (line)
+        if not (label_match is None):
+            if label_match.group (1) == "D":
+                first = int (label_match.group (2))
+            elif label_match.group (1) == "O":
+                first = int (label_match.group (2), 8)
+            elif label_match.group (1) == "C":
+                first = ord (label_match.group (2))
+            
+        krn_match = krn_pattern.search (line)
+        if not (krn_match is None):
+            if krn_match.group (1) == "D":
+                second = int (krn_match.group (2))
+            elif krn_match.group (1) == "O":
+                second = int (krn_match.group (2), 8)
+            elif krn_match.group (1) == "C":
+                second = ord (krn_match.group (2))
+            
+            krn = round (float (krn_match.group (3)) * 1000)
+            
+            if (encoding[first] != '.notavail' and 
+                encoding[first] != '.notdef' and
+                encoding[second] != '.notavail' and 
+                encoding[second] != '.notdef'):
+                
+                kpx_lines.append ("KPX %s %s %d\n" % (
+                    encoding[first], encoding[second], krn))
+    
+    return kpx_lines
 
 def get_afm (t1_path, tfmname, encoding, out_path):
-	afm_stream = popen ("printafm %s" % (t1_path))
-	afm_lines = []
-	kpx_lines = tfm2kpx (tfmname, encoding)
-	
-	for line in afm_stream.readlines ():
-		afm_lines.append (line)
-		
-		if re.match (r"^EndCharMetrics", line, re.I):
-			afm_lines.append ("StartKernData\n")
-			afm_lines.append ("StartKernPairs %d\n" % len (kpx_lines))
-			
-			for kpx_line in kpx_lines:
-				afm_lines.append (kpx_line)
-			
-			afm_lines.append ("EndKernPairs\n")
-			afm_lines.append ("EndKernData\n")
-	 
-	progress (_ ("Writing metrics to `%s'... ") % out_path)
-	afm_file = open (out_path, 'w')
-	afm_file.writelines (afm_lines)
-	afm_file.flush ()
-	afm_file.close ()
-	
-	progress ('\n')
+    afm_stream = popen ("printafm %s" % (t1_path))
+    afm_lines = []
+    kpx_lines = tfm2kpx (tfmname, encoding)
+    
+    for line in afm_stream.readlines ():
+        afm_lines.append (line)
+        
+        if re.match (r"^EndCharMetrics", line, re.I):
+            afm_lines.append ("StartKernData\n")
+            afm_lines.append ("StartKernPairs %d\n" % len (kpx_lines))
+            
+            for kpx_line in kpx_lines:
+                afm_lines.append (kpx_line)
+            
+            afm_lines.append ("EndKernPairs\n")
+            afm_lines.append ("EndKernData\n")
+    
+    progress (_ ("Writing metrics to `%s'... ") % out_path)
+    afm_file = open (out_path, 'w')
+    afm_file.writelines (afm_lines)
+    afm_file.flush ()
+    afm_file.close ()
+    
+    progress ('\n')
 
 def assemble_font (fontname, format, is_raw):
-    ext = '.' + format
-    asm_opt = '--pfa'
-    
-    if format == 'pfb':
-        asm_opt = '--pfb'
+  ext = '.' + format
+  asm_opt = '--pfa'
+  
+  if format == 'pfb':
+    asm_opt = '--pfb'
 
-    if is_raw:
-        ext = ext + '.raw'
-    
-    outname = fontname + ext
+  if is_raw:
+    ext = ext + '.raw'
+  
+  outname = fontname + ext
 
-    progress (_ ("Assembling raw font to `%s'... ") % outname)
-    system ('t1asm %s mftrace.t1asm %s' % (asm_opt, shell_escape_filename (outname)))
-    progress ('\n')
-    return outname
+  progress (_ ("Assembling raw font to `%s'... ") % outname)
+  system ('t1asm %s mftrace.t1asm %s' % (asm_opt, shell_escape_filename (outname)))
+  progress ('\n')
+  return outname
 
 def make_outputs (fontname, formats, encoding):
-  	"""
-  	run pfaedit to convert to other formats
-  	"""
+     """
+     run pfaedit to convert to other formats
+     """
+ 
+    ff_needed = 0
+    ff_command = ""
   
-	ff_needed = 0
-	ff_command = ""
-    
-	if (options.simplify or options.round_to_int or 'ttf' in formats or 'svg' in formats):
-		ff_needed = 1
-	if ff_needed:
-		ff_command = get_fontforge_command ()
-    
-	if ff_needed and ff_command:
-		raw_name = assemble_font (fontname, 'pfa', 1)
+    if (options.simplify or options.round_to_int or 'ttf' in formats or 'svg' in formats):
+        ff_needed = 1
+    if ff_needed:
+        ff_command = get_fontforge_command ()
+  
+    if ff_needed and ff_command:
+        raw_name = assemble_font (fontname, 'pfa', 1)
 
-		simplify_cmd = ''
-		if options.round_to_int:
-			simplify_cmd = 'RoundToInt ();'
-		generate_cmds = ''
-		for f in formats:
-			generate_cmds += 'Generate("%s");' % (fontname  + '.' + f)
+        simplify_cmd = ''
+        if options.round_to_int:
+            simplify_cmd = 'RoundToInt ();'
+        generate_cmds = ''
+        for f in formats:
+            generate_cmds += 'Generate("%s");' % (fontname  + '.' + f)
 
-		if options.simplify:
-			simplify_cmd ='''SelectAll ();
+        if options.simplify:
+            simplify_cmd ='''SelectAll ();
 
 AddExtrema();
 Simplify ();
 %(simplify_cmd)s
 AutoHint ();''' % vars()
 
-		pe_script = ('''#!/usr/bin/env %(ff_command)s
+        pe_script = ('''#!/usr/bin/env %(ff_command)s
 Open ($1);
 MergeKern($2);
 %(simplify_cmd)s
@@ -821,115 +821,115 @@ MergeKern($2);
 Quit (0);
 ''' % vars())
 
-		open ('to-ttf.pe', 'w').write (pe_script)
-		if options.verbose:
-			print 'Fontforge script', pe_script
-		system ("%s -script to-ttf.pe %s %s" % (ff_command,
-			    shell_escape_filename (raw_name), shell_escape_filename (options.tfm_file)))
-	else:
-		t1_path = ''
-	
-		if ('pfa' in formats):
-			t1_path = assemble_font (fontname, 'pfa', 0)
+        open ('to-ttf.pe', 'w').write (pe_script)
+        if options.verbose:
+            print 'Fontforge script', pe_script
+        system ("%s -script to-ttf.pe %s %s" % (ff_command,
+              shell_escape_filename (raw_name), shell_escape_filename (options.tfm_file)))
+    else:
+        t1_path = ''
+    
+        if ('pfa' in formats):
+            t1_path = assemble_font (fontname, 'pfa', 0)
 
-		if ('pfb' in formats):
-			t1_path = assemble_font (fontname, 'pfb', 0)
-	
-		if (t1_path != '' and 'afm' in formats):
-			get_afm (t1_path, options.tfm_file, encoding, fontname + '.afm')
+        if ('pfb' in formats):
+            t1_path = assemble_font (fontname, 'pfb', 0)
+    
+        if (t1_path != '' and 'afm' in formats):
+            get_afm (t1_path, options.tfm_file, encoding, fontname + '.afm')
 
 
 def getenv (var, default):
-	if os.environ.has_key (var):
-		return os.environ[var]
-	else:
-		return default
+    if os.environ.has_key (var):
+        return os.environ[var]
+    else:
+        return default
 
 def gen_pixel_font (filename, metric, magnification):
-	"""
-	Generate a GF file for FILENAME, such that `magnification'*mfscale
-	(default 1000 * 1.0) pixels fit on the designsize.
-	"""
-	base_dpi = 1200
+    """
+    Generate a GF file for FILENAME, such that `magnification'*mfscale
+    (default 1000 * 1.0) pixels fit on the designsize.
+    """
+    base_dpi = 1200
 
-	size = metric.design_size
+    size = metric.design_size
 
-	size_points = size * 1/72.27 * base_dpi
+    size_points = size * 1/72.27 * base_dpi
 
-	mag = magnification / size_points
+    mag = magnification / size_points
 
-	prod = mag * base_dpi
-	try:
-		open ('%s.%dgf' % (filename, prod))
-	except IOError:
-		os.environ['KPSE_DOT'] = '%s:' % origdir
+    prod = mag * base_dpi
+    try:
+        open ('%s.%dgf' % (filename, prod))
+    except IOError:
+        os.environ['KPSE_DOT'] = '%s:' % origdir
 
-		os.environ['MFINPUTS'] = '%s:%s' % (origdir,
-						    getenv ('MFINPUTS', ''))
-		os.environ['TFMFONTS'] = '%s:%s' % (origdir,
-						    getenv ('TFMINPUTS', ''))
+        os.environ['MFINPUTS'] = '%s:%s' % (origdir,
+                          getenv ('MFINPUTS', ''))
+        os.environ['TFMFONTS'] = '%s:%s' % (origdir,
+                          getenv ('TFMINPUTS', ''))
 
-		# FIXME: we should not change to another (tmp) dir?
-		# or else make all relavitive dirs in paths absolute.
-		def abs_dir (x, dir):
-			if x and os.path.abspath (x) != x:
-				return os.path.join (dir, x)
-			return x
+        # FIXME: we should not change to another (tmp) dir?
+        # or else make all relavitive dirs in paths absolute.
+        def abs_dir (x, dir):
+            if x and os.path.abspath (x) != x:
+                return os.path.join (dir, x)
+            return x
 
-		def abs_path (path, dir):
-			# Python's ABSPATH means ABSDIR
-			dir = os.path.abspath (dir)
-			return string.join (map (lambda x: abs_dir (x, dir),
-						 string.split (path,
-							       os.pathsep)),
-					    os.pathsep)
+        def abs_path (path, dir):
+            # Python's ABSPATH means ABSDIR
+            dir = os.path.abspath (dir)
+            return string.join (map (lambda x: abs_dir (x, dir),
+                        string.split (path,
+                               os.pathsep)),
+                      os.pathsep)
 
-		os.environ['MFINPUTS'] = abs_path (os.environ['MFINPUTS'],
-						   origdir)
-		os.environ['TFMFONTS'] = abs_path (os.environ['TFMFONTS'],
-						   origdir)
+        os.environ['MFINPUTS'] = abs_path (os.environ['MFINPUTS'],
+                         origdir)
+        os.environ['TFMFONTS'] = abs_path (os.environ['TFMFONTS'],
+                         origdir)
 
-		progress (_ ("Running Metafont..."))
+        progress (_ ("Running Metafont..."))
 
-		cmdstr = r"mf '\mode:=lexmarks; mag:=%f; nonstopmode; input %s'" %  (mag, filename)
-		if not options.verbose:
-			cmdstr = cmdstr + ' 1>/dev/null 2>/dev/null'
-		st = system (cmdstr, ignore_error = 1)
-		progress ('\n')
+        cmdstr = r"mf '\mode:=lexmarks; mag:=%f; nonstopmode; input %s'" %  (mag, filename)
+        if not options.verbose:
+            cmdstr = cmdstr + ' 1>/dev/null 2>/dev/null'
+        st = system (cmdstr, ignore_error = 1)
+        progress ('\n')
 
-		logfile = '%s.log' % filename
-		log = ''
-                prod = 0
-		if os.path.exists (logfile):
-			log = open (logfile).read ()
-			m = re.search ('Output written on %s.([0-9]+)gf' % re.escape (filename), log)
-			prod = int (m.group (1))
+        logfile = '%s.log' % filename
+        log = ''
+        prod = 0
+        if os.path.exists (logfile):
+            log = open (logfile).read ()
+            m = re.search ('Output written on %s.([0-9]+)gf' % re.escape (filename), log)
+            prod = int (m.group (1))
 
-		if st:
-			sys.stderr.write ('\n\nMetafont failed.  Excerpt from the log file: \n\n*****')
-			m = re.search ("\n!", log)
-			start = m.start (0)
-			short_log = log[start:start+200]
-			sys.stderr.write (short_log)
-			sys.stderr.write ('\n*****\n')
-			if re.search ('Arithmetic overflow', log):
-				sys.stderr.write ("""
+        if st:
+            sys.stderr.write ('\n\nMetafont failed.  Excerpt from the log file: \n\n*****')
+            m = re.search ("\n!", log)
+            start = m.start (0)
+            short_log = log[start:start+200]
+            sys.stderr.write (short_log)
+            sys.stderr.write ('\n*****\n')
+            if re.search ('Arithmetic overflow', log):
+                sys.stderr.write ("""
 
 Apparently, some numbers overflowed.  Try using --magnification with a
 lower number.  (Current magnification: %d)
 """ % magnification)
 
-			if not options.keep_trying or prod == 0:
-				sys.exit (1)
-			else:
-				sys.stderr.write ('\n\nTrying to proceed despite of the Metafont errors...\n')
-		
-	    
+            if not options.keep_trying or prod == 0:
+                sys.exit (1)
+            else:
+                sys.stderr.write ('\n\nTrying to proceed despite of the Metafont errors...\n')
+        
+      
 
-	return "%s.%d" % (filename, prod)
+    return "%s.%d" % (filename, prod)
 
 def parse_command_line ():
-	p = optparse.OptionParser (version="""mftrace @VERSION@
+    p = optparse.OptionParser (version="""mftrace @VERSION@
 
 This program is free software.  It is covered by the GNU General Public
 License and you are welcome to change it and/or distribute copies of it
@@ -937,426 +937,426 @@ under certain conditions.  Invoke as `mftrace --warranty' for more
 information.
 
 Copyright (c) 2005--2006 by
-  Han-Wen Nienhuys <hanwen@xs4all.nl> 
+ Han-Wen Nienhuys <hanwen@xs4all.nl> 
 
 """)
-	p.usage = "mftrace [OPTION]... FILE..."
-	p.description = _ ("Generate Type1 or TrueType font from Metafont source.")
+    p.usage = "mftrace [OPTION]... FILE..."
+    p.description = _ ("Generate Type1 or TrueType font from Metafont source.")
 
-	p.add_option ('-k', '--keep',
-		      action="store_true",
-		      dest="keep_temp_dir",
-		      help=_ ("Keep all output in directory %s.dir") % program_name)
-	p.add_option ('','--magnification',
-		      dest="magnification",
-		      metavar="MAG",
-		      default=1000.0,
-		      type="float",
-		      help=_("Set magnification for MF to MAG (default: 1000)"))
-	p.add_option ('-V', '--verbose',
-		      action='store_true',
-		      default=False,
-		      help=_ ("Be verbose"))
-	p.add_option ('-f', '--formats',
-		      action="append",
-		      dest="formats",
-		      default=[],
-		      help=_("Which formats to generate (choices: AFM, PFA, PFB, TTF, SVG)"))
-	p.add_option ('', '--simplify',
-		      action="store_true",
-		      dest="simplify",
-		      help=_ ("Simplify using fontforge"))
-	p.add_option ('', '--gffile',
-		      dest="gffile",
-		      help= _("Use gf FILE instead of running Metafont"))
-	p.add_option ('-I', '--include',
-		      dest="include_dirs",
-		      action="append",
-		      default=[],
-		      help=_("Add to path for searching files"))
-	p.add_option ('','--glyphs',
-		      default=[],
-		      action="append",
-		      dest="glyphs",
-		      metavar="LIST",
-		      help= _('Process only these glyphs.  LIST is comma separated'))
-	p.add_option ('', '--tfmfile',
-		      metavar='FILE',
-		      action='store',
-		      dest='tfm_file')
-	p.add_option ('-e', '--encoding',
-		      metavar="FILE",
-		      action='store',
-		      dest="encoding_file",
-		      default="",
-		      help= _ ("Use encoding file FILE"))
-	p.add_option ('','--keep-trying',
-		      dest='keep_trying',
-		      default=False,
-		      action="store_true",
-		      help= _ ("Don't stop if tracing fails"))
-	p.add_option ('-w', '--warranty',
-		      action="store_true",
-		      help=_ ("show warranty and copyright"))
-	p.add_option ('','--dos-kpath',
-		      dest="dos_kpath",
-		      help=_("try to use Miktex kpsewhich"))
-	p.add_option ('', '--potrace',
-		      dest='potrace',
-		      help=_ ("Use potrace"))
-	p.add_option ('', '--autotrace',
-		      dest='autotrace',
-		      help=_ ("Use autotrace"))
-	p.add_option ('', '--no-afm',
-		      action='store_false',
-		      dest="read_afm",
-		      default=True,
-		      help=_("Don't read AFM file"))
-	p.add_option ('','--noround',
-		      action="store_false",
-		      dest='round_to_int',
-		      default=True,
-		      help= ("Do not round coordinates of control points \n                             to integer values (use with --grid)"))
-	p.add_option ('','--grid',
-		      metavar='SCALE',
-		      dest='grid_scale',
-		      type='float',
-		      default = 1.0,
-		      help=_ ("Set reciprocal grid size in em units"))
-	p.add_option ('-D','--define',
-		      metavar="SYMBOL=VALUE",
-		      dest="defs",
-		      default=[],
-		      action='append',help=_("Set the font info SYMBOL to VALUE"))
+    p.add_option ('-k', '--keep',
+           action="store_true",
+           dest="keep_temp_dir",
+           help=_ ("Keep all output in directory %s.dir") % program_name)
+    p.add_option ('','--magnification',
+           dest="magnification",
+           metavar="MAG",
+           default=1000.0,
+           type="float",
+           help=_("Set magnification for MF to MAG (default: 1000)"))
+    p.add_option ('-V', '--verbose',
+           action='store_true',
+           default=False,
+           help=_ ("Be verbose"))
+    p.add_option ('-f', '--formats',
+           action="append",
+           dest="formats",
+           default=[],
+           help=_("Which formats to generate (choices: AFM, PFA, PFB, TTF, SVG)"))
+    p.add_option ('', '--simplify',
+           action="store_true",
+           dest="simplify",
+           help=_ ("Simplify using fontforge"))
+    p.add_option ('', '--gffile',
+           dest="gffile",
+           help= _("Use gf FILE instead of running Metafont"))
+    p.add_option ('-I', '--include',
+           dest="include_dirs",
+           action="append",
+           default=[],
+           help=_("Add to path for searching files"))
+    p.add_option ('','--glyphs',
+           default=[],
+           action="append",
+           dest="glyphs",
+           metavar="LIST",
+           help= _('Process only these glyphs.  LIST is comma separated'))
+    p.add_option ('', '--tfmfile',
+           metavar='FILE',
+           action='store',
+           dest='tfm_file')
+    p.add_option ('-e', '--encoding',
+           metavar="FILE",
+           action='store',
+           dest="encoding_file",
+           default="",
+           help= _ ("Use encoding file FILE"))
+    p.add_option ('','--keep-trying',
+           dest='keep_trying',
+           default=False,
+           action="store_true",
+           help= _ ("Don't stop if tracing fails"))
+    p.add_option ('-w', '--warranty',
+           action="store_true",
+           help=_ ("show warranty and copyright"))
+    p.add_option ('','--dos-kpath',
+           dest="dos_kpath",
+           help=_("try to use Miktex kpsewhich"))
+    p.add_option ('', '--potrace',
+           dest='potrace',
+           help=_ ("Use potrace"))
+    p.add_option ('', '--autotrace',
+           dest='autotrace',
+           help=_ ("Use autotrace"))
+    p.add_option ('', '--no-afm',
+           action='store_false',
+           dest="read_afm",
+           default=True,
+           help=_("Don't read AFM file"))
+    p.add_option ('','--noround',
+           action="store_false",
+           dest='round_to_int',
+           default=True,
+           help= ("Do not round coordinates of control points \n                             to integer values (use with --grid)"))
+    p.add_option ('','--grid',
+           metavar='SCALE',
+           dest='grid_scale',
+           type='float',
+           default = 1.0,
+           help=_ ("Set reciprocal grid size in em units"))
+    p.add_option ('-D','--define',
+           metavar="SYMBOL=VALUE",
+           dest="defs",
+           default=[],
+           action='append',help=_("Set the font info SYMBOL to VALUE"))
 
-	global options
-	(options, files) = p.parse_args ()
+    global options
+    (options, files) = p.parse_args ()
 
-	if not files:
-		sys.stderr.write ('Need argument on command line \n')
-		p.print_help ()
-		sys.exit (2)
-		
-	if options.warranty :
-		warranty ()
-		sys.exit (0)
+    if not files:
+        sys.stderr.write ('Need argument on command line \n')
+        p.print_help ()
+        sys.exit (2)
+        
+    if options.warranty :
+        warranty ()
+        sys.exit (0)
 
-	options.font_info = {}
-	for d in options.defs:
-		kv = d.split('=')
-		if len (kv) == 1:
-			options.font_info[kv] = 'true'
-		elif len (kv) > 1:
-			options.font_info[kv[0]] = '='.join (kv[1:])
-			
-	def comma_sepped_to_list (x):
-		fs = [] 
-		for f in x:
-			fs += f.lower ().split (',')
-		return fs
-	
-	options.formats = comma_sepped_to_list (options.formats)
+    options.font_info = {}
+    for d in options.defs:
+        kv = d.split('=')
+        if len (kv) == 1:
+            options.font_info[kv] = 'true'
+        elif len (kv) > 1:
+            options.font_info[kv[0]] = '='.join (kv[1:])
+            
+    def comma_sepped_to_list (x):
+        fs = [] 
+        for f in x:
+            fs += f.lower ().split (',')
+        return fs
+    
+    options.formats = comma_sepped_to_list (options.formats)
 
-	glyph_range = []
-	for r in options.glyphs: 
-		glyph_subrange = map (int, string.split (r, '-'))
-		if len (glyph_subrange) == 2 and glyph_subrange[0] < glyph_subrange[1] + 1:
-			glyph_range += range (glyph_subrange[0], glyph_subrange[1] + 1)
-		else:
-			glyph_range.append (glyph_subrange[0])
+    glyph_range = []
+    for r in options.glyphs: 
+        glyph_subrange = map (int, string.split (r, '-'))
+        if len (glyph_subrange) == 2 and glyph_subrange[0] < glyph_subrange[1] + 1:
+            glyph_range += range (glyph_subrange[0], glyph_subrange[1] + 1)
+        else:
+            glyph_range.append (glyph_subrange[0])
 
-	options.glyphs = glyph_range
-	
-	options.trace_binary = ''
-	if options.potrace:
-		options.trace_binary = 'potrace'
-	elif options.autotrace:
-		options.trace_binary = 'autotrace'
-	
-	if options.formats == []:
-		options.formats = ['pfa']
+    options.glyphs = glyph_range
+    
+    options.trace_binary = ''
+    if options.potrace:
+        options.trace_binary = 'potrace'
+    elif options.autotrace:
+        options.trace_binary = 'autotrace'
+    
+    if options.formats == []:
+        options.formats = ['pfa']
 
 
 
-	global trace_command
-	global path_to_type1_ops
-	
-	stat = os.system ('potrace --version > /dev/null 2>&1 ')
-	if options.trace_binary != 'autotrace' and stat == 0:
-		options.trace_binary = 'potrace'
+    global trace_command
+    global path_to_type1_ops
+    
+    stat = os.system ('potrace --version > /dev/null 2>&1 ')
+    if options.trace_binary != 'autotrace' and stat == 0:
+        options.trace_binary = 'potrace'
 
-		trace_command = potrace_command
-		path_to_type1_ops = potrace_path_to_type1_ops
+        trace_command = potrace_command
+        path_to_type1_ops = potrace_path_to_type1_ops
 
-	stat = os.system ('autotrace --version > /dev/null 2>&1 ')
-	if options.trace_binary != 'potrace' and stat == 0:
-		options.trace_binary = 'autotrace'
-		trace_command = autotrace_command
-		path_to_type1_ops = autotrace_path_to_type1_ops
+    stat = os.system ('autotrace --version > /dev/null 2>&1 ')
+    if options.trace_binary != 'potrace' and stat == 0:
+        options.trace_binary = 'autotrace'
+        trace_command = autotrace_command
+        path_to_type1_ops = autotrace_path_to_type1_ops
 
-	if not options.trace_binary:
-		error (_ ("No tracing program found.\nInstall potrace or autotrace."))
-		
-	return files
+    if not options.trace_binary:
+        error (_ ("No tracing program found.\nInstall potrace or autotrace."))
+        
+    return files
 
 
 def derive_font_name (family, fullname):
-	fullname = re.sub (family, '', fullname)
-	family = re.sub (' ',  '', family)
-	fullname = re.sub ('Oldstyle Figures', 'OsF', fullname)
-	fullname = re.sub ('Small Caps', 'SC', fullname)
-	fullname = re.sub ('[Mm]edium', '', fullname)
-	fullname = re.sub ('[^A-Za-z0-9]', '', fullname)
-	return '%s-%s' % (family, fullname)
-	
+    fullname = re.sub (family, '', fullname)
+    family = re.sub (' ',  '', family)
+    fullname = re.sub ('Oldstyle Figures', 'OsF', fullname)
+    fullname = re.sub ('Small Caps', 'SC', fullname)
+    fullname = re.sub ('[Mm]edium', '', fullname)
+    fullname = re.sub ('[^A-Za-z0-9]', '', fullname)
+    return '%s-%s' % (family, fullname)
+    
 def cm_guess_font_info (filename, fontinfo):
-	# urg.
-	filename = re.sub ("cm(.*)tt", r"cmtt\1", filename)
-	m = re.search ("([0-9]+)$", filename)
-	design_size = ''
-	if m:
-		design_size = int (m.group (1))
-		fontinfo['DesignSize'] = design_size
+    # urg.
+    filename = re.sub ("cm(.*)tt", r"cmtt\1", filename)
+    m = re.search ("([0-9]+)$", filename)
+    design_size = ''
+    if m:
+        design_size = int (m.group (1))
+        fontinfo['DesignSize'] = design_size
 
-	prefixes = [("cmtt", "Computer Modern Typewriter"),
-		    ("cmvtt", "Computer Modern Variable Width Typewriter"),
-		    ("cmss", "Computer Modern Sans"),
-		    ("cm", "Computer Modern")]
+    prefixes = [("cmtt", "Computer Modern Typewriter"),
+          ("cmvtt", "Computer Modern Variable Width Typewriter"),
+          ("cmss", "Computer Modern Sans"),
+          ("cm", "Computer Modern")]
 
-	family = ''
- 	for (k, v) in prefixes:
-		if re.search (k, filename):
-			family = v
-			if k == 'cmtt':
-				fontinfo['isFixedPitch'] = 'true'
-			filename = re.sub (k, '', filename)
-			break
+    family = ''
+    for (k, v) in prefixes:
+        if re.search (k, filename):
+            family = v
+            if k == 'cmtt':
+                fontinfo['isFixedPitch'] = 'true'
+            filename = re.sub (k, '', filename)
+            break
 
-	# shapes
-	prefixes = [("r", "Roman"),
-		    ("mi", "Math italic"),
-		    ("u", "Unslanted italic"),
-		    ("sl", "Oblique"),
-		    ("csc", "Small Caps"),
-		    ("ex", "Math extension"),
-		    ("ti", "Text italic"),
-		    ("i", "Italic")]
-	shape = ''
- 	for (k, v) in prefixes:
-		if re.search (k, filename):
-			shape = v
-			filename = re.sub (k, '', filename)
-			
-	prefixes = [("b", "Bold"),
-		    ("d", "Demi bold")]
-	weight = 'Regular'
-	for (k, v) in prefixes:
-		if re.search (k, filename):
-			weight = v
-			filename = re.sub (k, '', filename)
+    # shapes
+    prefixes = [("r", "Roman"),
+          ("mi", "Math italic"),
+          ("u", "Unslanted italic"),
+          ("sl", "Oblique"),
+          ("csc", "Small Caps"),
+          ("ex", "Math extension"),
+          ("ti", "Text italic"),
+          ("i", "Italic")]
+    shape = ''
+    for (k, v) in prefixes:
+        if re.search (k, filename):
+            shape = v
+            filename = re.sub (k, '', filename)
+            
+    prefixes = [("b", "Bold"),
+          ("d", "Demi bold")]
+    weight = 'Regular'
+    for (k, v) in prefixes:
+        if re.search (k, filename):
+            weight = v
+            filename = re.sub (k, '', filename)
 
-	prefixes = [("c", "Condensed"),
-		    ("x", "Extended")]
-	stretch = ''
-	for (k, v) in prefixes:
-		if re.search (k, filename):
-			stretch = v
-			filename = re.sub (k, '', filename)
-	
-	fontinfo['ItalicAngle'] = 0
-	if re.search ('[Ii]talic', shape) or re.search ('[Oo]blique', shape):
-		a = -14
-		if re.search ("Sans", family):
-			a = -12
+    prefixes = [("c", "Condensed"),
+          ("x", "Extended")]
+    stretch = ''
+    for (k, v) in prefixes:
+        if re.search (k, filename):
+            stretch = v
+            filename = re.sub (k, '', filename)
+    
+    fontinfo['ItalicAngle'] = 0
+    if re.search ('[Ii]talic', shape) or re.search ('[Oo]blique', shape):
+        a = -14
+        if re.search ("Sans", family):
+            a = -12
 
-		fontinfo ["ItalicAngle"] = a
+        fontinfo ["ItalicAngle"] = a
 
-	fontinfo['Weight'] = weight
-	fontinfo['FamilyName'] = family
-	full  = '%s %s %s %s %dpt' \
-			       % (family, shape, weight, stretch, design_size)
-	full = re.sub (" +", ' ', full)
-	
-	fontinfo['FullName'] = full
-	fontinfo['FontName'] = derive_font_name (family, full)
+    fontinfo['Weight'] = weight
+    fontinfo['FamilyName'] = family
+    full  = '%s %s %s %s %dpt' \
+               % (family, shape, weight, stretch, design_size)
+    full = re.sub (" +", ' ', full)
+    
+    fontinfo['FullName'] = full
+    fontinfo['FontName'] = derive_font_name (family, full)
 
-	return fontinfo
+    return fontinfo
 
 def ec_guess_font_info (filename, fontinfo):
-	design_size = 12
-	m = re.search ("([0-9]+)$", filename)
-	if m:
-		design_size = int (m.group (1))
-		fontinfo['DesignSize'] = design_size
+    design_size = 12
+    m = re.search ("([0-9]+)$", filename)
+    if m:
+        design_size = int (m.group (1))
+        fontinfo['DesignSize'] = design_size
 
-	prefixes = [("ecss", "European Computer Modern Sans"),
-		    ("ectt", "European Computer Modern Typewriter"),
-		    ("ec", "European Computer Modern")]
+    prefixes = [("ecss", "European Computer Modern Sans"),
+          ("ectt", "European Computer Modern Typewriter"),
+          ("ec", "European Computer Modern")]
 
-	family = ''
- 	for (k, v) in prefixes:
-		if re.search (k, filename):
-			if k == 'ectt':
-				fontinfo['isFixedPitch'] = 'true'
-			family = v
-			filename = re.sub (k, '', filename)
-			break
+    family = ''
+    for (k, v) in prefixes:
+        if re.search (k, filename):
+            if k == 'ectt':
+                fontinfo['isFixedPitch'] = 'true'
+            family = v
+            filename = re.sub (k, '', filename)
+            break
 
-	# shapes
-	prefixes = [("r", "Roman"),
-		    ("mi", "Math italic"),
-		    ("u", "Unslanted italic"),
-		    ("sl", "Oblique"),
-		    ("cc", "Small caps"),
-		    ("ex", "Math extension"),
-		    ("ti", "Italic"),
-		    ("i", "Italic")]
-	
-	shape = ''
- 	for (k, v) in prefixes:
-		if re.search (k, filename):
-			shape = v
-			filename = re.sub (k, '', filename)
+    # shapes
+    prefixes = [("r", "Roman"),
+          ("mi", "Math italic"),
+          ("u", "Unslanted italic"),
+          ("sl", "Oblique"),
+          ("cc", "Small caps"),
+          ("ex", "Math extension"),
+          ("ti", "Italic"),
+          ("i", "Italic")]
+    
+    shape = ''
+    for (k, v) in prefixes:
+        if re.search (k, filename):
+            shape = v
+            filename = re.sub (k, '', filename)
 
-	prefixes = [("b", "Bold"),
-		    ("d", "Demi bold")]
-	weight = 'Regular'
-	for (k, v) in prefixes:
-		if re.search (k, filename):
-			weight = v
-			filename = re.sub (k, '', filename)
+    prefixes = [("b", "Bold"),
+          ("d", "Demi bold")]
+    weight = 'Regular'
+    for (k, v) in prefixes:
+        if re.search (k, filename):
+            weight = v
+            filename = re.sub (k, '', filename)
 
-	prefixes = [("c", "Condensed"),
-		    ("x", "Extended")]
-	stretch = ''
-	for (k, v) in prefixes:
-		if re.search (k, filename):
-			stretch = v
-			filename = re.sub (k, '', filename)
-	
-	fontinfo['ItalicAngle'] = 0
-	if re.search ('[Ii]talic', shape) or re.search ('[Oo]blique', shape):
-		a = -14
-		if re.search ("Sans", family):
-			a = -12
+    prefixes = [("c", "Condensed"),
+          ("x", "Extended")]
+    stretch = ''
+    for (k, v) in prefixes:
+        if re.search (k, filename):
+            stretch = v
+            filename = re.sub (k, '', filename)
+    
+    fontinfo['ItalicAngle'] = 0
+    if re.search ('[Ii]talic', shape) or re.search ('[Oo]blique', shape):
+        a = -14
+        if re.search ("Sans", family):
+            a = -12
 
-		fontinfo ["ItalicAngle"] = a
+        fontinfo ["ItalicAngle"] = a
 
-	fontinfo['Weight'] = weight
-	fontinfo['FamilyName'] = family
-	full  = '%s %s %s %s %dpt' \
-			       % (family, shape, weight, stretch, design_size)
-	full = re.sub (" +", ' ', full)
-	
-	fontinfo['FontName'] = derive_font_name (family, full)
-	fontinfo['FullName'] = full
+    fontinfo['Weight'] = weight
+    fontinfo['FamilyName'] = family
+    full  = '%s %s %s %s %dpt' \
+               % (family, shape, weight, stretch, design_size)
+    full = re.sub (" +", ' ', full)
+    
+    fontinfo['FontName'] = derive_font_name (family, full)
+    fontinfo['FullName'] = full
 
-	return fontinfo
+    return fontinfo
 
 
 def guess_fontinfo (filename):
-	fi = {
-		'FontName': filename,
-		'FamilyName': filename,
-		'Weight': 'Regular',
-		'ItalicAngle': 0,
-		'DesignSize' : 12,
-		'isFixedPitch' : 'false',
-		'FullName': filename,
-	       }
+    fi = {
+        'FontName': filename,
+        'FamilyName': filename,
+        'Weight': 'Regular',
+        'ItalicAngle': 0,
+        'DesignSize' : 12,
+        'isFixedPitch' : 'false',
+        'FullName': filename,
+       }
 
-	if re.search ('^cm', filename):
-		fi.update (cm_guess_font_info (filename, fi))
-	elif re.search ("^ec", filename):
-		fi.update (ec_guess_font_info (filename, fi))
-	elif options.read_afm:
-		global afmfile
-		if not afmfile:
-			afmfile = find_file (filename + '.afm')
+    if re.search ('^cm', filename):
+        fi.update (cm_guess_font_info (filename, fi))
+    elif re.search ("^ec", filename):
+        fi.update (ec_guess_font_info (filename, fi))
+    elif options.read_afm:
+        global afmfile
+        if not afmfile:
+            afmfile = find_file (filename + '.afm')
 
-		if afmfile:
-			afmfile = os.path.abspath (afmfile)
-			afm_struct = afm.read_afm_file (afmfile)
-			fi.update (afm_struct.__dict__)
-		return fi
-	else:
-		sys.stderr.write ("Warning: no extra font information for this font.\n"
-				  + "Consider writing a XX_guess_font_info() routine.\n")
+        if afmfile:
+            afmfile = os.path.abspath (afmfile)
+            afm_struct = afm.read_afm_file (afmfile)
+            fi.update (afm_struct.__dict__)
+        return fi
+    else:
+        sys.stderr.write ("Warning: no extra font information for this font.\n"
+                 + "Consider writing a XX_guess_font_info() routine.\n")
 
-	return fi
+    return fi
 
-def do_file (filename):	
-	encoding_file = options.encoding_file
-	global include_dirs
-	include_dirs = options.include_dirs
-	include_dirs.append (origdir)
+def do_file (filename):        
+    encoding_file = options.encoding_file
+    global include_dirs
+    include_dirs = options.include_dirs
+    include_dirs.append (origdir)
 
-	basename = strip_extension (filename, '.mf')
-	progress (_ ("Font `%s'..." % basename))
-	progress ('\n')
+    basename = strip_extension (filename, '.mf')
+    progress (_ ("Font `%s'..." % basename))
+    progress ('\n')
 
-	if not options.tfm_file:
-		options.tfm_file = find_file (basename + '.tfm')
+    if not options.tfm_file:
+        options.tfm_file = find_file (basename + '.tfm')
 
-	if not options.tfm_file:
-		options.tfm_file = popen ("mktextfm %s 2>/dev/null" % shell_escape_filename (basename)).read ()
-		if options.tfm_file:
-			options.tfm_file = options.tfm_file[:-1]
+    if not options.tfm_file:
+        options.tfm_file = popen ("mktextfm %s 2>/dev/null" % shell_escape_filename (basename)).read ()
+        if options.tfm_file:
+            options.tfm_file = options.tfm_file[:-1]
 
-	if not options.tfm_file:
-		error (_ ("Can not find a TFM file to match `%s'") % basename)
+    if not options.tfm_file:
+        error (_ ("Can not find a TFM file to match `%s'") % basename)
 
-	options.tfm_file = os.path.abspath (options.tfm_file)
-	metric = tfm.read_tfm_file (options.tfm_file)
+    options.tfm_file = os.path.abspath (options.tfm_file)
+    metric = tfm.read_tfm_file (options.tfm_file)
 
-	fontinfo = guess_fontinfo (basename)
-	fontinfo.update (options.font_info)
+    fontinfo = guess_fontinfo (basename)
+    fontinfo.update (options.font_info)
 
-	if encoding_file and not os.path.exists (encoding_file):
-		encoding_file = find_file (encoding_file)
+    if encoding_file and not os.path.exists (encoding_file):
+        encoding_file = find_file (encoding_file)
 
 
-	if not encoding_file:
-		codingfile = 'tex256.enc'
-		if not coding_dict.has_key (metric.coding):
-			sys.stderr.write ("Unknown encoding `%s'; assuming tex256.\n" % metric.coding)
-		else:
-			codingfile = coding_dict[metric.coding]
+    if not encoding_file:
+        codingfile = 'tex256.enc'
+        if not coding_dict.has_key (metric.coding):
+            sys.stderr.write ("Unknown encoding `%s'; assuming tex256.\n" % metric.coding)
+        else:
+            codingfile = coding_dict[metric.coding]
 
-		encoding_file = find_file (codingfile)
-		if not encoding_file:
-			error (_ ("can't find file `%s'" % codingfile))
+        encoding_file = find_file (codingfile)
+        if not encoding_file:
+            error (_ ("can't find file `%s'" % codingfile))
 
-	(enc_name, encoding) = read_encoding (encoding_file)
+    (enc_name, encoding) = read_encoding (encoding_file)
 
-	if not len (options.glyphs):
-		options.glyphs = range (0, len (encoding))
+    if not len (options.glyphs):
+        options.glyphs = range (0, len (encoding))
 
-	global temp_dir
-	temp_dir = setup_temp ()
+    global temp_dir
+    temp_dir = setup_temp ()
 
-	if options.verbose:
-		progress ('Temporary directory is `%s\' ' % temp_dir)
+    if options.verbose:
+        progress ('Temporary directory is `%s\' ' % temp_dir)
 
-	os.chdir (temp_dir)
+    os.chdir (temp_dir)
 
-	if not options.gffile:
-		# run mf
-		base = gen_pixel_font (basename, metric, options.magnification)
-		options.gffile = base + 'gf'
-	else:
-		options.gffile = find_file (options.gffile)
+    if not options.gffile:
+        # run mf
+        base = gen_pixel_font (basename, metric, options.magnification)
+        options.gffile = base + 'gf'
+    else:
+        options.gffile = find_file (options.gffile)
 
-	# the heart of the program:
-	trace_font (basename, options.gffile, metric, options.glyphs, encoding,
-		    options.magnification, fontinfo)
-		
-	make_outputs (basename, options.formats, encoding)
-	for format in options.formats:
-		shutil.copy2 (basename + '.' + format, origdir)
+    # the heart of the program:
+    trace_font (basename, options.gffile, metric, options.glyphs, encoding,
+          options.magnification, fontinfo)
+        
+    make_outputs (basename, options.formats, encoding)
+    for format in options.formats:
+        shutil.copy2 (basename + '.' + format, origdir)
 
-	os.chdir (origdir)
-	cleanup_temp ()
+    os.chdir (origdir)
+    cleanup_temp ()
 
 
 
@@ -1365,12 +1365,12 @@ def do_file (filename):
 afmfile = ''
 backend_options = getenv ('MFTRACE_BACKEND_OPTIONS', '')
 def main ():
-	files = parse_command_line ()
-	identify (sys.stderr)
-	
-	for filename in files:
-		do_file (filename)
-	sys.exit (exit_value)
+    files = parse_command_line ()
+    identify (sys.stderr)
+    
+    for filename in files:
+        do_file (filename)
+    sys.exit (exit_value)
 
 if __name__ =='__main__':
-	main()
+    main()

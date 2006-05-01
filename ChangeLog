@@ -1,3 +1,7 @@
+2006-05-01  Han-Wen Nienhuys  <hanwen@lilypond.org>
+
+	* mftrace.py: indent 4 iso. 8.
+
 2006-04-27  Werner Lemberg  <wl@gnu.org>
 
 	* mftrace.py <top_level>: Don't define `include_dirs' here. 
