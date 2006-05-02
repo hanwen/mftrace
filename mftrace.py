@@ -504,7 +504,7 @@ def trace_font (fontname, gf_file, metric, glyphs, encoding,
     # for single glyph testing.
     # glyphs = []
     for a in glyphs:
-          if encoding[a] == ".notavail":
+        if encoding[a] == ".notavail":
             continue
         valid = metric.has_char (a)
         if not valid:
@@ -554,7 +554,7 @@ def ps_encode_encoding (encoding):
        % (len (encoding), len (encoding)-1)
 
     for i in range (0, len (encoding)):
-          if encoding[i] != ".notavail":
+        if encoding[i] != ".notavail":
             str = str + 'dup %d /%s put\n' % (i, encoding[i])
 
     return str
@@ -766,26 +766,26 @@ def get_afm (t1_path, tfmname, encoding, out_path):
     progress ('\n')
 
 def assemble_font (fontname, format, is_raw):
-  ext = '.' + format
-  asm_opt = '--pfa'
-  
-  if format == 'pfb':
-    asm_opt = '--pfb'
+    ext = '.' + format
+    asm_opt = '--pfa'
 
-  if is_raw:
-    ext = ext + '.raw'
-  
-  outname = fontname + ext
+    if format == 'pfb':
+      asm_opt = '--pfb'
 
-  progress (_ ("Assembling raw font to `%s'... ") % outname)
-  system ('t1asm %s mftrace.t1asm %s' % (asm_opt, shell_escape_filename (outname)))
-  progress ('\n')
-  return outname
+    if is_raw:
+      ext = ext + '.raw'
+
+    outname = fontname + ext
+
+    progress (_ ("Assembling raw font to `%s'... ") % outname)
+    system ('t1asm %s mftrace.t1asm %s' % (asm_opt, shell_escape_filename (outname)))
+    progress ('\n')
+    return outname
 
 def make_outputs (fontname, formats, encoding):
-     """
-     run pfaedit to convert to other formats
-     """
+    """
+    run pfaedit to convert to other formats
+    """
  
     ff_needed = 0
     ff_command = ""

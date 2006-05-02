@@ -1,3 +1,4 @@
+#-*-RPM-SPEC-*-
 Summary: Generate scalable fonts for TeX
 Name: mftrace
 Version: @VERSION@
@@ -41,12 +42,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/bin/gf2pbm
 %{_prefix}/bin/mftrace
 %{_mandir}/man1/mftrace.1.gz
-%{_datadir}/mftrace/afm.pyc
-%{_datadir}/mftrace/afm.pyo
-%{_datadir}/mftrace/afm.py
-%{_datadir}/mftrace/tfm.pyc
-%{_datadir}/mftrace/tfm.pyo
-%{_datadir}/mftrace/tfm.py
+%{_datadir}/mftrace/afm.*
+%{_datadir}/mftrace/tfm.*
 %doc README.txt
 
 %changelog
