@@ -544,7 +544,7 @@ def trace_font (fontname, gf_file, metric, glyphs, encoding,
 
         font_bbox = update_bbox_with_bbox (font_bbox, bbox)
 
-        t1os.append ('/%s %s ' % (encoding[a], t1o))
+        t1os.append ('\n/%s %s ' % (encoding[a], t1o))
 
     progress ('\n')
     to_type1 (t1os, font_bbox, fontname, encoding, magnification, fontinfo)
@@ -944,91 +944,91 @@ Copyright (c) 2005--2006 by
     p.description = _ ("Generate Type1 or TrueType font from Metafont source.")
 
     p.add_option ('-k', '--keep',
-           action="store_true",
-           dest="keep_temp_dir",
-           help=_ ("Keep all output in directory %s.dir") % program_name)
+                  action="store_true",
+                  dest="keep_temp_dir",
+                  help=_ ("Keep all output in directory %s.dir") % program_name)
     p.add_option ('','--magnification',
-           dest="magnification",
-           metavar="MAG",
-           default=1000.0,
-           type="float",
-           help=_("Set magnification for MF to MAG (default: 1000)"))
+                  dest="magnification",
+                  metavar="MAG",
+                  default=1000.0,
+                  type="float",
+                  help=_("Set magnification for MF to MAG (default: 1000)"))
     p.add_option ('-V', '--verbose',
-           action='store_true',
-           default=False,
-           help=_ ("Be verbose"))
+                  action='store_true',
+                  default=False,
+                  help=_ ("Be verbose"))
     p.add_option ('-f', '--formats',
-           action="append",
-           dest="formats",
-           default=[],
-           help=_("Which formats to generate (choices: AFM, PFA, PFB, TTF, SVG)"))
+                  action="append",
+                  dest="formats",
+                  default=[],
+                  help=_("Which formats to generate (choices: AFM, PFA, PFB, TTF, SVG)"))
     p.add_option ('', '--simplify',
-           action="store_true",
-           dest="simplify",
-           help=_ ("Simplify using fontforge"))
+                  action="store_true",
+                  dest="simplify",
+                  help=_ ("Simplify using fontforge"))
     p.add_option ('', '--gffile',
-           dest="gffile",
-           help= _("Use gf FILE instead of running Metafont"))
+                  dest="gffile",
+                  help= _("Use gf FILE instead of running Metafont"))
     p.add_option ('-I', '--include',
-           dest="include_dirs",
-           action="append",
-           default=[],
-           help=_("Add to path for searching files"))
+                  dest="include_dirs",
+                  action="append",
+                  default=[],
+                  help=_("Add to path for searching files"))
     p.add_option ('','--glyphs',
-           default=[],
-           action="append",
-           dest="glyphs",
-           metavar="LIST",
-           help= _('Process only these glyphs.  LIST is comma separated'))
+                  default=[],
+                  action="append",
+                  dest="glyphs",
+                  metavar="LIST",
+                  help= _('Process only these glyphs.  LIST is comma separated'))
     p.add_option ('', '--tfmfile',
-           metavar='FILE',
-           action='store',
-           dest='tfm_file')
+                  metavar='FILE',
+                  action='store',
+                  dest='tfm_file')
     p.add_option ('-e', '--encoding',
-           metavar="FILE",
-           action='store',
-           dest="encoding_file",
-           default="",
-           help= _ ("Use encoding file FILE"))
+                  metavar="FILE",
+                  action='store',
+                  dest="encoding_file",
+                  default="",
+                  help= _ ("Use encoding file FILE"))
     p.add_option ('','--keep-trying',
-           dest='keep_trying',
-           default=False,
-           action="store_true",
-           help= _ ("Don't stop if tracing fails"))
+                  dest='keep_trying',
+                  default=False,
+                  action="store_true",
+                  help= _ ("Don't stop if tracing fails"))
     p.add_option ('-w', '--warranty',
-           action="store_true",
-           help=_ ("show warranty and copyright"))
+                  action="store_true",
+                  help=_ ("show warranty and copyright"))
     p.add_option ('','--dos-kpath',
-           dest="dos_kpath",
-           help=_("try to use Miktex kpsewhich"))
+                  dest="dos_kpath",
+                  help=_("try to use Miktex kpsewhich"))
     p.add_option ('', '--potrace',
-           dest='potrace',
-           help=_ ("Use potrace"))
+                  dest='potrace',
+                  help=_ ("Use potrace"))
     p.add_option ('', '--autotrace',
-           dest='autotrace',
-           help=_ ("Use autotrace"))
+                  dest='autotrace',
+                  help=_ ("Use autotrace"))
     p.add_option ('', '--no-afm',
-           action='store_false',
-           dest="read_afm",
-           default=True,
-           help=_("Don't read AFM file"))
+                  action='store_false',
+                  dest="read_afm",
+                  default=True,
+                  help=_("Don't read AFM file"))
     p.add_option ('','--noround',
-           action="store_false",
-           dest='round_to_int',
-           default=True,
-           help= ("Do not round coordinates of control points \n                             to integer values (use with --grid)"))
+                  action="store_false",
+                  dest='round_to_int',
+                  default=True,
+                  help= ("Do not round coordinates of control points to integer values (use with --grid)"))
     p.add_option ('','--grid',
-           metavar='SCALE',
-           dest='grid_scale',
-           type='float',
-           default = 1.0,
-           help=_ ("Set reciprocal grid size in em units"))
+                  metavar='SCALE',
+                  dest='grid_scale',
+                  type='float',
+                  default = 1.0,
+                  help=_ ("Set reciprocal grid size in em units"))
     p.add_option ('-D','--define',
-           metavar="SYMBOL=VALUE",
-           dest="defs",
-           default=[],
-           action='append',help=_("Set the font info SYMBOL to VALUE"))
-
+                  metavar="SYMBOL=VALUE",
+                  dest="defs",
+                  default=[],
+                  action='append',help=_("Set the font info SYMBOL to VALUE"))
+    
     global options
     (options, files) = p.parse_args ()
 
