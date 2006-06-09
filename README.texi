@@ -34,8 +34,12 @@ Versions prior to 1.0.5 were called `pktrace'.
 @file{mftrace} is a thin Python wrapper around some other programs that
 do the real work: a tracing program and t1asm.  To run mftrace you need:
 @itemize @bullet
-@item A tracing program: autotrace >= 0.30 (see @uref{http://autotrace.sourceforge.net}
-      or potrace (see @uref{http://potrace.sourceforge.net})
+@item A tracing program:
+      autotrace >= 0.30 (see @uref{http://autotrace.sourceforge.net}
+      or potrace (see @uref{http://potrace.sourceforge.net}).
+
+      Potrace is recommended as it runs quicker than autotrace.
+      
 @item Python--2.1 or later. See @uref{http://www.python.org/}
 @item t1utils. See @uref{http://www.lcdf.org/~eddietwo/type/}
 @item  TeX--your tex installation should include

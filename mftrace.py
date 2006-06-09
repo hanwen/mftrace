@@ -27,8 +27,6 @@ if prefix != '@' + 'prefix@':
     datadir = os.path.join (interpolate (datadir) % vars (), 'mftrace')
     libdir = interpolate (libdir) % vars ()
 
-
-
 if datadir == '@' + "datadir" + "@":
     datadir = os.getcwd ()
     bindir =  os.getcwd ()
@@ -1057,6 +1055,11 @@ Copyright (c) 2005--2006 by
     
     options.formats = comma_sepped_to_list (options.formats)
 
+    new_glyphs = []
+    for r in options.glyphs:
+        new_glyphs += r.split (',')
+    options.glyphs = new_glyphs
+    
     glyph_range = []
     for r in options.glyphs: 
         glyph_subrange = map (int, string.split (r, '-'))

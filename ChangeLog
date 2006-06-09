@@ -1,3 +1,7 @@
+2006-06-09  Han-Wen Nienhuys  <hanwen@lilypond.org>
+
+	* mftrace.py: handle comma in glyph-range too.
+
 2006-05-01  Han-Wen Nienhuys  <hanwen@lilypond.org>
 
 	* mftrace.py: indent 4 iso. 8.
