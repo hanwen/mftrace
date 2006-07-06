@@ -1,3 +1,7 @@
+2006-07-06  Han-Wen Nienhuys  <hanwen@lilypond.org>
+
+	* GNUmakefile.in (srcdir): split CFLAGS assignment. (Julian Gilbey)
+
 2006-06-09  Han-Wen Nienhuys  <hanwen@lilypond.org>
 
 	* mftrace.py: handle comma in glyph-range too.

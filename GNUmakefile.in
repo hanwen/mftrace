@@ -7,7 +7,10 @@ FILES= mftrace.py GNUmakefile.in \
 	README.texi README.txt ChangeLog \
 	mftrace.spec.in mftrace.spec \
 	$(PY_MODULES) configure configure.in config.h.in
-CFLAGS=-Wall -O2 -I.
+CFLAGS = -Wall -O2
+
+## retain during override.
+CFLAGS += -I.
 srcdir=@srcdir@
 VPATH=$(srcdir)
 NAME=mftrace
