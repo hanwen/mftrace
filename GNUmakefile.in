@@ -4,6 +4,7 @@ PY_MODULES= afm.py tfm.py
 PYC_MODULES = $(PY_MODULES:%=%c)
 FILES= mftrace.py GNUmakefile.in \
 	gf2pbm.c mftrace.1 \
+	COPYING \
 	README.texi README.txt ChangeLog \
 	mftrace.spec.in mftrace.spec \
 	$(PY_MODULES) configure configure.in config.h.in

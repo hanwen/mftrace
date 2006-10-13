@@ -1,3 +1,11 @@
+2006-10-13  Han-Wen Nienhuys  <hanwen@lilypond.org>
+
+	* configure.in (PYTHON): bump version.
+
+	* COPYING: GPL.
+
+	* GNUmakefile.in (FILES): add GPL
+
 2006-07-06  Han-Wen Nienhuys  <hanwen@lilypond.org>
 
 	* GNUmakefile.in (srcdir): split CFLAGS assignment. (Julian Gilbey)
