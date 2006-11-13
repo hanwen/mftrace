@@ -6,7 +6,7 @@ AC_PATH_PROG(AUTOTRACE, autotrace, none)
 AC_PATH_PROG(POTRACE, potrace, none)
 AC_SUBST(PYTHON)
 
-export VERSION="1.2.5"
+export VERSION="1.2.6"
 
 AC_SUBST(VERSION)
 AC_SUBST(EXEEXT)
