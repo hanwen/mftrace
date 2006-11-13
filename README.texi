@@ -330,7 +330,13 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @end quotation
 
-This page is licensed  
+This page is licensed under the
+@uref{http://www.gnu.org/licenses/fdl.txt,GNU Free Documentation
+License}.
+
+The mftrace script itself is licensed under the
+@uref{http://www.gnu.org/licenses/gpl.txt,GNU General Public License}.
+
 
 
 @section See also
