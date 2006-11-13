@@ -102,7 +102,6 @@ udist:  README.html
 	autoconf
 	./configure --prefix=$(HOME)/usr/pkg/mftrace
 	make dist
-	cvs commit -m 'release commit'
 	cp $(distdir).tar.gz $(WWWDIR)/mftrace/
 	mv $< $(WWWDIR)/mftrace/index.html
 
