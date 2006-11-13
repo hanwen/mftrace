@@ -1,3 +1,13 @@
+# part of
+# mftrace - Generate Type1 or TrueType font from Metafont source.
+#
+# Copyright (c)  2001--2006 by
+#  Han-Wen Nienhuys, Jan Nieuwenhuizen
+# 
+# Distributed under terms of the GNU General Public License.  It comes with
+# NO WARRANTY.
+#
+_
 import sys
 
 def compose_tfm_number (seq):
