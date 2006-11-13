@@ -1,0 +1,17 @@
+#*
+*.pyc
+*.spec
+*.txt
+*~
+GNUmakefile
+TAGS
+autom4te.cache
+config.cache
+config.h
+config.log
+config.make
+config.status
+configure
+# ugh, MAKE generates in .
+gf2pbm
+mftrace
