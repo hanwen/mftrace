@@ -1,17 +1,25 @@
 \input texinfo @c -*-texinfo-*-
 
-@c part of
-@c mftrace - Generate Type1 or TrueType font from Metafont source.
-@c 
-@c Copyright (c)  2001--2006 by
-@c  Han-Wen Nienhuys, Jan Nieuwenhuizen
-@c  
-@c This file is distributed under terms of the GNU Free Documentation
-@c License.
-@c 
-
 @setfilename README.info
 @settitle  mftrace - Scalable Fonts for MetaFont
+
+
+@ignore
+
+Copyright (c) 1999--2006 by the authors
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU General Public License.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA 
+
+@end ignore
+
+
+
 @node Top, , , 
 @top
 
@@ -278,35 +286,13 @@ to @email{hanwen@@xs4all.nl,Han-Wen Nienhuys}.
 
 @section Credits
 
-The biggest credits go out to Martin Weber for AutoTrace, Peter
-Selinger for potrace and @email{gww@@silcom.com,George Williams}, for
-FontForge.
+Gf2pbm, the utility to convert a MetaFont GF file to a PBM file was
+based on Paul Vojta's Xdvi. The license notice is reproduced below.
 
-Thanks to all contributors for finding bugs,
-@itemize @bullet
-@item
-Andrey V. Panov
-@item
-Geoffrey Alan Washburn
-@item
- @uref{http://www.maths.qmul.ac.uk/~jdg/,Julian Gilbey}
-@item
-  G@"{u}nther Spahlinger 
-@item
-  Richard Mahoney
-@item
-  Stanislav Brabec
-@item
-  Thomas Bushnell BSG 
-@item
-   Many others
-@end itemize
-
-
-
-The package also contains gf2pbm, a utility to convert a MetaFont GF
-file to a PBM file. Its source code was based on Paul Vojta's Xdvi
-program. The license notice is reproduced here:
+Thanks to all bughunters and contributors: Andrey V. Panov, Geoffrey
+Alan Washburn, @uref{http://www.maths.qmul.ac.uk/~jdg/,Julian Gilbey}
+G@"{u}nther Spahlinger, Richard Mahoney, Stanislav Brabec, and Thomas
+Bushnell BSG.
 
 
 @quotation
@@ -330,11 +316,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @end quotation
 
-This page is licensed under the
-@uref{http://www.gnu.org/licenses/fdl.txt,GNU Free Documentation
-License}.
-
-The mftrace script itself is licensed under the
+The rest of the package mftrace  script itself is licensed under the
 @uref{http://www.gnu.org/licenses/gpl.txt,GNU General Public License}.
 
 
@@ -347,8 +329,6 @@ font specification}
 @item @uref{http://partners.adobe.com/asn/developer/pdfs/tn/5015.Type1_Supp.pdf,Supplement
 to the Type1 specification}.
 @end itemize
-
-
 
 @bye
 
