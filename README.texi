@@ -41,10 +41,8 @@ Versions prior to 1.0.5 were called `pktrace'.
 @section Download
 
 @itemize
-@item @uref{http://www.xs4all.nl/~hanwen/mftrace/mftrace-@MFTVERSION@.tar.gz}
-@item Anonymous CVS at 
-@code{anoncvs@@subversions.gnu.org:/cvsroot/lilypond}, module
-@code{mftrace}.
+@item @uref{http://lilypond.org/mftrace/mftrace-@MFTVERSION@.tar.gz}
+@item GIT at @uref{http://repo.or.cz/w/mftrace.git}
 @end itemize
 
 
