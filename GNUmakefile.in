@@ -30,13 +30,14 @@ all: compile
 
 compile: mftrace gf2pbm
 
-README.txt: README.texi
-	sed 's/@MFTVERSION@/$(VERSION)/g' < $< > $<.in
-	makeinfo --no-split --no-headers --output $@  $<.in
+version.texi: GNUmakefile
+	echo -e '@macro mftversion\n$(VERSION)\n@end macro\n' > $@
 
-README.html: README.texi
-	sed 's/@MFTVERSION@/$(VERSION)/g' < $< > $<.in
-	makeinfo --html --no-split --no-headers --output $@  $<.in
+README.txt: README.texi version.texi
+	makeinfo --no-split --no-headers --output $@  $<
+
+README.html: README.texi version.texi
+	makeinfo --html --no-split --no-headers --output $@  $<
 
 dist: $(FILES)
 	mkdir $(distdir)

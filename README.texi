@@ -18,7 +18,7 @@ Foundation, Inc.,
 
 @end ignore
 
-
+@include version.texi
 
 @node Top, , , 
 @top
@@ -41,7 +41,7 @@ Versions prior to 1.0.5 were called `pktrace'.
 @section Download
 
 @itemize
-@item @uref{http://lilypond.org/mftrace/mftrace-@MFTVERSION@.tar.gz}
+@item @uref{http://lilypond.org/mftrace/mftrace-@mftversion{}.tar.gz}
 @item GIT at @uref{http://repo.or.cz/w/mftrace.git}
 @end itemize
 
