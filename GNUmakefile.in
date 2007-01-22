@@ -26,6 +26,12 @@ mandir=@mandir@
 PYTHON=@PYTHON@
 EXEEXT=@EXEEXT@
 
+
+## up/download.
+WWW_DIR=hanwen@lilypond.org:www/download/sources/mftrace/
+
+
+
 all: compile
 
 compile: mftrace gf2pbm
@@ -97,8 +103,6 @@ TEST_FONTS= ecbi0900 logo10
 test:
 	$(foreach a, $(TEST_FONTS), $(PYTHON) mftrace.py --glyphs 65 -V $(a) &&)true
 
-
-WWW_DIR=hanwen@lilypond.org:www/mftrace/
 
 udist:  README.html
 	autoconf
