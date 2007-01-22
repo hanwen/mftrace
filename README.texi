@@ -91,7 +91,7 @@ process the font with FontForge.
 A RPM may be built by issuing
 @example
 
-        rpm -tb mftrace-@var{version}.tar.gz
+        rpmbuild -tb mftrace-@var{version}.tar.gz
 
 @end example
 
