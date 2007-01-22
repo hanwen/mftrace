@@ -1003,6 +1003,7 @@ Copyright (c) 2005--2006 by
                   metavar='FILE',
                   action='store',
                   dest='tfm_file')
+    
     p.add_option ('-e', '--encoding',
                   metavar="FILE",
                   action='store',
@@ -1320,9 +1321,6 @@ def do_file (filename):
     progress ('\n')
 
     if not options.tfm_file:
-        options.tfm_file = find_file (basename + '.tfm')
-
-    if not options.tfm_file:
         options.tfm_file = popen ("mktextfm %s 2>/dev/null" % shell_escape_filename (basename)).read ()
         if options.tfm_file:
             options.tfm_file = options.tfm_file[:-1]
@@ -1360,7 +1358,7 @@ def do_file (filename):
     temp_dir = setup_temp ()
 
     if options.verbose:
-        progress ('Temporary directory is `%s\' ' % temp_dir)
+        progress ('Temporary directory is `%s\'\n' % temp_dir)
 
     os.chdir (temp_dir)
 
