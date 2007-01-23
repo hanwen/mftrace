@@ -112,7 +112,6 @@ udist:  README.html
 	if test -d .git ; then \
 		git tag -m ''  release/$(VERSION) ; \
 	fi
-	false
 	scp $(distdir).tar.gz $(WWW_DIR)
 	scp $< $(WWW_DIR)/index.html
 
