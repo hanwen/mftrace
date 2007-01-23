@@ -1,14 +1,16 @@
-.TH MFTRACE 1 "April 5, 2004"
-.\" Copyright (c) 1999--2006 by the authors
-.\" 
+.TH MFTRACE 1 "January 23, 2007"
+.\" Copyright (c) 1999--2007 by the authors
+.\"
 .\" Permission is granted to copy, distribute and/or modify this document
 .\" under the terms of the GNU General Public License.
-.\" 
+.\"
 .\" You should have received a copy of the GNU General Public License
 .\" along with this program; if not, write to the Free Software
 .\" Foundation, Inc.,
-.\" 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA 
-.\" 
+.\" 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.
+.hw mftrace autotrace potrace fontforge pfaedit ghostscript kpsewhich
 .
 .
 .SH NAME
@@ -22,20 +24,24 @@ mftrace \- convert METAFONT format fonts into Type1 outline fonts
 .
 .SH DESCRIPTION
 .B mftrace
-is a program that can convert a METAFONT font into a Type1 font.  It
-is simply called with the name of the font (without a .mf suffix) and
-produces a Type1 font file called either
+is a program that can convert a METAFONT font into a Type1 font.
+It is simply called with the name of the font (without a `.mf' suffix)
+and produces a Type1 font file called either
 .IR \%fontname .pfa
 or
 .IR \%fontname .pfb
 depending on the command line options.
+With the help of
+.BR fontforge (1)
+it can produce other font formats too.
+.
 .P
 For tracing the bitmap,
 .B mftrace
 either uses
-.B potrace
+.BR potrace (1)
 or
-.B autotrace
+.BR autotrace (1)
 (the former preferred) if available; this can be overridden with the
 .B \%\-\-autotrace
 and
@@ -48,49 +54,54 @@ This program follows the usual GNU command line syntax, with long
 options starting with two dashes (`-').
 .
 .TP
-.BR \-k , \-\-keep
+.BR \-k ", " \-\-keep
 Keep all output in directory `mftrace.dir'.
 .
 .TP
 .BI \-\-magnification= MAG
-The magnification to use for the PFA file. The default is 1000. The
-larger the magnification, the more precise the PFA file will
-be. However, when the magnification is too large METAFONT can crash
+The magnification to use for the PFA file.
+The default is 1000.
+The larger the magnification, the more precise the PFA file will be.
+However, if the magnification is too large METAFONT can crash
 with overflow errors.
-.PP
+.
+.IP
 Sadly, many MF fonts contain resolution checks
-.sp
+.
 .RS
-    if dots_per_inch * design_size > 1500:
+.IP
+if dots_per_inch * design_size > 1500:
 .RE
-.sp
-This check is susceptible to overflow errors.  Such code should be
-reported as a bug, and changed to
-.sp
+.
+.IP
+This check is susceptible to overflow errors.
+Such code should be reported as a bug, and changed to
+.
 .RS
-    if dots_per_inch > (1500 / design_size):
+.IP
+if dots_per_inch > (1500 / design_size):
 .RE
-.sp
 .
 .TP
-.BI \-\-formats= FMT1,FMT2,...
-Specify which formats to generate (default is pfa).  Choices are: afm,
-pfa, pfb, ttf, svg.  Note that
-.B \%fontforge
+.BI \-\-formats= FMT1 , FMT2 , .\|.\|.
+Specify which formats to generate (default is pfa).
+Choices are: `afm', `pfa', `pfb', `ttf', `svg'.
+Note that
+.B fontforge
 (formerly called
-.BR \%pfaedit )
-must be installed to generate any format except pfa or pfb. For generating
-afm you need either
-.B \%fontforge
+.BR pfaedit )
+must be installed to generate any format except `pfa' or `pfb'.
+For generating `afm' you need either
+.B fontforge
 or
-.B \%ghostscript .
+.BR ghostscript .
 .
 .TP
 .B \-\-simplify
-This will pass the created Type1 font through
-.B \%fontforge
+This passes the created Type1 font to
+.B fontforge
 (formerly called
-.BR \%pfaedit )
+.BR pfaedit )
 to simplify and autohint it.
 .
 .TP
@@ -98,6 +109,7 @@ to simplify and autohint it.
 Use generic font file
 .I FILE
 instead of running Metafont.
+(GF is the default output format of Metafont.)
 .
 .TP
 .BR \-I " " \fIDIR\fP ", " \-\-include= \fIDIR\fP
@@ -110,13 +122,14 @@ to the current path for searching files.
 Process only these glyphs.
 .I LIST
 is a comma separated list of decimal numbers or ranges, for example
-1-10,50,55,90-100.
+`1-10,50,55,90-100'.
 .
 .TP
 .BI \-\-tfmfile= FILE
 Use
 .I FILE
-for the TFM file.  (The default is to use
+for the TFM file.
+(The default is to use
 .IR \%fontname .tfm).
 .
 .TP
@@ -125,36 +138,43 @@ Use encoding file
 .IR ENC .
 Encoding files used by
 .B mftrace
-are basically in the GhostScript/dvips format, but you may use a 
-special 
-.B \.notavail
-glyph name in order to tell mftrace not to process a specific glyph. 
-If this option is not specified,  
+are basically in the GhostScript/dvips format, but you may use a
+special
+.B \%\.notavail
+glyph name in order to tell mftrace not to process a specific glyph.
+If this option is not specified,
 .B mftrace
-will try to determine the encoding file automatically, from the
-encoding specified in the TFM file, the default being tex256.enc.
+tries to determine the encoding file automatically, from the
+encoding specified in the TFM file, the default being `tex256.enc'.
 .
 .TP
 .B \-\-keep-trying
-Try to continue if external programs called by mftrace fail. If METAFONT
-crashes with overflow errors, but nevertheless outputs a GF file, try to 
-process its output as is (useful for some buggy fonts, see above). If 
-potrace/autotrace fails to trace a specific character, first try it with 
-a less smoothed curve, and if that fails, skip the character. By default
+Try to continue if external programs called by mftrace fail.
+If METAFONT crashes with overflow errors, but nevertheless outputs
+a GF file, try to process its output as is (useful for some buggy
+fonts, see above).
+If
+.B potrace
+or
+.B autotrace
+fail to trace a specific character, first try it with a less
+smoothed curve, and if that fails, skip the character.
+By default,
 .B mftrace
-leaves a file `trace-bug-\fIfont\fP-\fIchar\fP.pbm' and stops the process
-with a request to file a bugreport.
+leaves a file \%`trace-bug-\fIfont\fP-\fIchar\fP.pbm' and stops the
+process with a request to file a bugreport.
 .
 .TP
 .B \-\-dos-kpath
 Try to use MikTeX's version of
-.B kpsewhich.
+.BR kpsewhich .
 .
 .TP
 .B \-\-potrace
 Use
 .B potrace
-for tracing bitmaps.  The default is to use
+for tracing bitmaps.
+The default is to use
 .B potrace
 if it is found, otherwise to use
 .BR autotrace .
@@ -178,19 +198,32 @@ Disabled by default.
 .TP
 .BI \-\-grid= GRID
 Set reciprocal grid size in em units multiplied by ratio
-magnification/1000.  For example, \fB\-\-grid\fP 10
-\fB\-\-magnification\fP 1000 will round coordinates of control points
-to 1/10 of em unit.  Useful simultaneously with the \fB\-\-noround\fP
-option.  Default \fIGRID\fP value is 1, i.e., round to integer.  This
-option is only used with
+magnification/1000.
+For example,
+.RB ` "\-\-grid\ 10 \%\-\-magnification\ 1000" '
+rounds coordinates of control points to 1/10th of the em unit.
+Useful simultaneously with the
+.B \%\-\-noround
+option.
+Default
+.I GRID
+value is\~1, i.e., round to integer.
+This option is only used with
 .BR potrace .
 .
 .TP
 .BI \-D,\-\-define= SYMBOL=VALUE
-Set the font info \fISYMBOL\fP to the given \fIVALUE\fP. For example
-\fB-D\fPFamilyName=Foo sets the font family name to \fIFoo\fP. Mftrace tries
-to fill in sensible default values for the FontName, FamilyName, FullName
-and Weight fields.
+Set the font info
+.I SYMBOL
+to the given
+.IR VALUE .
+For example,
+.B \%\-DFamilyName=Foo
+sets the font family name to
+.IR Foo .
+.B mftrace
+tries to fill in sensible default values for the
+\%`FontName', \%`FamilyName', \%`FullName' and `Weight' fields.
 .
 .TP
 .B \-V, \-\-verbose
@@ -214,10 +247,10 @@ You may redistribute copies of mftrace under the terms of
 the GNU General Public License <http://www.gnu.org/licenses/gpl.html>.
 There is NO WARRANTY, to the extent permitted by law.
 .br
-This manual page is copyright \(co 2005,2006 Julian Gilbey and is
+This manual page is copyright \(co 2005,2006,2007 Julian Gilbey and is
 distributed under the GNU General Public License too.
-.br
-
+.
+.
 .SH "SEE ALSO"
 .BR mf (1),
 .BR autotrace (1),
