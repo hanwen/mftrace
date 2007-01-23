@@ -126,7 +126,7 @@ def setup_temp ():
     except OSError:
         pass
 
-    return temp_dir
+    os.chdir (temp_dir)
 
 def popen (cmd, mode = 'r', ignore_error = 0):
     if options.verbose:
@@ -1331,8 +1331,10 @@ def do_file (filename):
         options.tfm_file = os.path.abspath (options.tfm_file)
 
     ## must change dir before calling mktextfm. 
-    global temp_dir
-    temp_dir = setup_temp ()
+    setup_temp ()
+    if options.verbose:
+        progress ('Temporary directory is `%s\'\n' % temp_dir)
+    
     if not options.tfm_file:
         options.tfm_file = popen ("mktextfm %s 2>/dev/null" % shell_escape_filename (basename)).read ()
         if options.tfm_file:
@@ -1363,11 +1365,6 @@ def do_file (filename):
 
     if not len (options.glyphs):
         options.glyphs = range (0, len (encoding))
-
-    if options.verbose:
-        progress ('Temporary directory is `%s\'\n' % temp_dir)
-
-    os.chdir (temp_dir)
 
     if not options.gffile:
         # run mf
