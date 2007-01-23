@@ -109,7 +109,6 @@ udist:  README.html
 	./configure --prefix=$(HOME)/usr/pkg/mftrace
 	make dist
 	@$(if $(shell git diff), echo "commit before disting" && false,true)
-	false
 	if test -d .git ; then \
 		git tag -m ''  release/$(VERSION) ; \
 	fi
