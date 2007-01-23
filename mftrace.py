@@ -1339,8 +1339,7 @@ def do_file (filename):
         options.tfm_file = popen ("mktextfm %s 2>/dev/null" % shell_escape_filename (basename)).read ()
         if options.tfm_file:
             options.tfm_file = options.tfm_file.strip ()
-
-        options.tfm_file = os.path.abspath (options.tfm_file)
+            options.tfm_file = os.path.abspath (options.tfm_file)
 
     if not options.tfm_file:
         error (_ ("Can not find a TFM file to match `%s'") % basename)
