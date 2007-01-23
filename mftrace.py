@@ -211,7 +211,7 @@ def find_file (nm):
         p = os.path.join (d, nm)
         try:
             open (p)
-            return p
+            return os.path.abspath (p)
         except IOError:
             pass
 
@@ -1320,23 +1320,33 @@ def do_file (filename):
     progress (_ ("Font `%s'..." % basename))
     progress ('\n')
 
+    ## setup encoding
+    if encoding_file and not os.path.exists (encoding_file):
+        encoding_file = find_file (encoding_file)
+    else:
+        encoding_file = os.path.abspath (encoding_file)
+
+    ## setup TFM
+    if options.tfm_file:
+        options.tfm_file = os.path.abspath (options.tfm_file)
+
+    ## must change dir before calling mktextfm. 
+    global temp_dir
+    temp_dir = setup_temp ()
     if not options.tfm_file:
         options.tfm_file = popen ("mktextfm %s 2>/dev/null" % shell_escape_filename (basename)).read ()
         if options.tfm_file:
-            options.tfm_file = options.tfm_file[:-1]
+            options.tfm_file = options.tfm_file.strip ()
+
+        options.tfm_file = os.path.abspath (options.tfm_file)
 
     if not options.tfm_file:
         error (_ ("Can not find a TFM file to match `%s'") % basename)
 
-    options.tfm_file = os.path.abspath (options.tfm_file)
     metric = tfm.read_tfm_file (options.tfm_file)
 
     fontinfo = guess_fontinfo (basename)
     fontinfo.update (options.font_info)
-
-    if encoding_file and not os.path.exists (encoding_file):
-        encoding_file = find_file (encoding_file)
-
 
     if not encoding_file:
         codingfile = 'tex256.enc'
@@ -1353,9 +1363,6 @@ def do_file (filename):
 
     if not len (options.glyphs):
         options.glyphs = range (0, len (encoding))
-
-    global temp_dir
-    temp_dir = setup_temp ()
 
     if options.verbose:
         progress ('Temporary directory is `%s\'\n' % temp_dir)
