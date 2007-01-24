@@ -113,20 +113,36 @@ def error (s):
     errorport.write (_ ("error: ") + s + '\n')
     raise _ ("Exiting ... ")
 
-def setup_temp ():
-    """
-    Create a temporary directory, and return its name.
-    """
+temp_dir = None
+class TempDirectory:
+    def __init__ (self, name=None):
+        import tempfile
+        if name:
+            if not os.path.isdir (name):
+                os.makedirs (name)
+            self.dir = name
+        else:
+            self.dir = tempfile.mkdtemp ()
+
+        os.chdir (self.dir)
+        
+    def clean (self):
+        import shutil
+        shutil.rmtree (self.dir)
+    def __del__ (self):
+        self.clean ()
+    def __call__ (self):
+        return self.dir
+    def __repr__ (self):
+        return self.dir
+    def __str__ (self):
+        return self.dir
+
+def setup_temp  (name):
     global temp_dir
-    if not options.keep_temp_dir:
-        temp_dir = tempfile.mkdtemp (program_name)
-
-    try:
-        os.mkdir (temp_dir, 0700)
-    except OSError:
-        pass
-
-    os.chdir (temp_dir)
+    if not temp_dir:
+        temp_dir = TempDirectory (name)
+    return temp_dir ()
 
 def popen (cmd, mode = 'r', ignore_error = 0):
     if options.verbose:
@@ -158,13 +174,6 @@ def system (cmd, ignore_error = 0):
         progress ('\n')
     return st
 
-def cleanup_temp ():
-    if not options.keep_temp_dir:
-        if options.verbose:
-            progress (_ ("Cleaning %s...") % temp_dir)
-        shutil.rmtree (temp_dir)
-
-
 def strip_extension (f, ext):
     (p, e) = os.path.splitext (f)
     if e == ext:
@@ -181,7 +190,7 @@ options = None
 exit_value = 0
 backend_options = ''
 program_name = 'mftrace'
-temp_dir = os.path.join (os.getcwd (), program_name + '.dir')
+temp_dir = None
 program_version = '@VERSION@'
 origdir = os.getcwd ()
 
@@ -1323,15 +1332,23 @@ def do_file (filename):
     ## setup encoding
     if encoding_file and not os.path.exists (encoding_file):
         encoding_file = find_file (encoding_file)
-    else:
+    elif encoding_file:
         encoding_file = os.path.abspath (encoding_file)
 
     ## setup TFM
     if options.tfm_file:
         options.tfm_file = os.path.abspath (options.tfm_file)
 
-    ## must change dir before calling mktextfm. 
-    setup_temp ()
+    ## must change dir before calling mktextfm.
+    if options.keep_temp_dir:
+        def nop():
+            pass
+        setup_temp (os.path.join (os.getcwd (), program_name + '.dir'))
+        temp_dir.clean = nop
+        
+    else:
+        setup_temp (None)
+        
     if options.verbose:
         progress ('Temporary directory is `%s\'\n' % temp_dir)
     
@@ -1381,7 +1398,6 @@ def do_file (filename):
         shutil.copy2 (basename + '.' + format, origdir)
 
     os.chdir (origdir)
-    cleanup_temp ()
 
 
 
