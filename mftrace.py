@@ -161,7 +161,7 @@ def system (cmd, ignore_error = 0):
 def cleanup_temp ():
     if not options.keep_temp_dir:
         if options.verbose:
-            progress (_ ("Cleaning %s...") % temp_dir)
+            progress (_ ("Cleaning %s...\n") % temp_dir)
         shutil.rmtree (temp_dir)
 
 
@@ -518,7 +518,12 @@ def trace_font (fontname, gf_file, metric, glyphs, encoding,
     t1os = []
     font_bbox = (10000, 10000, -10000, -10000)
 
-    progress (_ ("Tracing bitmaps... "))
+    progress (_ ("Tracing bitmaps..."))
+
+    if options.verbose:
+        progress ('\n')
+    else:
+        progress (' ')
 
     # for single glyph testing.
     # glyphs = []
@@ -565,7 +570,8 @@ def trace_font (fontname, gf_file, metric, glyphs, encoding,
 
         t1os.append ('\n/%s %s ' % (encoding[a], t1o))
 
-    progress ('\n')
+    if not options.verbose:
+        progress ('\n')
     to_type1 (t1os, font_bbox, fontname, encoding, magnification, fontinfo)
 
 def ps_encode_encoding (encoding):
@@ -797,6 +803,8 @@ def assemble_font (fontname, format, is_raw):
     outname = fontname + ext
 
     progress (_ ("Assembling raw font to `%s'... ") % outname)
+    if options.verbose:
+        progress ('\n')
     system ('t1asm %s mftrace.t1asm %s' % (asm_opt, shell_escape_filename (outname)))
     progress ('\n')
     return outname
