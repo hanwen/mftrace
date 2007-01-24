@@ -1339,13 +1339,15 @@ def do_file (filename):
     if options.tfm_file:
         options.tfm_file = os.path.abspath (options.tfm_file)
 
+    if not os.environ.has_key ("MFINPUTS"):
+         os.environ["MFINPUTS"] = os.getcwd () + ":"
+
     ## must change dir before calling mktextfm.
     if options.keep_temp_dir:
         def nop():
             pass
         setup_temp (os.path.join (os.getcwd (), program_name + '.dir'))
         temp_dir.clean = nop
-        
     else:
         setup_temp (None)
         
