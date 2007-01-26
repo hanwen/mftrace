@@ -1327,6 +1327,10 @@ def do_file (filename):
     ## setup TFM
     if options.tfm_file:
         options.tfm_file = os.path.abspath (options.tfm_file)
+    else:
+        tfm_try = find_file (basename + '.tfm')
+        if tfm_try:
+            options.tfm_file = tfm_try
 
     if not os.environ.has_key ("MFINPUTS"):
          os.environ["MFINPUTS"] = os.getcwd () + ":"
