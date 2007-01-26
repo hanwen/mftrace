@@ -269,6 +269,9 @@ FontForge does not recognize TeX encodings.
 @section Bugs and todo
 
 @itemize
+@item Environment variables containing relative directories,
+  such as MFINPUTS or TFMINPUTS, are not handled correctly.
+
 @item Discuss fonts & copyright.
 @item Submit @file{tfm.py} to www.python.org. @file{tfm.py}  is a python
   module to parse Tex Font Metric file.

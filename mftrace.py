@@ -898,32 +898,13 @@ def gen_pixel_font (filename, metric, magnification):
     try:
         open ('%s.%dgf' % (filename, prod))
     except IOError:
-        os.environ['KPSE_DOT'] = '%s:' % origdir
 
+        ## MFINPUTS/TFMFONTS take kpathsea specific values;
+        ## we should analyse them any further.
         os.environ['MFINPUTS'] = '%s:%s' % (origdir,
                           getenv ('MFINPUTS', ''))
         os.environ['TFMFONTS'] = '%s:%s' % (origdir,
                           getenv ('TFMINPUTS', ''))
-
-        # FIXME: we should not change to another (tmp) dir?
-        # or else make all relavitive dirs in paths absolute.
-        def abs_dir (x, dir):
-            if x and os.path.abspath (x) != x:
-                return os.path.join (dir, x)
-            return x
-
-        def abs_path (path, dir):
-            # Python's ABSPATH means ABSDIR
-            dir = os.path.abspath (dir)
-            return string.join (map (lambda x: abs_dir (x, dir),
-                        string.split (path,
-                               os.pathsep)),
-                      os.pathsep)
-
-        os.environ['MFINPUTS'] = abs_path (os.environ['MFINPUTS'],
-                         origdir)
-        os.environ['TFMFONTS'] = abs_path (os.environ['TFMFONTS'],
-                         origdir)
 
         progress (_ ("Running Metafont..."))
 
