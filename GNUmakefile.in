@@ -28,7 +28,8 @@ EXEEXT=@EXEEXT@
 
 
 ## up/download.
-WWW_DIR=hanwen@lilypond.org:www/download/sources/mftrace/
+FTP_DIR=hanwen@lilypond.org:www/download/sources/mftrace/
+WWW_DIR=hanwen@lilypond.org:www/mftrace/
 
 
 
@@ -112,7 +113,7 @@ udist:  README.html
 	if test -d .git ; then \
 		git tag -m ''  release/$(VERSION) ; \
 	fi
-	scp $(distdir).tar.gz $(WWW_DIR)
+	scp $(distdir).tar.gz $(FTP_DIR)
 	scp $< $(WWW_DIR)/index.html
 
 rpm: dist
