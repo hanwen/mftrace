@@ -57,7 +57,7 @@ do the real work: a tracing program and t1asm.  To run mftrace you need:
 
       Potrace is recommended as it runs quicker than autotrace.
       
-@item Python--2.1 or later. See @uref{http://www.python.org/}
+@item Python--2.2 or later. See @uref{http://www.python.org/}
 @item t1utils. See @uref{http://www.lcdf.org/~eddietwo/type/}
 @item  TeX--your tex installation should include
 @itemize @bullet
