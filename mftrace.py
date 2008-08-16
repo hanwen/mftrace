@@ -326,11 +326,11 @@ def read_encoding (file):
 
     return (name, cods)
 
-def zip_to_pairs (as):
+def zip_to_pairs (xs):
     r = []
-    while as:
-        r.append ((as[0], as[1]))
-        as = as[2:]
+    while xs:
+        r.append ((xs[0], xs[1]))
+        xs = xs[2:]
     return r
 
 def unzip_pairs (tups):
