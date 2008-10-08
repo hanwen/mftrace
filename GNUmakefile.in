@@ -111,7 +111,7 @@ udist:  README.html
 	@$(if $(shell git diff), echo "commit before disting" && false,true)
 	if test -d .git ; then \
 		git tag -m ''  release/$(VERSION) ; \
-		git push $(GIT_MASTER_SITE)  push tag release/$(VERSION) ; \
+		git push $(GIT_MASTER_SITE) tag release/$(VERSION) ; \
 	fi
 	scp $(distdir).tar.gz $(FTP_DIR)
 	scp $< $(WWW_DIR)/index.html

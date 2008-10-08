@@ -198,13 +198,12 @@ coding_dict = {
 
     # from TeTeX
     'TeX typewriter text': '09fbbfac.enc', # cmtt10
-    'TeX math symbols':'10037936.enc', # cmbsy
-    'ASCII caps and digits':'1b6d048e', # cminch
+    'TeX math symbols': '10037936.enc', # cmbsy
+    'ASCII caps and digits': '1b6d048e', # cminch
     'TeX math italic': 'aae443f0.enc', # cmmi10
-    'TeX extended ASCII':'d9b29452.enc',
+    'TeX extended ASCII': 'd9b29452.enc',
     'TeX text': 'f7b6d320.enc',
     'TeX text without f-ligatures': '0ef0afca.enc',
-
     'Extended TeX Font Encoding - Latin': 'tex256.enc',
 
     # LilyPond.
@@ -326,11 +325,11 @@ def read_encoding (file):
 
     return (name, cods)
 
-def zip_to_pairs (as):
+def zip_to_pairs (xs):
     r = []
-    while as:
-        r.append ((as[0], as[1]))
-        as = as[2:]
+    while xs:
+        r.append ((xs[0], xs[1]))
+        xs = xs[2:]
     return r
 
 def unzip_pairs (tups):
