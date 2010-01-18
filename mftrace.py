@@ -100,9 +100,7 @@ def warning (s):
     errorport.write (_ ("warning: ") + s)
 
 def error (s):
-    '''Report the error S.  Exit by raising an exception.  Please
-    do not abuse by trying to catch this error.  If you do not want
-    a stack trace, write to the output directly.
+    '''Report the error S and exit with an error status of 1.
 
     RETURN VALUE
 
@@ -111,7 +109,8 @@ def error (s):
     '''
 
     errorport.write (_ ("error: ") + s + '\n')
-    raise _ ("Exiting ... ")
+    errorport.write (_ ("Exiting ...") + '\n')
+    sys.exit(1)
 
 temp_dir = None
 class TempDirectory:
@@ -721,6 +720,7 @@ def get_fontforge_command ():
 
         if stat != 0:
             warning ("Command `%s -usage' failed.  Cannot simplify or convert to TTF.\n" % fontforge_cmd)
+            return ''
 
     if fontforge_cmd == 'pfaedit' \
      and re.search ("-script", open ('pfv').read ()) == None:
@@ -825,7 +825,7 @@ def make_outputs (fontname, formats, encoding):
     ff_needed = 0
     ff_command = ""
   
-    if (options.simplify or options.round_to_int or 'ttf' in formats or 'svg' in formats):
+    if (options.simplify or options.round_to_int or 'ttf' in formats or 'svg' in formats or 'afm' in formats):
         ff_needed = 1
     if ff_needed:
         ff_command = get_fontforge_command ()
@@ -861,6 +861,8 @@ Quit (0);
             print 'Fontforge script', pe_script
         system ("%s -script to-ttf.pe %s %s" % (ff_command,
               shell_escape_filename (raw_name), shell_escape_filename (options.tfm_file)))
+    elif ff_needed and (options.simplify or options.round_to_int or 'ttf' in formats or 'svg' in formats):
+        error(_ ("fontforge is not installed; could not perform requested command"))
     else:
         t1_path = ''
     
@@ -871,7 +873,10 @@ Quit (0);
             t1_path = assemble_font (fontname, 'pfb', 0)
     
         if (t1_path != '' and 'afm' in formats):
-            get_afm (t1_path, options.tfm_file, encoding, fontname + '.afm')
+            if get_binary("printafm"):
+                get_afm (t1_path, options.tfm_file, encoding, fontname + '.afm')
+            else:
+                error(_ ("Neither fontforge nor ghostscript is not installed; could not perform requested command"))
 
 
 def getenv (var, default):
@@ -1109,12 +1114,16 @@ Copyright (c) 2005--2006 by
 
         trace_command = potrace_command
         path_to_type1_ops = potrace_path_to_type1_ops
+    elif options.trace_binary == 'potrace' and stat != 0:
+        error (_ ("Could not run potrace; have you installed it?"))
 
     stat = os.system ('autotrace --version > /dev/null 2>&1 ')
     if options.trace_binary != 'potrace' and stat == 0:
         options.trace_binary = 'autotrace'
         trace_command = autotrace_command
         path_to_type1_ops = autotrace_path_to_type1_ops
+    elif options.trace_binary == 'autotrace' and stat != 0:
+        error (_ ("Could not run autotrace; have you installed it?"))
 
     if not options.trace_binary:
         error (_ ("No tracing program found.\nInstall potrace or autotrace."))
