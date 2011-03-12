@@ -490,10 +490,16 @@ def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid, magnification):
 
         if zs:
             z = zs[-1]
-        c = { 'rcurveto': 'rrcurveto',
-           'moveto': 'rmoveto',
-           'closepath': 'closepath',
-           'rlineto': 'rlineto'}[c]
+
+        c = {
+            'closepath': 'closepath',
+            'moveto': 'rmoveto',
+            'rcurveto': 'rrcurveto',
+            # Potrace 1.9 
+            'restore': '',
+            'rlineto': 'rlineto',
+            '%%EOF': '',
+	}[c]
 
         if c == 'rmoveto':
             t1_outline += ' closepath '
