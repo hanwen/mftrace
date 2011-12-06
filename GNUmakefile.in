@@ -29,7 +29,7 @@ EXEEXT=@EXEEXT@
 ## up/download.
 FTP_DIR=hanwen@lilypond.org:www/download/sources/mftrace/
 WWW_DIR=hanwen@lilypond.org:www/mftrace/
-GIT_MASTER_SITE=git+ssh://hanwen@repo.or.cz/srv/git/mftrace.git
+GIT_MASTER_SITE=git+ssh://git@github.com/hanwen/mftrace.git
 
 all: compile
 
