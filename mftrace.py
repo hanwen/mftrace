@@ -721,11 +721,11 @@ def get_fontforge_command ():
 
     stat = 1
     if fontforge_cmd:
-        stat = system ("%s -usage > pfv 2>&1 " % fontforge_cmd,
+        stat = system ("%s --help > pfv 2>&1 " % fontforge_cmd,
                ignore_error = 1)
 
         if stat != 0:
-            warning ("Command `%s -usage' failed.  Cannot simplify or convert to TTF.\n" % fontforge_cmd)
+            warning ("Command `%s --help' failed.  Cannot simplify or convert to TTF.\n" % fontforge_cmd)
             return ''
 
     if fontforge_cmd == 'pfaedit' \
@@ -974,7 +974,7 @@ Copyright (c) 2005--2006 by
                   action="store_true",
                   dest="keep_temp_dir",
                   help=_ ("Keep all output in directory %s.dir") % program_name)
-    p.add_option ('','--magnification',
+    p.add_option ('--magnification',
                   dest="magnification",
                   metavar="MAG",
                   default=1000.0,
@@ -989,11 +989,12 @@ Copyright (c) 2005--2006 by
                   dest="formats",
                   default=[],
                   help=_("Which formats to generate (choices: AFM, PFA, PFB, TTF, SVG)"))
-    p.add_option ('', '--simplify',
+    p.add_option ('--simplify',
                   action="store_true",
                   dest="simplify",
+                  default=False,
                   help=_ ("Simplify using fontforge"))
-    p.add_option ('', '--gffile',
+    p.add_option ('--gffile',
                   dest="gffile",
                   help= _("Use gf FILE instead of running Metafont"))
     p.add_option ('-I', '--include',
@@ -1001,24 +1002,23 @@ Copyright (c) 2005--2006 by
                   action="append",
                   default=[],
                   help=_("Add to path for searching files"))
-    p.add_option ('','--glyphs',
+    p.add_option ('--glyphs',
                   default=[],
                   action="append",
                   dest="glyphs",
                   metavar="LIST",
                   help= _('Process only these glyphs.  LIST is comma separated'))
-    p.add_option ('', '--tfmfile',
+    p.add_option ('--tfmfile',
                   metavar='FILE',
                   action='store',
                   dest='tfm_file')
-    
     p.add_option ('-e', '--encoding',
                   metavar="FILE",
                   action='store',
                   dest="encoding_file",
                   default="",
                   help= _ ("Use encoding file FILE"))
-    p.add_option ('','--keep-trying',
+    p.add_option ('--keep-trying',
                   dest='keep_trying',
                   default=False,
                   action="store_true",
@@ -1026,26 +1026,29 @@ Copyright (c) 2005--2006 by
     p.add_option ('-w', '--warranty',
                   action="store_true",
                   help=_ ("show warranty and copyright"))
-    p.add_option ('','--dos-kpath',
+    p.add_option ('--dos-kpath',
+                  action='store_true',
                   dest="dos_kpath",
                   help=_("try to use Miktex kpsewhich"))
-    p.add_option ('', '--potrace',
+    p.add_option ('--potrace',
+                  action='store_true',
                   dest='potrace',
                   help=_ ("Use potrace"))
-    p.add_option ('', '--autotrace',
+    p.add_option ('--autotrace',
+                  action='store_true',
                   dest='autotrace',
                   help=_ ("Use autotrace"))
-    p.add_option ('', '--no-afm',
+    p.add_option ('--no-afm',
                   action='store_false',
                   dest="read_afm",
                   default=True,
                   help=_("Don't read AFM file"))
-    p.add_option ('','--noround',
-                  action="store_false",
+    p.add_option ('--noround',
+                  action='store_false',
                   dest='round_to_int',
                   default=True,
-                  help= ("Do not round coordinates of control points to integer values (use with --grid)"))
-    p.add_option ('','--grid',
+                  help=_("Do not round coordinates of control points to integer values (use with --grid)"))
+    p.add_option ('--grid',
                   metavar='SCALE',
                   dest='grid_scale',
                   type='float',
@@ -1059,7 +1062,7 @@ Copyright (c) 2005--2006 by
     
     global options
     (options, files) = p.parse_args ()
-
+    
     if not files:
         sys.stderr.write ('Need argument on command line \n')
         p.print_help ()
