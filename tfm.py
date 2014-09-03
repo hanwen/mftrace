@@ -63,10 +63,9 @@ class Tfm_reader:
             d = (b & 0x0f)
 
             b = self.get_byte ()
-
-            # huh? why >> 6 ? 
-            i = (b & 0xfc) >> 6
+            i = (b & 0xfc) >> 2
             tag = (b & 0x3)
+
             rem = self.get_byte ()
 
             # rem is used as index for the ligature table.
