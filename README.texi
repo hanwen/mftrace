@@ -41,7 +41,7 @@ Versions prior to 1.0.5 were called `pktrace'.
 @section Download
 
 @itemize
-@item @uref{http://lilypond.org/download/sources/mftrace/mftrace-@mftversion{}.tar.gz}
+@item @uref{http://lilypond.org/downloads/sources/mftrace/mftrace-@mftversion{}.tar.gz}
 @item GIT at @uref{https://github.com/hanwen/mftrace}
 @end itemize
 
