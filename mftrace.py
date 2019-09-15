@@ -865,7 +865,7 @@ Quit (0);
         open ('to-ttf.pe', 'w').write (pe_script)
         if options.verbose:
             print 'Fontforge script', pe_script
-        system ("%s -script to-ttf.pe %s %s" % (ff_command,
+        system ("%s -quiet -script to-ttf.pe %s %s" % (ff_command,
               shell_escape_filename (raw_name), shell_escape_filename (options.tfm_file)))
     elif ff_needed and (options.simplify or options.round_to_int or 'ttf' in formats or 'svg' in formats):
         error(_ ("fontforge is not installed; could not perform requested command"))
