@@ -1,7 +1,7 @@
 AC_INIT(mftrace.py)
 AC_CONFIG_HEADER(config.h:config.h.in)
 
-AC_PATH_PROG(PYTHON, ${PYTHON:-python}, -echo no python)
+AC_PATH_PROG(PYTHON, ${PYTHON3:-python3}, -echo no python3)
 AC_PATH_PROG(AUTOTRACE, autotrace, none)
 AC_PATH_PROG(POTRACE, potrace, none)
 AC_SUBST(PYTHON)
