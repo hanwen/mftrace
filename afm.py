@@ -48,5 +48,5 @@ def read_afm_file (filename):
 
 if __name__ == '__main__':
     i = read_afm_file  (sys.argv[1])
-    print i, i.FullName, i.FontName
+    print(i, i.FullName, i.FontName)
 

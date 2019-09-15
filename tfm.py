@@ -21,9 +21,9 @@ import sys
 def compose_tfm_number (seq):
     shift = (len (seq)-1)*8
 
-    cs = 0L
+    cs = 0
     for b in seq:
-        cs = cs  + (long (ord (b)) << shift)
+        cs = cs  + (int (b) << shift)
         shift = shift - 8
     return cs
 
@@ -34,15 +34,15 @@ def compose_tfm_number (seq):
 #
 class Tfm_reader:
     def get_string (self):
-        b = ord (self.left[0])
-        s =self.left[1:1 + b]
+        b = self.left[0]
+        s = (self.left[1:1 + b]).decode('ascii')
         self.left = self.left[1+b:]
         
         return s
     def get_byte (self):
         b = self.left [0]
         self.left= self.left[1:]
-        return ord(b)
+        return b
 
     def extract_fixps (self, count):
         fs = [0.0] * count
@@ -82,7 +82,6 @@ class Tfm_reader:
         return None
     
     def __init__ (self, f):
-        self.string = f
         self.left = f
 
         self.file_length = self.get_number (2);
@@ -158,7 +157,7 @@ class Tex_font_metric:
             return 0
         
         tup = self.chars[code - self.start_code]
-        return tup[0] <> 0
+        return tup[0] != 0
     
     def get_char (self,code):
         tup = self.chars[code - self.start_code]
@@ -175,10 +174,10 @@ coding: %s>""" % (self.start_code, self.end_code,
 
 
 def read_tfm_file (fn):
-    reader =Tfm_reader (open (fn).read ())
+    reader =Tfm_reader (open (fn, 'rb').read ())
     return reader.get_tfm ()
 
 if __name__=='__main__':
     t = read_tfm_file  (sys.argv[1])
-    print t, t.design_size,  t.coding
+    print(t, t.design_size,  t.coding)
 

@@ -21,7 +21,6 @@
 # Copyright (c)  2001--2006 by
 #  Han-Wen Nienhuys, Jan Nieuwenhuizen
 
-import string
 import os
 import optparse
 import sys
@@ -36,11 +35,11 @@ localedir = datadir + '/locale'
 libdir = '@libdir@'
 exec_prefix = '@exec_prefix@'
 
-def interpolate (str):
-    str = string.replace (str, '{', '(')
-    str = string.replace (str, '}', ')s')
-    str = string.replace (str, '$', '%')
-    return str
+def interpolate (strng):
+    strng = strng.replace ('{', '(')
+    strng = strng.replace ('}', ')s')
+    strng = strng.replace ('$', '%')
+    return strng
 
 if prefix != '@' + 'prefix@':
     exec_prefix = interpolate (exec_prefix) % vars ()
@@ -73,9 +72,9 @@ except:
     def _ (s):
         return s
 
-def shell_escape_filename (str):
-    str = re.sub ('([\'" ])', r'\\\1', str)
-    return str
+def shell_escape_filename (strng):
+    strng = re.sub ('([\'" ])', r'\\\1', strng)
+    return strng
 
 def identify (port):
     port.write ('%s %s\n' % (program_name, program_version))
@@ -227,7 +226,7 @@ def find_file (nm):
     
     if options.dos_kpath:
         orig = p
-        p = string.lower (p)
+        p = p.lower ()
         p = re.sub ('^([a-z]):', '/cygdrive/\\1', p)
         p = re.sub ('\\\\', '/', p)
         sys.stderr.write ("Got `%s' from kpsewhich, using `%s'\n" % (orig, p))
@@ -310,17 +309,17 @@ def make_pbm (filename, outname, char_number):
 def read_encoding (file):
     sys.stderr.write (_ ("Using encoding file: `%s'\n") % file)
 
-    str = open (file).read ()
-    str = re.sub ("%.*", '', str)
-    str = re.sub ("[\n\t \f]+", ' ', str)
-    m = re.search ('/([^ ]+) \[([^\]]+)\] def', str)
+    strng = open (file).read ()
+    strng = re.sub ("%.*", '', strng)
+    strng = re.sub ("[\n\t \f]+", ' ', strng)
+    m = re.search ('/([^ ]+) \[([^\]]+)\] def', strng)
     if not m:
         error ("Encoding file is invalid")
 
     name = m.group (1)
     cod = m.group (2)
     cod = re.sub ('[ /]+', ' ', cod)
-    cods = string.split (cod)
+    cods = cod.split ()
 
     return (name, cods)
 
@@ -341,8 +340,8 @@ def unzip_pairs (tups):
 def autotrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid, magnification):
     inv_scale = 1000.0 / magnification
 
-    (size_y, size_x, off_x, off_y) = map (lambda m, s = inv_scale: m * s,
-                       bitmap_metrics)
+    (size_y, size_x, off_x, off_y) = list(map (lambda m, s = inv_scale: m * s,
+                       bitmap_metrics))
     ls = open (at_file).readlines ()
     bbox = (10000, 10000, -10000, -10000)
 
@@ -361,15 +360,15 @@ def autotrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid, magnification
         ell = ls[0]
         ls = ls[1:]
 
-        toks = string.split (ell)
+        toks = ell.split ()
 
         if len (toks) < 1:
             continue
         cmd = toks[-1]
-        args = map (lambda m, s = inv_scale: s * float (m),
-              toks[:-1])
+        args = list(map (lambda m, s = inv_scale: s * float (m),
+              toks[:-1]))
         if options.round_to_int:
-            args = zip_to_pairs (map (round, args))
+            args = zip_to_pairs (list(map (round, args)))
         else:
             args = zip_to_pairs (args)
         commands.append ((cmd, args))
@@ -402,15 +401,13 @@ def autotrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid, magnification
         a = na
         c = expand[c]
         if options.round_to_int:
-            a = map (lambda x: '%d' % int (round (x)),
-                unzip_pairs (a))
+            a = ['%d' % int (round (x)) for x in unzip_pairs (a)]
         else:
-            a = map (lambda x: '%d %d div' \
+            a = ['%d %d div' \
                 % (int (round (x * options.grid_scale/inv_scale)),
-                  int (round (options.grid_scale/inv_scale))),
-                unzip_pairs (a))
+                  int (round (options.grid_scale/inv_scale))) for x in unzip_pairs (a)]
 
-        t1_outline = t1_outline + ' %s %s\n' % (string.join (a), c)
+        t1_outline = t1_outline + ' %s %s\n' % (' '.join (a), c)
 
     t1_outline = t1_outline + ' endchar '
     t1_outline = '{\n %s } |- \n' % t1_outline
@@ -421,9 +418,9 @@ def autotrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid, magnification
 def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid, magnification):
     inv_scale = 1000.0 / magnification
 
-    (size_y, size_x, off_x, off_y) = map (lambda m,
+    (size_y, size_x, off_x, off_y) = list(map (lambda m,
                        s = inv_scale: m * s,
-                       bitmap_metrics)
+                       bitmap_metrics))
     ls = open (at_file).readlines ()
     bbox =  (10000, 10000, -10000, -10000)
 
@@ -442,13 +439,13 @@ def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid, magnification):
         if ell == 'fill\n':
             continue
 
-        toks = string.split (ell)
+        toks = ell.split ()
 
         if len (toks) < 1:
             continue
         cmd = toks[-1]
-        args = map (lambda m, s = inv_scale: s * float (m),
-              toks[:-1])
+        args = list(map (lambda m, s = inv_scale: s * float (m),
+              toks[:-1]))
         args = zip_to_pairs (args)
         commands.append ((cmd, args))
 
@@ -461,8 +458,8 @@ def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid, magnification):
 
     z = (0.0, size_y - off_y - 1.0)
     for (c, args) in commands:
-        args = map (lambda x: (x[0] * (1.0 / options.grid_scale),
-                   x[1] * (1.0 / options.grid_scale)), args)
+        args = [(x[0] * (1.0 / options.grid_scale),
+                   x[1] * (1.0 / options.grid_scale)) for x in args]
 
         if c == 'moveto':
             args = [(args[0][0] - z[0], args[0][1] - z[1])]
@@ -505,15 +502,13 @@ def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid, magnification):
             t1_outline += ' closepath '
 
         if options.round_to_int:
-            args = map (lambda x: '%d' % int (round (x)),
-                  unzip_pairs (args))
+            args = ['%d' % int (round (x)) for x in unzip_pairs (args)]
         else:
-            args = map (lambda x: '%d %d div' \
+            args = ['%d %d div' \
                   % (int (round (x*options.grid_scale/inv_scale)),
-                   int (round (options.grid_scale/inv_scale))),
-                  unzip_pairs (args))
+                   int (round (options.grid_scale/inv_scale))) for x in unzip_pairs (args)]
 
-        t1_outline = t1_outline + '  %s %s\n' % (string.join (args), c)
+        t1_outline = t1_outline + '  %s %s\n' % (' '.join (args), c)
 
     t1_outline = t1_outline + ' endchar '
     t1_outline = '{\n %s } |- \n' % t1_outline
@@ -521,8 +516,8 @@ def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid, magnification):
     return (bbox, t1_outline)
 
 def read_gf_dims (name, c):
-    str = popen ('%s/gf2pbm -n %d -s %s' % (bindir, c, name)).read ()
-    m = re.search ('size: ([0-9]+)+x([0-9]+), offset: \(([0-9-]+),([0-9-]+)\)', str)
+    strng = popen ('%s/gf2pbm -n %d -s %s' % (bindir, c, name)).read ()
+    m = re.search ('size: ([0-9]+)+x([0-9]+), offset: \(([0-9-]+),([0-9-]+)\)', strng)
 
     return tuple (map (int, m.groups ()))
 
@@ -588,14 +583,14 @@ def trace_font (fontname, gf_file, metric, glyphs, encoding,
     to_type1 (t1os, font_bbox, fontname, encoding, magnification, fontinfo)
 
 def ps_encode_encoding (encoding):
-    str = ' %d array\n0 1 %d {1 index exch /.notdef put} for\n' \
+    strng = ' %d array\n0 1 %d {1 index exch /.notdef put} for\n' \
        % (len (encoding), len (encoding)-1)
 
     for i in range (0, len (encoding)):
         if encoding[i] != ".notavail":
-            str = str + 'dup %d /%s put\n' % (i, encoding[i])
+            strng = strng + 'dup %d /%s put\n' % (i, encoding[i])
 
-    return str
+    return strng
 
 
 def gen_unique_id (dict):
@@ -677,7 +672,7 @@ cleartomark
 
         # need one extra entry for .notdef
         'CharStringsLen': len (outlines) + 1,
-        'CharStrings': string.join (outlines),
+        'CharStrings': ' '.join (outlines),
         'CharBBox': '0 0 0 0',
     }
 
@@ -705,7 +700,7 @@ def update_bbox_with_bbox (bb, dims):
     return (llx, lly, urx, ury)
 
 def get_binary (name):
-    search_path = string.split (os.environ['PATH'], ':')
+    search_path = os.environ['PATH'].split (':')
     for p in search_path:
         nm = os.path.join (p, name)
         if os.path.exists (nm):
@@ -864,7 +859,7 @@ Quit (0);
 
         open ('to-ttf.pe', 'w').write (pe_script)
         if options.verbose:
-            print 'Fontforge script', pe_script
+            print('Fontforge script', pe_script)
         system ("%s -script to-ttf.pe %s %s" % (ff_command,
               shell_escape_filename (raw_name), shell_escape_filename (options.tfm_file)))
     elif ff_needed and (options.simplify or options.round_to_int or 'ttf' in formats or 'svg' in formats):
@@ -886,7 +881,7 @@ Quit (0);
 
 
 def getenv (var, default):
-    if os.environ.has_key (var):
+    if var in os.environ:
         return os.environ[var]
     else:
         return default
@@ -1095,9 +1090,9 @@ Copyright (c) 2005--2006 by
     
     glyph_range = []
     for r in options.glyphs: 
-        glyph_subrange = map (int, string.split (r, '-'))
+        glyph_subrange = list(map (int, r.split('-')))
         if len (glyph_subrange) == 2 and glyph_subrange[0] < glyph_subrange[1] + 1:
-            glyph_range += range (glyph_subrange[0], glyph_subrange[1] + 1)
+            glyph_range += list(range(glyph_subrange[0], glyph_subrange[1] + 1))
         else:
             glyph_range.append (glyph_subrange[0])
 
@@ -1349,7 +1344,7 @@ def do_file (filename):
         if tfm_try:
             options.tfm_file = tfm_try
 
-    if not os.environ.has_key ("MFINPUTS"):
+    if "MFINPUTS" not in os.environ:
          os.environ["MFINPUTS"] = os.getcwd () + ":"
 
     ## must change dir before calling mktextfm.
@@ -1380,7 +1375,7 @@ def do_file (filename):
 
     if not encoding_file:
         codingfile = 'tex256.enc'
-        if not coding_dict.has_key (metric.coding):
+        if metric.coding not in coding_dict:
             sys.stderr.write ("Unknown encoding `%s'; assuming tex256.\n" % metric.coding)
         else:
             codingfile = coding_dict[metric.coding]
@@ -1392,7 +1387,7 @@ def do_file (filename):
     (enc_name, encoding) = read_encoding (encoding_file)
 
     if not len (options.glyphs):
-        options.glyphs = range (0, len (encoding))
+        options.glyphs = list(range(0, len (encoding)))
 
     if not options.gffile:
         # run mf
@@ -1418,11 +1413,15 @@ def do_file (filename):
 afmfile = ''
 backend_options = getenv ('MFTRACE_BACKEND_OPTIONS', '')
 def main ():
+    global temp_dir
+
     files = parse_command_line ()
     identify (sys.stderr)
     
     for filename in files:
         do_file (filename)
+    if temp_dir:
+        del temp_dir
     sys.exit (exit_value)
 
 if __name__ =='__main__':
