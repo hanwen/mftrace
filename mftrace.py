@@ -877,7 +877,7 @@ Quit (0);
             if get_binary("printafm"):
                 get_afm (t1_path, options.tfm_file, encoding, fontname + '.afm')
             else:
-                error(_ ("Neither fontforge nor ghostscript is not installed; could not perform requested command"))
+                error(_ ("Neither fontforge nor ghostscript is installed; could not perform requested command"))
 
 
 def getenv (var, default):
