@@ -727,6 +727,10 @@ def get_fontforge_command ():
      and re.search ("-script", open ('pfv').read ()) == None:
         warning ("pfaedit does not support -script.  Install 020215 or later.\nCannot simplify or convert to TTF.\n")
         return ''
+
+    if fontforge_cmd == 'fontforge':
+        fontforge_cmd += ' -quiet'
+
     return fontforge_cmd
 
 def tfm2kpx (tfmname, encoding):
