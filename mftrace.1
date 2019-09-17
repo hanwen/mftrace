@@ -10,7 +10,7 @@
 .\" 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 .\"
 .
-.hw mftrace autotrace potrace fontforge pfaedit ghostscript kpsewhich
+.hw mftrace autotrace potrace fontforge ghostscript kpsewhich
 .
 .
 .SH NAME
@@ -88,8 +88,6 @@ Specify which formats to generate (default is pfa).
 Choices are: `afm', `pfa', `pfb', `ttf', `svg'.
 Note that
 .B fontforge
-(formerly called
-.BR pfaedit )
 must be installed to generate any format except `pfa' or `pfb'.
 For generating `afm' you need either
 .B fontforge
@@ -100,8 +98,6 @@ or
 .B \-\-simplify
 This passes the created Type1 font to
 .B fontforge
-(formerly called
-.BR pfaedit )
 to simplify and autohint it.
 .
 .TP

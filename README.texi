@@ -138,7 +138,7 @@ Command line options:
 @item --formats=LIST
  A comma-separated list of formats to generate. Choices include:  AFM, 
  PFA, PFB, TTF and SVG. Default is to generate a PFA file. Note that 
- @file{fontforge} (formerly called @file{pfaedit}) needs to be installed
+ @file{fontforge} needs to be installed
  in order to generate any format except PFA or PFB. For generating AFM 
  you need either @file{fontforge} or @file{ghostscript}.
 @item -e,--encoding=@var{enc}   
