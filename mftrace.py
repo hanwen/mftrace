@@ -709,25 +709,19 @@ def get_binary (name):
     return ''
 
 def get_fontforge_command ():
-    fontforge_cmd = ''
-    for ff in ['fontforge', 'pfaedit']:
-        if get_binary(ff):
-            fontforge_cmd = ff
-
-    stat = 1
-    if fontforge_cmd:
-        stat = system ("%s --help > pfv 2>&1 " % fontforge_cmd,
-               ignore_error = 1)
-
-        if stat != 0:
-            warning ("Command `%s --help' failed.  Cannot simplify or convert to TTF.\n" % fontforge_cmd)
-            return ''
-
-    if fontforge_cmd == 'pfaedit' \
-     and re.search ("-script", open ('pfv').read ()) == None:
-        warning ("pfaedit does not support -script.  Install 020215 or later.\nCannot simplify or convert to TTF.\n")
+    if get_binary('fontforge'):
+        pass
+    else:
         return ''
-    return fontforge_cmd
+
+    stat = system ("fontforge --help > pfv 2>&1 ",
+                   ignore_error = 1)
+
+    if stat != 0:
+        warning ("Command `fontforge --help' failed.  Cannot simplify or convert to TTF.\n")
+        return ''
+
+    return 'fontforge'
 
 def tfm2kpx (tfmname, encoding):
     kpx_lines = []
@@ -820,7 +814,7 @@ def assemble_font (fontname, format, is_raw):
 
 def make_outputs (fontname, formats, encoding):
     """
-    run pfaedit to convert to other formats
+    run fontforge to convert to other formats
     """
  
     ff_needed = 0
@@ -860,8 +854,8 @@ Quit (0);
         open ('to-ttf.pe', 'w').write (pe_script)
         if options.verbose:
             print('Fontforge script', pe_script)
-        system ("%s -script to-ttf.pe %s %s" % (ff_command,
-              shell_escape_filename (raw_name), shell_escape_filename (options.tfm_file)))
+        system ("fontforge -quiet -script to-ttf.pe %s %s" %
+                (shell_escape_filename (raw_name), shell_escape_filename (options.tfm_file)))
     elif ff_needed and (options.simplify or options.round_to_int or 'ttf' in formats or 'svg' in formats):
         error(_ ("fontforge is not installed; could not perform requested command"))
     else:
