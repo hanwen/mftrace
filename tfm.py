@@ -99,7 +99,10 @@ class Tfm_reader:
         
         self.checksum = self.get_number (4)
         self.design_size = self.get_fixp_number ()
-        self.coding = self.get_string ()
+        if self.head_length > 2:
+            self.coding = self.get_string ()
+        else:
+            self.coding = 'UNKNOWN'
 
         self.left =f[(6 + self.head_length) * 4:]
         self.chars = self.extract_chars ()
