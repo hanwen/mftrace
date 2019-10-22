@@ -140,6 +140,8 @@ def setup_temp  (name):
     global temp_dir
     if not temp_dir:
         temp_dir = TempDirectory (name)
+    else:
+        os.chdir(temp_dir ())
     return temp_dir ()
 
 def popen (cmd, mode = 'r', ignore_error = 0):
