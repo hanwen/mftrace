@@ -2,7 +2,7 @@
 
 PY_MODULES= afm.py tfm.py
 FILES= mftrace.py GNUmakefile.in \
-	gf2pbm.c mftrace.1 \
+	gf2pbm.c gf2pbm.1 mftrace.1 \
 	COPYING \
 	README.texi README.txt ChangeLog \
 	mftrace.spec.in mftrace.spec \
@@ -36,7 +36,7 @@ all: compile
 compile: mftrace gf2pbm
 
 version.texi: GNUmakefile
-	echo -e '@macro mftversion\n$(VERSION)\n@end macro\n' > $@
+	printf '@macro mftversion\n$(VERSION)\n@end macro\n' > $@
 
 README.txt: README.texi version.texi
 	makeinfo --no-split --no-headers --output $@  $<
