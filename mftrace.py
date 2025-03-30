@@ -1002,7 +1002,8 @@ Copyright (c) 2005--2006 by
     p.add_option ('--tfmfile',
                   metavar='FILE',
                   action='store',
-                  dest='tfm_file')
+                  dest='tfm_file',
+                  help=_('choose tfm file as base. Default: try to find tfm file on system using kpsewhich. "None" omit searching for tfm file'))
     p.add_option ('-e', '--encoding',
                   metavar="FILE",
                   action='store',
@@ -1334,7 +1335,10 @@ def do_file (filename):
 
     ## setup TFM
     if options.tfm_file:
-        options.tfm_file = os.path.abspath (options.tfm_file)
+        if options.tfm_file == "None":
+            options.tfm_file = None
+        else:
+            options.tfm_file = os.path.abspath (options.tfm_file)
     else:
         tfm_try = find_file (basename + '.tfm')
         if tfm_try:

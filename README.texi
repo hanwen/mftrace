@@ -203,7 +203,8 @@ values. Useful simultaneously  with
  Pass the font through FontForge for automatic  simplification and hinting.
 @item --tfmfile=FILE   
  Use @var{file} for the TFM file.  This file is needed to determine at
- what resolution to run MetaFont.
+ what resolution to run MetaFont. If not given, @code{mftrace} tries to find the TFM file 
+ using kpsewhich. If @code{None} is given as an argument, @code{mftrace} does not look for a TFM file.
 @item  -V,--verbose 
  Be verbose: print all commands as they are invoked. This is useful
  for debugging.
