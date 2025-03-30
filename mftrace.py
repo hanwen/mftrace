@@ -314,7 +314,7 @@ def read_encoding (file):
     strng = open (file).read ()
     strng = re.sub ("%.*", '', strng)
     strng = re.sub ("[\n\t \f]+", ' ', strng)
-    m = re.search ('/([^ ]+) \[([^\]]+)\] def', strng)
+    m = re.search (r'/([^ ]+) \[([^\]]+)\] def', strng)
     if not m:
         error ("Encoding file is invalid")
 
@@ -519,7 +519,7 @@ def potrace_path_to_type1_ops (at_file, bitmap_metrics, tfm_wid, magnification):
 
 def read_gf_dims (name, c):
     strng = popen ('%s/gf2pbm -n %d -s %s' % (bindir, c, name)).read ()
-    m = re.search ('size: ([0-9]+)+x([0-9]+), offset: \(([0-9-]+),([0-9-]+)\)', strng)
+    m = re.search (r'size: ([0-9]+)+x([0-9]+), offset: \(([0-9-]+),([0-9-]+)\)', strng)
 
     return tuple (map (int, m.groups ()))
 
@@ -730,9 +730,9 @@ def tfm2kpx (tfmname, encoding):
     pl = popen ("tftopl %s" % (tfmname))
     
     label_pattern = re.compile (
-        "\A   \(LABEL ([DOHC]{1}) ([A-Za-z0-9]*)\)")
+        r"\A   \(LABEL ([DOHC]{1}) ([A-Za-z0-9]*)\)")
     krn_pattern = re.compile (
-        "\A   \(KRN ([DOHC]{1}) ([A-Za-z0-9]*) R (-?[\d\.]+)\)")
+        r"\A   \(KRN ([DOHC]{1}) ([A-Za-z0-9]*) R (-?[\d\.]+)\)")
 
     first = 0
     second = 0
